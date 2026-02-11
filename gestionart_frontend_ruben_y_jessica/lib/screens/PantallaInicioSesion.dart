@@ -22,21 +22,25 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
 
   void _validarUsuario() {
     final isFormValid = _formKey.currentState!.validate();
-    if (Controllercomprador.compradorExiste(_nombre, _contrasena)) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Pantallainiciocomprador(
-            comprador: Controllercomprador.extraerComprador(
-              _nombre,
-              _contrasena,
-            )!,
+    if (isFormValid) {
+      if (Controllercomprador.compradorExiste(_nombre, _contrasena)) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Pantallainiciocomprador(
+              comprador: Controllercomprador.extraerComprador(
+                _nombre,
+                _contrasena,
+              )!,
+            ),
           ),
-        ),
-      );
-    }else{
-      const snackBar = SnackBar(content: Text('Usuario o contraseña no válidos'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        );
+      } else {
+        const snackBar = SnackBar(
+          content: Text('Usuario o contraseña no válidos'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
   }
 

@@ -9,8 +9,6 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/CameraGa
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/validators/Validators.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/controllers/ControllerGeneral.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/screens/Comprador/PantallaInicioComprador.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaInicioSesion.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/services/LogicaComprador.dart';
 
 class PantallaregistroComprador extends StatefulWidget {
