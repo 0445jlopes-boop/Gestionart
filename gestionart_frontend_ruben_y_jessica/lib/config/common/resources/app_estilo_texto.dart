@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 
-class AppEstiloTexto {
+class AppEstiloTexto { //Definimos el color, tipo de letra, formato y tamaño de los textos según relevancia
   static const TextStyle encabezado = TextStyle(
     fontFamily: 'Dancing Script',
     fontSize: 24,

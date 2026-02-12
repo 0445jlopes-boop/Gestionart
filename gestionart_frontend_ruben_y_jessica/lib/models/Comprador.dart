@@ -1,4 +1,4 @@
-class Comprador {
+class Comprador { //Clase comprador
   String correoElectronico;
   String nombre;
   String? imagen;

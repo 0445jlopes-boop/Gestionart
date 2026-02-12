@@ -14,7 +14,7 @@ void DialogoRegistro (BuildContext context){
           children: [
             const Expanded(child: Text("¿Cómo quieres registrarte?" , style: AppEstiloTexto.textoPrincipal,)),
             IconButton(
-              icon: const Icon(Icons.close),
+              icon: const Icon(Icons.close), //Icono para cerrar el dialogo
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -26,11 +26,11 @@ void DialogoRegistro (BuildContext context){
           "Seleccione una de las siguientes opciones, una vez se haya registrado un correo no podrá vovler a registrarlo como otro tipo de usuario",
           style: AppEstiloTexto.textoSecundario,  
         ),
-        actions: [
+        actions: [ // Se muestran dos botones para elegir que rol desea en la aplicación.
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextButton(
+              TextButton( 
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).push(

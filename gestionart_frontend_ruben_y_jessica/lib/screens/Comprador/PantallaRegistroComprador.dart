@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
@@ -20,7 +19,8 @@ class PantallaregistroComprador extends StatefulWidget {
 }
 
 class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
-  final _formKey = GlobalKey<FormState>();
+  //DECLARACIÓN DE VARIABLES A USAR EN EL FORMULARIO
+  final _formKey = GlobalKey<FormState>(); 
   String _nombre = "";
   String _direccion = "";
   String _correoElectronico = "";
@@ -30,20 +30,20 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
   String _contrasena2 = "";
   String? photoPath = "";
   
-  void _validarComprador(){
+  void _validarComprador(){ // Proedimiento que permite comprobar que los campos del formulario sean correctos a través de validaciones
     final isFormValid = _formKey.currentState!.validate();
     if(isFormValid){
-      if(ControllerGeneral.nombreEnUso(_nombre)){
+      if(ControllerGeneral.nombreEnUso(_nombre)){  // Comprueba que el nombre que desea el comprador no está en uso en caso afirmativo lo notifica al usuario
         const snackBar = SnackBar(content: Text('El nombre introducido ya existe'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }
-      if(ControllerGeneral.emailEnUso(_correoElectronico)){
+      if(ControllerGeneral.emailEnUso(_correoElectronico)){ // Comprueba que el correo tampoco esté en uso en caso afirmativo lo notifica al usuario
         const snackBar = SnackBar(content: Text('El correo electrónico introducido ya existe'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }
-      LogicaComprador.anadirComprador(Comprador(
+      LogicaComprador.anadirComprador(Comprador( // Si todo es correcto lo añade a la lista de compradores
        correoElectronico: _correoElectronico!, 
         nombre: _nombre!, 
         contrasena: _contrasena!, 
@@ -58,7 +58,7 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( // Appbar con el estilo predeterminado
         automaticallyImplyLeading: false,
         backgroundColor: AppColores.colorPrimario,
         flexibleSpace: Center(
@@ -71,7 +71,7 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
       body: Container(
         alignment: Alignment.center,
         child: SingleChildScrollView(
-          child: Form(
+          child: Form( // Formulari opara que el usuario ingrese sus datos con validacion de estos
             key: _formKey,
             child: Column(
               children: [
@@ -123,7 +123,7 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
                       labelText: "Contraseña",
                       labelStyle: AppEstiloTexto.textoPrincipal,
                       border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
+                      suffixIcon: IconButton( //Iono del ojo que permite mostrar y ocultar contraseña al presoanrlo
                         onPressed: () {
                           setState(() {
                             _obscurePassword1 = !_obscurePassword1;
@@ -225,7 +225,7 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton(
+                      ElevatedButton( //Si selecciona el boton valida el usuario a través del procedimiento superior
                         style: AppEstiloBotones.botonPrincipal,
                         onPressed: () {
                           _validarComprador();
@@ -235,7 +235,7 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
                           style: AppEstiloTexto.textoPrincipal,
                         ),
                       ),
-                      ElevatedButton(
+                      ElevatedButton( // Si no desea registrarse puede cancelar y vuelve a la pantalla de inicio de sesion. 
                         style: AppEstiloBotones.botonPrincipal,
                         onPressed: (){
                           Navigator.pop(context);

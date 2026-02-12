@@ -1,6 +1,6 @@
 import 'package:gestionart_frontend_ruben_y_jessica/models/Aticulo.dart';
 
-class Pedido {
+class Pedido { //Clase pedido
   int? id;
   DateTime fecha;
   String estado;

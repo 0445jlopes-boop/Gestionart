@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/models/Categoria.dart';
 
-class CategoriasData {
+class CategoriasData { // Case para inicializar los valores por defecto de las categorias existentes.
   static final List<Categoria> categorias = [
     Categoria(nombre: "Arte Digital"),
     Categoria(nombre: "Ilustración"),
@@ -23,7 +23,7 @@ class CategoriasData {
     Categoria(nombre: "Fan Art"),
   ];
 
-  static IconData obtenerIcono(String nombre) {
+  static IconData obtenerIcono(String nombre) { // Asignamos un icono a cada categoria
     switch (nombre) {
       case "Arte Digital":
         return Icons.computer;

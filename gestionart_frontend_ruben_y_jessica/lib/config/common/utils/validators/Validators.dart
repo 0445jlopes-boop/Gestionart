@@ -1,11 +1,11 @@
-class Validators {
-  static String? validateEmpty(String? value){
+class Validators { //Validaciones generales
+  static String? validateEmpty(String? value){ //Valida que no esté vacio
     if(value == null || value.isEmpty){
       return 'Campo obligatorio';
     }
     return null;
   }
-  static String? validatePassword(String? value1, String? value2) {
+  static String? validatePassword(String? value1, String? value2) { // Valida que las contraseñas en los regisros coincidan
   if (value1 == null || value1.isEmpty) {
     return 'La contraseña es obligatoria';
   }
@@ -15,7 +15,7 @@ class Validators {
 
   return null;
 }
-  static String? validateName(String? value) {
+  static String? validateName(String? value) { // Valida que el campo nombre no esté vacío y que tenga 25 carácteres máximo
     if (value == null || value.trim().isEmpty) {
       return "El nombre es obligatorio";
     }
@@ -24,7 +24,7 @@ class Validators {
     }
     return null;
   }
-  static String? validateEmail(String? value) {
+  static String? validateEmail(String? value) { // Valida que el correo electronico no esté vacio y que cumpla el regex del correo
     if (value == null || value.trim().isEmpty) {
       return "El correo es obligatorio";
     }
@@ -34,7 +34,7 @@ class Validators {
     }
     return null;
   }
-  static String? validateDireccion(String? value) {
+  static String? validateDireccion(String? value) { // Valida que la direccion no esté vacía y le aplica un formato
     if (value == null || value.trim().isEmpty) {
       return "La dirección es obligatoria";
     }

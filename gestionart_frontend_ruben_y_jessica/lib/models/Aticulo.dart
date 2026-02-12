@@ -1,4 +1,4 @@
-class Articulo {
+class Articulo { //Calse de articulos
   int? id;
   String titulo;
   String categoria;

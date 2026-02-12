@@ -1,7 +1,7 @@
 import 'package:gestionart_frontend_ruben_y_jessica/models/Anuncio.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/models/Aticulo.dart';
 
-class Vendedor {
+class Vendedor { // Clase vendedor
   String correoElectronico;
   String nombre;
   String imagen;

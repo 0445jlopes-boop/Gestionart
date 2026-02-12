@@ -15,12 +15,13 @@ class Pantallainiciosesion extends StatefulWidget {
 }
 
 class _PantallainiciosesionState extends State<Pantallainiciosesion> {
+  //DECLARACIÓN DE VARIABLES PARA EL FORMULARIO DE INICIO DE SESIÓN
   String _nombre = "";
   String _contrasena = "";
   bool _obscurePassword = true;
   final _formKey = GlobalKey<FormState>();
 
-  void _validarUsuario() {
+  void _validarUsuario() { // Validación del usuario a ver si existe para poder iniciar sesión
     final isFormValid = _formKey.currentState!.validate();
     if (isFormValid) {
       if (Controllercomprador.compradorExiste(_nombre, _contrasena)) {
@@ -47,7 +48,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( // Appbar con estilo predefinido 
         automaticallyImplyLeading: false,
         backgroundColor: AppColores.colorPrimario,
         flexibleSpace: Center(
@@ -60,11 +61,11 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
           child: Column(
             children: [
               SizedBox(height: 20,),
-              Image.asset('assets/images/logo.jpg'),
+              Image.asset('assets/images/logo.jpg'), // Logo de la aplicación
               SizedBox(height: 20),
               SizedBox(
                 width: 400,
-                child: Form(
+                child: Form( // Formulario de inicio de sesión
                   key: _formKey,
                   child: Column(
                     children: [
@@ -119,7 +120,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                           ),
                         ),
                       ),
-                      ElevatedButton(
+                      ElevatedButton( // Si inicia sesión se valida el usuario
                         style: AppEstiloBotones.botonPrincipal,
                         onPressed: _validarUsuario,
                         child: Text(
@@ -128,10 +129,10 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      ElevatedButton(
+                      ElevatedButton( // Si no está registrado puede hacerlo y seleccionar el rol que desea en el dialogo
                         style: AppEstiloBotones.botonPrincipal,
                         onPressed: () {
-                          DialogoRegistro(context);
+                          DialogoRegistro(context); 
                         },
                         child: Text(
                           "Registrarse",

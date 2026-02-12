@@ -1,4 +1,4 @@
-class Anuncio {
+class Anuncio { //Calse de anuncios
   int? id;
   String titulo;
   String categoria;
