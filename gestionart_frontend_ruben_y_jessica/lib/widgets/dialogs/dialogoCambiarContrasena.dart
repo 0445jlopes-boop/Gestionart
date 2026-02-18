@@ -3,8 +3,10 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/validators/Validators.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/controllers/ControllerComprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
 
-void DialogoCambiarContrasena(BuildContext context) {
+void dialogoCambiarContrasena(BuildContext context, Comprador comprador) {
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword1 = true;
   bool _obscurePassword2 = true;
@@ -14,8 +16,7 @@ void DialogoCambiarContrasena(BuildContext context) {
   String _contrasena2 = "";
   showDialog(
     context: context,
-    barrierDismissible:
-        false, //impide que el usuario cierre el dialogo tocando fuera de este, así tiene más sentido usar un boton para cerrar el dialogo.
+    barrierDismissible:false, //impide que el usuario cierre el dialogo tocando fuera de este, así tiene más sentido usar un boton para cerrar el dialogo.
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) {
@@ -45,7 +46,7 @@ void DialogoCambiarContrasena(BuildContext context) {
                     SizedBox(
                       width: 400,
                       child: TextFormField(
-                        obscureText: _obscurePassword1,
+                        obscureText: _obscurePassword,
                         decoration: InputDecoration(
                           labelText: "Contraseña actual",
                           labelStyle: AppEstiloTexto.textoPrincipal,
@@ -54,11 +55,11 @@ void DialogoCambiarContrasena(BuildContext context) {
                             //Iono del ojo que permite mostrar y ocultar contraseña al presoanrlo
                             onPressed: () {
                               setState(() {
-                                _obscurePassword1 = !_obscurePassword1;
+                                _obscurePassword = !_obscurePassword;
                               });
                             },
                             icon: Icon(
-                              _obscurePassword1
+                              _obscurePassword
                                   ? Icons.visibility
                                   : Icons.visibility_off,
                             ),
@@ -93,7 +94,7 @@ void DialogoCambiarContrasena(BuildContext context) {
                             color: AppColores.colorSecundario,
                           ),
                         ),
-                        validator: (value) => Validators.validateEmpty(value),
+                        validator: (value) => Validators.validateEmpty(value), 
                         onChanged: (value) => _contrasena = value,
                       ),
                     ),
@@ -130,7 +131,31 @@ void DialogoCambiarContrasena(BuildContext context) {
               ),
             ),
             actions: [
-              
+              ElevatedButton(
+                style: AppEstiloBotones.botonPrincipal,
+                onPressed: (){
+                  Validators.validatePasswordExists(comprador, _contrasena);
+                  final isFormValid = _formKey.currentState!.validate();
+                  if(isFormValid){
+                    Navigator.pop(context);
+                  }else{
+                    const snackBar = SnackBar(
+                        content: Text('Las contraseñas no coinciden'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                  
+                }, 
+                child: Text("Cambiar")
+              ),
+              SizedBox(height: 20,),
+              ElevatedButton(
+                style: AppEstiloBotones.botonPrincipal,
+                onPressed: (){
+                  Navigator.pop(context);
+                }, 
+                child: Text("Canelar")
+              )
             ],
           );
         },

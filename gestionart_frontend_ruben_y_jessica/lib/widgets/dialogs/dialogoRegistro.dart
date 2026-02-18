@@ -4,7 +4,7 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Comprador/PantallaRegistroComprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/PantallaRegistroVendedor.dart';
 
-void DialogoRegistro (BuildContext context){
+void dialogoRegistro (BuildContext context){
   showDialog(
     context: context, 
     barrierDismissible: false, //impide que el usuario cierre el dialogo tocando fuera de este, así tiene más sentido usar un boton para cerrar el dialogo.

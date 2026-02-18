@@ -1,3 +1,6 @@
+import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/services/LogicaComprador.dart';
+
 class Validators { //Validaciones generales
   static String? validateEmpty(String? value){ //Valida que no esté vacio
     if(value == null || value.isEmpty){
@@ -54,6 +57,14 @@ class Validators { //Validaciones generales
       return "Formato inválido. Use: Ciudad-Calle-Numero-Piso-Puerta-CodigoPostal";
     }
 
+    return null;
+  }
+
+  // Validador comprador
+  static String? validatePasswordExists(Comprador comprador, String contrasena){
+    if(comprador.contrasena != contrasena){
+      return "La contraseña introducida no es la original";
+    }
     return null;
   }
 

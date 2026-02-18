@@ -19,4 +19,7 @@ class Controllercomprador { // Controlador que permite gestionar los Compradores
     }
     return null;
   }
+  static void cambiarContrasena(Comprador comprador, String contrasenaNueva){
+    comprador.setContrasena(contrasenaNueva);
+  }
 }
