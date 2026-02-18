@@ -5,6 +5,7 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/validators/Validators.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/controllers/ControllerComprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Comprador/PantallaInicioComprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoCambiarContrasena.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoRegistro.dart';
 
 class Pantallainiciosesion extends StatefulWidget {
@@ -132,7 +133,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                       ElevatedButton( // Si no está registrado puede hacerlo y seleccionar el rol que desea en el dialogo
                         style: AppEstiloBotones.botonPrincipal,
                         onPressed: () {
-                          DialogoRegistro(context); 
+                          dialogoRegistro(context); 
                         },
                         child: Text(
                           "Registrarse",
