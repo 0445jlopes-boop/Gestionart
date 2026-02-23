@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/CameraGalleryService.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaInicioSesion.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoCambiarContrasena.dart';
 
 class perfil_view extends StatefulWidget {
@@ -89,6 +91,30 @@ class _perfil_viewState extends State<perfil_view> {
               },
               child: Text("¿Quieres cambiar tu contraseña?"),
             ),
+            SizedBox(height: 20,),
+            ElevatedButton(
+              style: AppEstiloBotones.botonPrincipal,
+              onPressed: () {
+                Navigator.pushAndRemoveUntil( //opcion de navegación donde podemos eliminar el historial de navegación para que al dar al botón de back no pueda ir a pantallas cuando haya cerrado sesión sin registrarse
+                  context, 
+                  MaterialPageRoute(builder: (context) =>Pantallainiciosesion()), 
+                  (route) => false  // opcion de eliminar registro de ruta
+                );
+              } , 
+              child: Text("Cerrar sesion", style: AppEstiloTexto.textoSecundario,)
+            ),
+            SizedBox(height: 20,),
+            ElevatedButton(
+              onPressed: () {
+               //Añadir dialogo de ¿Seguro desea eliminar usuario?
+                Navigator.pushAndRemoveUntil( //opcion de navegación donde podemos eliminar el historial de navegación para que al dar al botón de back no pueda ir a pantallas cuando haya cerrado sesión sin registrarse
+                  context, 
+                  MaterialPageRoute(builder: (context) =>Pantallainiciosesion()), 
+                  (route) => false  // opcion de eliminar registro de ruta
+                );
+              } , 
+              child: Text("Eliminar cuenta", style: AppEstiloTexto.textoSecundario,)
+            )
           ],
         ),
       ),

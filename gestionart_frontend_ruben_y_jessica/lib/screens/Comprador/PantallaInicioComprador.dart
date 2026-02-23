@@ -20,7 +20,6 @@ class _PantallainiciocompradorState extends State<Pantallainiciocomprador> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar( //Appbar con el estilo predeterminado
-        automaticallyImplyLeading: false,
         backgroundColor: AppColores.colorPrimario,
         flexibleSpace: Center(
           child: Text(

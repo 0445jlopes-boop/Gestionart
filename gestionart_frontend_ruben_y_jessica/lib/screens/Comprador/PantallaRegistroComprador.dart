@@ -59,7 +59,6 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar( // Appbar con el estilo predeterminado
-        automaticallyImplyLeading: false,
         backgroundColor: AppColores.colorPrimario,
         flexibleSpace: Center(
           child: Text(
