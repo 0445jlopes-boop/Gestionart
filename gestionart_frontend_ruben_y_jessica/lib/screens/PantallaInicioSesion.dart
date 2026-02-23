@@ -50,7 +50,6 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar( // Appbar con estilo predefinido 
-        automaticallyImplyLeading: false,
         backgroundColor: AppColores.colorPrimario,
         flexibleSpace: Center(
           child: Text("GESTIONART", style: AppEstiloTexto.encabezado),
