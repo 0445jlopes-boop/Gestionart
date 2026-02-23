@@ -7,7 +7,9 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/CameraGalleryService.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaInicioSesion.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/services/LogicaComprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoCambiarContrasena.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoEliminarComprador.dart';
 
 class perfil_view extends StatefulWidget {
   const perfil_view({super.key, required this.comprador});
@@ -105,13 +107,9 @@ class _perfil_viewState extends State<perfil_view> {
             ),
             SizedBox(height: 20,),
             ElevatedButton(
+              style: AppEstiloBotones.botonPrincipal,
               onPressed: () {
-               //Añadir dialogo de ¿Seguro desea eliminar usuario?
-                Navigator.pushAndRemoveUntil( //opcion de navegación donde podemos eliminar el historial de navegación para que al dar al botón de back no pueda ir a pantallas cuando haya cerrado sesión sin registrarse
-                  context, 
-                  MaterialPageRoute(builder: (context) =>Pantallainiciosesion()), 
-                  (route) => false  // opcion de eliminar registro de ruta
-                );
+                dialogoEliminarCuenta(context, widget.comprador);
               } , 
               child: Text("Eliminar cuenta", style: AppEstiloTexto.textoSecundario,)
             )

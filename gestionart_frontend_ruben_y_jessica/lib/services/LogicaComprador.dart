@@ -16,4 +16,7 @@ class LogicaComprador { // Implementa una lista de compradores y métodos sobre 
   static List<Comprador> getListaCompradores(){
     return _listaComprador;
   }
+  static void eliminarComprador(Comprador comprador) {
+    _listaComprador.remove(comprador);
+  }
 }

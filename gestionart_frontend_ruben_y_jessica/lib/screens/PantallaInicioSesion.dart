@@ -5,7 +5,6 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/validators/Validators.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/controllers/ControllerComprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Comprador/PantallaInicioComprador.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoCambiarContrasena.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoRegistro.dart';
 
 class Pantallainiciosesion extends StatefulWidget {
@@ -19,6 +18,8 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
   //DECLARACIÓN DE VARIABLES PARA EL FORMULARIO DE INICIO DE SESIÓN
   String _nombre = "";
   String _contrasena = "";
+  final TextEditingController _nombreController = TextEditingController(); // Variables para editar el texto en TextFormField
+  final TextEditingController _contrasenaController = TextEditingController();
   bool _obscurePassword = true;
   final _formKey = GlobalKey<FormState>();
 
@@ -37,6 +38,8 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
             ),
           ),
         );
+        _nombreController.clear();
+        _contrasenaController.clear();
       } else {
         const snackBar = SnackBar(
           content: Text('Usuario o contraseña no válidos'),
@@ -72,6 +75,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                       SizedBox(
                         width: 400,
                         child: TextFormField(
+                          controller: _nombreController,
                           decoration: const InputDecoration(
                             labelText: "Nombre",
                             labelStyle: AppEstiloTexto.textoPrincipal,
@@ -85,6 +89,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                       SizedBox(
                         width: 400,
                         child: TextFormField(
+                          controller: _contrasenaController,
                           decoration: InputDecoration(
                             labelText: "Contraseña",
                             labelStyle: AppEstiloTexto.textoPrincipal,
