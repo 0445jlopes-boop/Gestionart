@@ -9,13 +9,11 @@ class Validators { //Validaciones generales
     return null;
   }
   static String? validatePassword(String? value1, String? value2) { // Valida que las contraseñas en los regisros coincidan
-  if (value1 == null || value1.isEmpty) {
+  if (Validators.validateEmpty(value1)!=null) {
     return 'La contraseña es obligatoria';
-  }
-  if (value1 != value2) {
+  }else if (value1 != value2) {
     return 'Las contraseñas no coinciden';
   }
-
   return null;
 }
   static String? validateName(String? value) { // Valida que el campo nombre no esté vacío y que tenga 25 carácteres máximo
@@ -62,8 +60,10 @@ class Validators { //Validaciones generales
 
   // Validador comprador
   static String? validatePasswordExists(Comprador comprador, String contrasena){
-    if(comprador.contrasena != contrasena){
-      return "La contraseña introducida no es la original";
+    if(Validators.validateEmpty(contrasena)!=null){
+      return "Campo obligatorio";
+    }else if(comprador.contrasena != contrasena){
+      return "La contraseña no es la existente";
     }
     return null;
   }

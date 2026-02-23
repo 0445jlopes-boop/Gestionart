@@ -3,22 +3,23 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/validators/Validators.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/controllers/ControllerComprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
 
 void dialogoCambiarContrasena(BuildContext context, Comprador comprador) {
   final _formKey = GlobalKey<FormState>();
-  bool _obscurePassword1 = true;
-  bool _obscurePassword2 = true;
-  bool _obscurePassword = true;
-  String _contrasenaInicio ="";
-  String _contrasena ="";
-  String _contrasena2 = "";
+  bool _obscurePasswordActual = true;
+  bool _obscurePasswordNueva = true;
+  bool _obscurePasswordRepite = true;
+  String _contrasenaActual = "";
+  String _contrasenaNueva = "";
+  String _contrasenaRepite = "";
   showDialog(
     context: context,
-    barrierDismissible:false, //impide que el usuario cierre el dialogo tocando fuera de este, así tiene más sentido usar un boton para cerrar el dialogo.
+    barrierDismissible:
+        false, //impide que el usuario cierre el dialogo tocando fuera de este, así tiene más sentido usar un boton para cerrar el dialogo.
     builder: (context) {
       return StatefulBuilder(
+        //Widget que permite hacer setState en AlertDialog
         builder: (context, setState) {
           return AlertDialog(
             title: Row(
@@ -40,122 +41,115 @@ void dialogoCambiarContrasena(BuildContext context, Comprador comprador) {
             ),
             content: Form(
               key: _formKey,
-              child: Expanded(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: 400,
-                      child: TextFormField(
-                        obscureText: _obscurePassword,
-                        decoration: InputDecoration(
-                          labelText: "Contraseña actual",
-                          labelStyle: AppEstiloTexto.textoPrincipal,
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            //Iono del ojo que permite mostrar y ocultar contraseña al presoanrlo
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            color: AppColores.colorSecundario,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: 400,
+                    child: TextFormField(
+                      obscureText: _obscurePasswordActual,
+                      decoration: InputDecoration(
+                        labelText: "Contraseña actual",
+                        labelStyle: AppEstiloTexto.textoPrincipal,
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          //Iono del ojo que permite mostrar y ocultar contraseña al presoanrlo
+                          onPressed: () {
+                            setState(() {
+                              _obscurePasswordActual = !_obscurePasswordActual;
+                            });
+                          },
+                          icon: Icon(
+                            _obscurePasswordActual
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                           ),
+                          color: AppColores.colorSecundario,
                         ),
-                        validator: (value) => Validators.validateEmpty(value),
-                        onChanged: (value) => _contrasena = value,
                       ),
+                      validator: (value) =>
+                          Validators.validatePasswordExists(comprador, value!),
+                      onChanged: (value) => _contrasenaActual = value,
                     ),
-                    SizedBox(height: 20),
-                    SizedBox(
-                      width: 400,
-                      child: TextFormField(
-                        obscureText: _obscurePassword1,
-                        decoration: InputDecoration(
-                          labelText: "Nueva contraseña",
-                          labelStyle: AppEstiloTexto.textoPrincipal,
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            //Iono del ojo que permite mostrar y ocultar contraseña al presoanrlo
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword1 = !_obscurePassword1;
-                              });
-                            },
-                            icon: Icon(
-                              _obscurePassword1
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            color: AppColores.colorSecundario,
+                  ),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    width: 400,
+                    child: TextFormField(
+                      obscureText: _obscurePasswordNueva,
+                      decoration: InputDecoration(
+                        labelText: "Nueva contraseña",
+                        labelStyle: AppEstiloTexto.textoPrincipal,
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          //Iono del ojo que permite mostrar y ocultar contraseña al presoanrlo
+                          onPressed: () {
+                            setState(() {
+                              _obscurePasswordNueva = !_obscurePasswordNueva;
+                            });
+                          },
+                          icon: Icon(
+                            _obscurePasswordNueva
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                           ),
+                          color: AppColores.colorSecundario,
                         ),
-                        validator: (value) => Validators.validateEmpty(value), 
-                        onChanged: (value) => _contrasena = value,
                       ),
+                      validator: (value) => Validators.validateEmpty(value),
+                      onChanged: (value) => _contrasenaNueva = value,
                     ),
-                    SizedBox(height: 20,),
-                    SizedBox(
-                      width: 400,
-                      child: TextFormField(
-                        obscureText: _obscurePassword2,
-                        decoration: InputDecoration(
-                          labelText: "Repita la nueva contraseña",
-                          labelStyle: AppEstiloTexto.textoPrincipal,
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword2 = !_obscurePassword2;
-                              });
-                            },
-                            icon: Icon(
-                              _obscurePassword2
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            color: AppColores.colorSecundario,
+                  ),
+                  SizedBox(height: 20),
+                  SizedBox(
+                    width: 400,
+                    child: TextFormField(
+                      obscureText: _obscurePasswordRepite,
+                      decoration: InputDecoration(
+                        labelText: "Repita la nueva contraseña",
+                        labelStyle: AppEstiloTexto.textoPrincipal,
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _obscurePasswordRepite = !_obscurePasswordRepite;
+                            });
+                          },
+                          icon: Icon(
+                            _obscurePasswordRepite
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                           ),
+                          color: AppColores.colorSecundario,
                         ),
-                        validator: (value) =>
-                            Validators.validatePassword(value, _contrasena),
-                        onChanged: (value) => _contrasena2 = value,
                       ),
+                      validator: (value) =>
+                          Validators.validatePassword(value, _contrasenaNueva),
+                      onChanged: (value) => _contrasenaRepite = value,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             actions: [
               ElevatedButton(
                 style: AppEstiloBotones.botonPrincipal,
-                onPressed: (){
-                  Validators.validatePasswordExists(comprador, _contrasena);
+                onPressed: () {
                   final isFormValid = _formKey.currentState!.validate();
-                  if(isFormValid){
+                  if (isFormValid) {
+                    comprador.contrasena = _contrasenaNueva;
                     Navigator.pop(context);
-                  }else{
-                    const snackBar = SnackBar(
-                        content: Text('Las contraseñas no coinciden'),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
-                  
-                }, 
-                child: Text("Cambiar")
+                },
+                child: Text("Cambiar"),
               ),
-              SizedBox(height: 20,),
+              SizedBox(height: 20),
               ElevatedButton(
                 style: AppEstiloBotones.botonPrincipal,
-                onPressed: (){
+                onPressed: () {
                   Navigator.pop(context);
-                }, 
-                child: Text("Canelar")
-              )
+                },
+                child: Text("Canelar"),
+              ),
             ],
           );
         },
