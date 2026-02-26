@@ -7,7 +7,6 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/CameraGalleryService.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaInicioSesion.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/services/LogicaComprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoCambiarContrasena.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoEliminarComprador.dart';
 

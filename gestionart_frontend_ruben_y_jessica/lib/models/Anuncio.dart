@@ -4,7 +4,7 @@ class Anuncio { //Calse de anuncios
   String categoria;
   double precio;
   String imagen;
-  String tiempo;
+  int tiempo;
 
   Anuncio({
     this.id,
