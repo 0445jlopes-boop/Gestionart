@@ -2,6 +2,8 @@ package com.gestionart.api.domain.models;
 
 import java.time.LocalDateTime;
 
+import com.gestionart.api.domain.enums.EstadoSolicitud;
+
 public class SolicitudExclusiva {
     private Long id;
     private Long idComprador;

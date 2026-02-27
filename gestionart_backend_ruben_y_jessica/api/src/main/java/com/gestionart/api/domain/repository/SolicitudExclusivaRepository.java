@@ -3,7 +3,7 @@ package com.gestionart.api.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.gestionart.api.domain.models.EstadoSolicitud;
+import com.gestionart.api.domain.enums.EstadoSolicitud;
 import com.gestionart.api.domain.models.SolicitudExclusiva;
 
 public interface SolicitudExclusivaRepository {

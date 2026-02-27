@@ -3,7 +3,7 @@ package com.gestionart.api.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.gestionart.api.domain.models.EstadoPedido;
+import com.gestionart.api.domain.enums.EstadoPedido;
 import com.gestionart.api.domain.models.Pedido;
 
 public interface PedidoRepository {

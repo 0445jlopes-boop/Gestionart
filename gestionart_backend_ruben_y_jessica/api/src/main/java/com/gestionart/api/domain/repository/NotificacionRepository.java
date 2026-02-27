@@ -2,8 +2,8 @@ package com.gestionart.api.domain.repository;
 
 import java.util.List;
 
+import com.gestionart.api.domain.enums.TipoNotificacion;
 import com.gestionart.api.domain.models.Notificacion;
-import com.gestionart.api.domain.models.TipoNotificacion;
 
 public interface NotificacionRepository {
     Notificacion save(Notificacion notificacion);

@@ -1,5 +1,7 @@
 package com.gestionart.api.domain.models;
 
+import com.gestionart.api.domain.enums.Categoria;
+
 public class Articulo {
     private Long id;
     private String titulo;
@@ -8,12 +10,12 @@ public class Articulo {
     private String imagen;
     private String descripcion;
     private int stock;
-    private long idVendedor;
+    private Long idVendedor;
     
     public Articulo() {
     }
 
-    public Articulo(Long id, String titulo, Categoria categoria, double precio, String imagen, String descripcion, int stock, long idVendedor) {
+    public Articulo(Long id, String titulo, Categoria categoria, double precio, String imagen, String descripcion, int stock, Long idVendedor) {
         this.id = id;
         this.titulo = titulo;
         this.categoria = categoria;
@@ -69,11 +71,11 @@ public class Articulo {
         this.stock = stock;
     }
 
-    public long getIdVendedor() {
+    public Long getIdVendedor() {
         return idVendedor;
     }
 
-    public void setIdVendedor(long idVendedor) {
+    public void setIdVendedor(Long idVendedor) {
         this.idVendedor = idVendedor;
     }
 

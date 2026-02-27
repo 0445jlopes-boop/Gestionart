@@ -1,32 +1,38 @@
 package com.gestionart.api.domain.models;
 
+import java.time.LocalDateTime;
+
+import com.gestionart.api.domain.enums.Categoria;
+
 public class Anuncio {
-    private long id;
+    private Long id;
     private String titulo;
     private Categoria categoria;
     private double precio;
     private String imagen;
-    private int tiempo;
-    private long idVendedor;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaFin;
+    private Long idVendedor;
     
     public Anuncio() {
     }
 
-    public Anuncio(long id, String titulo, Categoria categoria, double precio, String imagen, int tiempo, long idVendedor) {
+    public Anuncio(Long id, String titulo, Categoria categoria, double precio, String imagen, LocalDateTime fechaInicio, LocalDateTime fechaFin, Long idVendedor) {
         this.id = id;
         this.titulo = titulo;
         this.categoria = categoria;
         this.precio = precio;
         this.imagen = imagen;
-        this.tiempo = tiempo;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
         this.idVendedor = idVendedor;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -62,20 +68,30 @@ public class Anuncio {
         this.imagen = imagen;
     }
 
-    public int getTiempo() {
-        return tiempo;
-    }
+    
 
-    public void setTiempo(int tiempo) {
-        this.tiempo = tiempo;
-    }
-
-    public long getIdVendedor() {
+    public Long getIdVendedor() {
         return idVendedor;
     }
 
-    public void setIdVendedor(long idVendedor) {
+    public void setIdVendedor(Long idVendedor) {
         this.idVendedor = idVendedor;
+    }
+
+    public LocalDateTime getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDateTime fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDateTime getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(LocalDateTime fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
 }

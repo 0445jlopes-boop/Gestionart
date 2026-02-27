@@ -3,6 +3,8 @@ package com.gestionart.api.domain.models;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.gestionart.api.domain.enums.EstadoPedido;
+
 public class Pedido {
     private Long id;
     private Long idComprador;

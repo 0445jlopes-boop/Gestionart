@@ -1,16 +1,16 @@
 package com.gestionart.api.domain.models;
 
 public class LineaPedido {
-    private long id;
-    private long idPedido;
-    private long idArticulo;
+    private Long id;
+    private Long idPedido;
+    private Long idArticulo;
     private int cantidad;
     private double precioUnitario;
    
     public LineaPedido() {
     }
 
-    public LineaPedido(long id,long idPedido, long idArticulo, int cantidad, double precioUnitario) {
+    public LineaPedido(Long id,Long idPedido, Long idArticulo, int cantidad, double precioUnitario) {
         this.id = id;
         this.idPedido = idPedido;
         this.idArticulo = idArticulo;
@@ -18,19 +18,19 @@ public class LineaPedido {
         this.precioUnitario = precioUnitario;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getIdArticulo() {
+    public Long getIdArticulo() {
         return idArticulo;
     }
 
-    public void setIdArticulo(long idArticulo) {
+    public void setIdArticulo(Long idArticulo) {
         this.idArticulo = idArticulo;
     }
 
@@ -50,11 +50,11 @@ public class LineaPedido {
         this.precioUnitario = precioUnitario;
     }
 
-    public long getIdPedido() {
+    public Long getIdPedido() {
         return idPedido;
     }
 
-    public void setIdPedido(long idPedido) {
+    public void setIdPedido(Long idPedido) {
         this.idPedido = idPedido;
     }
 

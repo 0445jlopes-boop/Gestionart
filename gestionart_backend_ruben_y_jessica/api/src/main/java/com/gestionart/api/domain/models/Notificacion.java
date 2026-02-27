@@ -2,17 +2,19 @@ package com.gestionart.api.domain.models;
 
 import java.time.LocalDateTime;
 
+import com.gestionart.api.domain.enums.TipoNotificacion;
+
 public class Notificacion {
-    private long id;
-    private long vendedorid;
-    private TipoNotificacion tipo; //Stock acabado, solicitud de creación, nuevo pedido
+    private Long id;
+    private Long vendedorid;
+    private TipoNotificacion tipo; 
     private boolean leido;
     private LocalDateTime fecha;
     
     public Notificacion() {
     }
 
-    public Notificacion(long id, long vendedorid, TipoNotificacion tipo, boolean leido, LocalDateTime fecha) {
+    public Notificacion(Long id, Long vendedorid, TipoNotificacion tipo, boolean leido, LocalDateTime fecha) {
         this.id = id;
         this.vendedorid = vendedorid;
         this.tipo = tipo;
@@ -20,19 +22,19 @@ public class Notificacion {
         this.fecha = fecha;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getVendedorid() {
+    public Long getVendedorid() {
         return vendedorid;
     }
 
-    public void setVendedorid(long vendedorid) {
+    public void setVendedorid(Long vendedorid) {
         this.vendedorid = vendedorid;
     }
 
