@@ -4,64 +4,63 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Pedido {
-    private long id;
-    private LocalDateTime fecha; 
-    private String estado;
-    private int idComprador;
-    private int idVendedor;
+    private Long id;
+    private Long idComprador;
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime fechaConfirmacion;
+    private EstadoPedido estado;
     private List<LineaPedido> lineas;
-    
+
     public Pedido() {
     }
 
-    public Pedido(long id, LocalDateTime fecha, String estado, int idComprador, int idVendedor,
-            List<LineaPedido> lineas) {
+    public Pedido(Long id,Long idComprador,LocalDateTime fechaCreacion,LocalDateTime fechaConfirmacion,EstadoPedido estado,List<LineaPedido> lineas) {
         this.id = id;
-        this.fecha = fecha;
-        this.estado = estado;
         this.idComprador = idComprador;
-        this.idVendedor = idVendedor;
+        this.fechaCreacion = fechaCreacion;
+        this.fechaConfirmacion = fechaConfirmacion;
+        this.estado = estado;
         this.lineas = lineas;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public int getIdComprador() {
+    public Long getIdComprador() {
         return idComprador;
     }
 
-    public void setIdComprador(int idComprador) {
+    public void setIdComprador(Long idComprador) {
         this.idComprador = idComprador;
     }
 
-    public int getIdVendedor() {
-        return idVendedor;
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    public void setIdVendedor(int idVendedor) {
-        this.idVendedor = idVendedor;
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public LocalDateTime getFechaConfirmacion() {
+        return fechaConfirmacion;
+    }
+
+    public void setFechaConfirmacion(LocalDateTime fechaConfirmacion) {
+        this.fechaConfirmacion = fechaConfirmacion;
+    }
+
+    public EstadoPedido getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoPedido estado) {
+        this.estado = estado;
     }
 
     public List<LineaPedido> getLineas() {

@@ -1,24 +1,35 @@
 package com.gestionart.api.domain.models;
 
+import java.time.LocalDateTime;
+
 public class Comprador {
-    private Long id; //Identificador largo aleatorio que no necesita de bbdd para generarse y aumenta la seguridad
+    private Long id; 
     private String correoElectronico;
     private String nombre;
     private String imagen;
     private String contrasena;
     private String direccion;
+    private TipoCuentaComprador tipoCuenta;
+    private LocalDateTime fechaInicioPremium;
 
     public Comprador() {
     }
 
-    public Comprador(Long id, String correoElectronico, String nombre, String imagen, String contrasena, String direccion) {
+    
+
+    public Comprador(Long id, String correoElectronico, String nombre, String imagen, String contrasena,
+            String direccion, TipoCuentaComprador tipoCuenta, LocalDateTime fechaInicioPremium) {
         this.id = id;
         this.correoElectronico = correoElectronico;
         this.nombre = nombre;
         this.imagen = imagen;
         this.contrasena = contrasena;
         this.direccion = direccion;
+        this.tipoCuenta = tipoCuenta;
+        this.fechaInicioPremium = fechaInicioPremium;
     }
+
+
 
     public Long getId() {
         return id;
@@ -64,7 +75,30 @@ public class Comprador {
         this.direccion = direccion;
     }
 
-    
-    
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public TipoCuentaComprador getTipoCuenta() {
+        return tipoCuenta;
+    }
+
+
+
+    public void setTipoCuenta(TipoCuentaComprador tipoCuenta) {
+        this.tipoCuenta = tipoCuenta;
+    }
+
+
+
+    public LocalDateTime getFechaInicioPremium() {
+        return fechaInicioPremium;
+    }
+
+
+
+    public void setFechaInicioPremium(LocalDateTime fechaInicioPremium) {
+        this.fechaInicioPremium = fechaInicioPremium;
+    }
 
 }

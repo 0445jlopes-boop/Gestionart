@@ -3,7 +3,7 @@ package com.gestionart.api.domain.models;
 public class Articulo {
     private Long id;
     private String titulo;
-    private String categoria;
+    private Categoria categoria;
     private double precio;
     private String imagen;
     private String descripcion;
@@ -13,7 +13,7 @@ public class Articulo {
     public Articulo() {
     }
 
-    public Articulo(Long id, String titulo, String categoria, double precio, String imagen, String descripcion, int stock, long idVendedor) {
+    public Articulo(Long id, String titulo, Categoria categoria, double precio, String imagen, String descripcion, int stock, long idVendedor) {
         this.id = id;
         this.titulo = titulo;
         this.categoria = categoria;
@@ -36,10 +36,10 @@ public class Articulo {
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
-    public void setCategoria(String categoria) {
+    public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
     public double getPrecio() {

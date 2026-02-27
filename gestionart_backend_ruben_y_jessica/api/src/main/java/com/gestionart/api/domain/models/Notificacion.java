@@ -5,14 +5,14 @@ import java.time.LocalDateTime;
 public class Notificacion {
     private long id;
     private long vendedorid;
-    private String tipo; //Stock acabado, solicitud de creación, nuevo pedido
+    private TipoNotificacion tipo; //Stock acabado, solicitud de creación, nuevo pedido
     private boolean leido;
     private LocalDateTime fecha;
     
     public Notificacion() {
     }
 
-    public Notificacion(long id, long vendedorid, String tipo, boolean leido, LocalDateTime fecha) {
+    public Notificacion(long id, long vendedorid, TipoNotificacion tipo, boolean leido, LocalDateTime fecha) {
         this.id = id;
         this.vendedorid = vendedorid;
         this.tipo = tipo;
@@ -36,11 +36,11 @@ public class Notificacion {
         this.vendedorid = vendedorid;
     }
 
-    public String getTipo() {
+    public TipoNotificacion getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoNotificacion tipo) {
         this.tipo = tipo;
     }
 
