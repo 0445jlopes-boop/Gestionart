@@ -13,11 +13,15 @@ public class Anuncio {
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaFin;
     private Long idVendedor;
+    private boolean activo;
     
     public Anuncio() {
     }
 
-    public Anuncio(Long id, String titulo, Categoria categoria, double precio, String imagen, LocalDateTime fechaInicio, LocalDateTime fechaFin, Long idVendedor) {
+    
+
+    public Anuncio(Long id, String titulo, Categoria categoria, double precio, String imagen, LocalDateTime fechaInicio,
+            LocalDateTime fechaFin, Long idVendedor, boolean activo) {
         this.id = id;
         this.titulo = titulo;
         this.categoria = categoria;
@@ -26,7 +30,10 @@ public class Anuncio {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.idVendedor = idVendedor;
+        this.activo = activo;
     }
+
+
 
     public Long getId() {
         return id;
@@ -93,5 +100,19 @@ public class Anuncio {
     public void setFechaFin(LocalDateTime fechaFin) {
         this.fechaFin = fechaFin;
     }
+
+
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    
 
 }
