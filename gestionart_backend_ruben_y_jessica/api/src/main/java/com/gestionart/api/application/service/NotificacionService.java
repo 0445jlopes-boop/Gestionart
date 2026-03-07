@@ -13,16 +13,12 @@ import com.gestionart.api.domain.repository.NotificacionRepository;
 @Service
 @Transactional
 public class NotificacionService {
-
     private final NotificacionRepository notificacionRepository;
 
     public NotificacionService(NotificacionRepository notificacionRepository) {
         this.notificacionRepository = notificacionRepository;
     }
 
-    /*
-     * Crear notificación interna
-     */
     public Notificacion crearNotificacion(Long vendedorId, TipoNotificacion tipo) {
 
         if (vendedorId == null || tipo == null) {
@@ -38,9 +34,6 @@ public class NotificacionService {
         return notificacionRepository.save(notificacion);
     }
 
-    /*
-     * Listar todas las notificaciones de un vendedor
-     */
     @Transactional(readOnly = true)
     public List<Notificacion> obtenerPorVendedor(Long vendedorId) {
 
@@ -51,36 +44,24 @@ public class NotificacionService {
         return notificacionRepository.findByVendedorId(vendedorId);
     }
 
-    /*
-     * Listar no leídas
-     */
     @Transactional(readOnly = true)
     public List<Notificacion> obtenerNoLeidas(Long vendedorId) {
         return notificacionRepository
                 .findByVendedorIdAndLeidoFalse(vendedorId, false);
     }
 
-    /*
-     * Listar leídas
-     */
     @Transactional(readOnly = true)
     public List<Notificacion> obtenerLeidas(Long vendedorId) {
         return notificacionRepository
                 .findByVendedorIdAndLeidoTrue(vendedorId, true);
     }
 
-    /*
-     * Filtrar por tipo
-     */
     @Transactional(readOnly = true)
     public List<Notificacion> obtenerPorTipo(Long vendedorId, TipoNotificacion tipo) {
         return notificacionRepository
                 .findByVendedorIdAndTipo(vendedorId, tipo);
     }
 
-    /*
-     * Marcar como leída
-     */
     public Notificacion marcarComoLeida(Long id, Long vendedorId) {
 
         List<Notificacion> notificaciones = 
@@ -96,9 +77,6 @@ public class NotificacionService {
         return notificacionRepository.save(notificacion);
     }
 
-    /*
-     * Marcar todas como leídas
-     */
     public void marcarTodasComoLeidas(Long vendedorId) {
 
         List<Notificacion> notificaciones =
@@ -110,9 +88,6 @@ public class NotificacionService {
         }
     }
 
-    /*
-     * Eliminar notificación
-     */
     public void eliminar(Long id) {
         notificacionRepository.deleteById(id);
     }

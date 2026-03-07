@@ -18,35 +18,23 @@ public class VendedorService {
         this.vendedorRepository = vendedorRepository;
     }
 
-    /*
-     * Obtener vendedor por ID
-     */
     @Transactional(readOnly = true)
     public Vendedor obtenerPorId(Long id) {
         return vendedorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vendedor no encontrado"));
     }
 
-    /*
-     * Listar todos los vendedores
-     */
     @Transactional(readOnly = true)
     public List<Vendedor> listarTodos() {
         return vendedorRepository.findAll();
     }
 
-    /*
-     * Obtener por correo (útil para autenticación o validación)
-     */
     @Transactional(readOnly = true)
     public Vendedor obtenerPorCorreo(String correo) {
         return vendedorRepository.findByCorreoElectronico(correo)
                 .orElseThrow(() -> new RuntimeException("Vendedor no encontrado"));
     }
 
-    /*
-     * Actualizar perfil del vendedor
-     */
     public Vendedor actualizarPerfil(Long id, Vendedor datos) {
 
         Vendedor vendedor = obtenerPorId(id);
@@ -57,7 +45,6 @@ public class VendedorService {
 
         return vendedorRepository.save(vendedor);
     }
-
 
     public void eliminar(Long id) {
         vendedorRepository.deleteById(id);

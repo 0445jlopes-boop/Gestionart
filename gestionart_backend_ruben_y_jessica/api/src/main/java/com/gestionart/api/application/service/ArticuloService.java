@@ -31,10 +31,8 @@ public class ArticuloService {
     }
 
     public Articulo actualizarStock(Long idArticulo, int nuevoStock) {
-
         Articulo articulo = articuloRepository.findById(idArticulo)
                 .orElseThrow(() -> new RuntimeException("No encontrado"));
-
         articulo.setStock(nuevoStock);
         return articuloRepository.save(articulo);
     }

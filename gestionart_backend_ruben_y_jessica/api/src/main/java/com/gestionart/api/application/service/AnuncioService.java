@@ -22,11 +22,9 @@ public class AnuncioService {
 
         Anuncio anuncio = anuncioRepository.findById(idAnuncio)
                 .orElseThrow(() -> new RuntimeException("No encontrado"));
-
         anuncio.setActivo(true);
         anuncio.setFechaInicio(LocalDateTime.now());
         anuncio.setFechaFin(LocalDateTime.now().plusDays(30));
-
         return anuncioRepository.save(anuncio);
     }
 }
