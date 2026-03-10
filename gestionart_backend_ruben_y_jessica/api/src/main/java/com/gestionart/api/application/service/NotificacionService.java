@@ -26,7 +26,7 @@ public class NotificacionService {
         }
 
         Notificacion notificacion = new Notificacion();
-        notificacion.setVendedorid(vendedorId);
+        notificacion.setVendedorId(vendedorId);
         notificacion.setTipo(tipo);
         notificacion.setLeido(false);
         notificacion.setFecha(LocalDateTime.now());

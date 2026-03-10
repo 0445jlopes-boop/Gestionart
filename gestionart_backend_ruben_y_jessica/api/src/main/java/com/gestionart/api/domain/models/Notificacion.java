@@ -30,11 +30,11 @@ public class Notificacion {
         this.id = id;
     }
 
-    public Long getVendedorid() {
+    public Long getVendedorId() {
         return vendedorid;
     }
 
-    public void setVendedorid(Long vendedorid) {
+    public void setVendedorId(Long vendedorid) {
         this.vendedorid = vendedorid;
     }
 

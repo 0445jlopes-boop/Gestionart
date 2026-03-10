@@ -30,7 +30,7 @@ public class PagoService {
     public void confirmar(Long idPago) {
 
         Pago pago = pagoRepository.findById(idPago)
-                .orElseThrow(() -> new RuntimeException("No encontrado"));
+                .orElseThrow(() -> new RuntimeException("Pago no encontrado"));
 
         pago.setEstado(EstadoPago.CONFIRMADO);
         pagoRepository.save(pago);

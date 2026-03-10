@@ -1,0 +1,29 @@
+package com.gestionart.api.presentation.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.gestionart.api.application.service.PedidoService;
+import com.gestionart.api.domain.models.Pedido;
+
+@RestController
+@RequestMapping("/pedidos")
+public class PedidoController {
+
+    private final PedidoService pedidoService;
+
+    public PedidoController(PedidoService pedidoService) {
+        this.pedidoService = pedidoService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Pedido> crear(@RequestParam Long compradorId) {
+        return ResponseEntity.ok(pedidoService.crear(compradorId));
+    }
+
+    @PutMapping("/{id}/confirmar")
+    public ResponseEntity<Void> confirmar(@PathVariable Long id) {
+        pedidoService.confirmar(id);
+        return ResponseEntity.ok().build();
+    }
+}

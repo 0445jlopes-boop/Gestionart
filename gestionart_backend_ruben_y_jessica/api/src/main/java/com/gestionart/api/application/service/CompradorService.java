@@ -23,6 +23,7 @@ public class CompradorService {
                 .orElseThrow(() -> new RuntimeException("Comprador no encontrado"));
     }
 
+    @Transactional(readOnly = true)
     public List<Comprador> listarTodos() {
         return compradorRepository.findAll();
     }

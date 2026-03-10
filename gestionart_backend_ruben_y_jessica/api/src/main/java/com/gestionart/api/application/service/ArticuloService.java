@@ -22,18 +22,31 @@ public class ArticuloService {
         return articuloRepository.save(articulo);
     }
 
+    @Transactional(readOnly = true)
     public List<Articulo> listarDisponibles() {
         return articuloRepository.findByStockGreatherThan(0);
     }
 
+    @Transactional(readOnly = true)
+    public Articulo obtenerPorId(Long idArticulo) {
+        return articuloRepository.findById(idArticulo)
+                .orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+    }
+
+    @Transactional(readOnly = true)
     public List<Articulo> buscarPorVendedor(Long idVendedor) {
         return articuloRepository.findByIdVendedor(idVendedor);
     }
 
     public Articulo actualizarStock(Long idArticulo, int nuevoStock) {
         Articulo articulo = articuloRepository.findById(idArticulo)
-                .orElseThrow(() -> new RuntimeException("No encontrado"));
+                .orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+
         articulo.setStock(nuevoStock);
         return articuloRepository.save(articulo);
+    }
+
+    public void eliminar(Long idArticulo) {
+        articuloRepository.deleteById(idArticulo);
     }
 }
