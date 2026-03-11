@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.AnuncioService;
 import com.gestionart.api.domain.models.Anuncio;
+import com.gestionart.api.presentation.dto.request.CrearAnuncioRequest;
 
 @RestController
 @RequestMapping("/anuncios")
@@ -19,7 +20,15 @@ public class AnuncioController {
     }
 
     @PostMapping
-    public ResponseEntity<Anuncio> crear(@RequestBody Anuncio anuncio) {
+    public ResponseEntity<Anuncio> crear(@RequestBody CrearAnuncioRequest request) {
+
+        Anuncio anuncio = new Anuncio();
+        anuncio.setTitulo(request.getTitulo());
+        anuncio.setCategoria(request.getCategoria());
+        anuncio.setPrecio(request.getPrecio());
+        anuncio.setImagen(request.getImagen());
+        anuncio.setIdVendedor(request.getIdVendedor());
+
         return ResponseEntity.ok(anuncioService.crear(anuncio));
     }
 

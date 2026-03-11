@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.PedidoService;
 import com.gestionart.api.domain.models.Pedido;
+import com.gestionart.api.presentation.dto.request.CrearPedidoRequest;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -17,8 +18,9 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<Pedido> crear(@RequestParam Long compradorId) {
-        return ResponseEntity.ok(pedidoService.crear(compradorId));
+    public ResponseEntity<Pedido> crear(@RequestBody CrearPedidoRequest request) {
+        return ResponseEntity.ok(
+                pedidoService.crear(request.getIdComprador()));
     }
 
     @PutMapping("/{id}/confirmar")

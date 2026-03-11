@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.ArticuloService;
 import com.gestionart.api.domain.models.Articulo;
+import com.gestionart.api.presentation.dto.request.CrearArticuloRequest;
 
 @RestController
 @RequestMapping("/articulos")
@@ -19,7 +20,15 @@ public class ArticuloController {
     }
 
     @PostMapping
-    public ResponseEntity<Articulo> crear(@RequestBody Articulo articulo) {
+    public ResponseEntity<Articulo> crear(@RequestBody CrearArticuloRequest request) {
+
+        Articulo articulo = new Articulo();
+        articulo.setTitulo(request.getTitulo());
+        articulo.setDescripcion(request.getDescripcion());
+        articulo.setPrecio(request.getPrecio());
+        articulo.setStock(request.getStock());
+        articulo.setIdVendedor(request.getIdVendedor());
+
         return ResponseEntity.ok(articuloService.crear(articulo));
     }
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.LineaPedidoService;
 import com.gestionart.api.domain.models.LineaPedido;
+import com.gestionart.api.presentation.dto.request.CrearLineaPedidoRequest;
 
 @RestController
 @RequestMapping("/lineas-pedido")
@@ -19,13 +20,15 @@ public class LineaPedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<LineaPedido> crear(@RequestBody LineaPedido lineaPedido) {
-        return ResponseEntity.ok(lineaPedidoService.crear(lineaPedido));
-    }
+    public ResponseEntity<LineaPedido> crear(@RequestBody CrearLineaPedidoRequest request) {
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LineaPedido> obtenerPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(lineaPedidoService.obtenerPorId(id));
+        LineaPedido linea = new LineaPedido();
+        linea.setIdPedido(request.getIdPedido());
+        linea.setIdArticulo(request.getIdArticulo());
+        linea.setCantidad(request.getCantidad());
+        linea.setPrecioUnitario(request.getPrecioUnitario());
+
+        return ResponseEntity.ok(lineaPedidoService.crear(linea));
     }
 
     @GetMapping("/pedido/{idPedido}")
@@ -36,12 +39,6 @@ public class LineaPedidoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         lineaPedidoService.eliminar(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/pedido/{idPedido}")
-    public ResponseEntity<Void> eliminarPorPedido(@PathVariable Long idPedido) {
-        lineaPedidoService.eliminarPorPedido(idPedido);
         return ResponseEntity.noContent().build();
     }
 }

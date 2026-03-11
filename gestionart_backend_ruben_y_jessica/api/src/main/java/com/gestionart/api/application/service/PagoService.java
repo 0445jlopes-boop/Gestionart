@@ -27,12 +27,21 @@ public class PagoService {
         return pagoRepository.save(pago);
     }
 
+    public Pago procesarPago(Pago pago) {
+
+        pago.setFecha(LocalDateTime.now());
+        pago.setEstado(EstadoPago.PENDIENTE);
+
+        return pagoRepository.save(pago);
+    }
+
     public void confirmar(Long idPago) {
 
         Pago pago = pagoRepository.findById(idPago)
                 .orElseThrow(() -> new RuntimeException("Pago no encontrado"));
 
         pago.setEstado(EstadoPago.CONFIRMADO);
+
         pagoRepository.save(pago);
     }
 }

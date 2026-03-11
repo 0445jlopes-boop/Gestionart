@@ -4,58 +4,27 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.gestionart.api.domain.enums.TipoCuentaComprador;
-import com.gestionart.api.domain.models.Comprador;
-import com.gestionart.api.domain.repository.CompradorRepository;
+import com.gestionart.api.domain.models.Suscripcion;
+import com.gestionart.api.domain.repository.SuscripcionRepository;
 
 @Service
 @Transactional
 public class SuscripcionService {
 
-    private final CompradorRepository compradorRepository;
+    private final SuscripcionRepository suscripcionRepository;
 
-    public SuscripcionService(CompradorRepository compradorRepository) {
-        this.compradorRepository = compradorRepository;
+    public SuscripcionService(SuscripcionRepository suscripcionRepository) {
+        this.suscripcionRepository = suscripcionRepository;
     }
 
-    public void activarPremium(Long idComprador) {
+    public Suscripcion activarSuscripcion(Long idComprador){
 
-        Comprador comprador = compradorRepository.findById(idComprador)
-                .orElseThrow(() -> new RuntimeException("No encontrado"));
+        Suscripcion suscripcion = new Suscripcion();
+        suscripcion.setIdComprador(idComprador);
+        suscripcion.setFechaInicio(LocalDateTime.now());
+        suscripcion.setFechaFin(LocalDateTime.now().plusMonths(1));
+        suscripcion.setActiva(true);
 
-        comprador.setTipoCuenta(TipoCuentaComprador.PREMIUM);
-        comprador.setFechaInicioPremium(LocalDateTime.now());
-        comprador.setFechaFinPremium(LocalDateTime.now().plusMonths(3));
-
-        compradorRepository.save(comprador);
-    }
-
-    public void renovarPremium(Long idComprador) {
-
-        Comprador comprador = compradorRepository.findById(idComprador)
-                .orElseThrow(() -> new RuntimeException("No encontrado"));
-
-        comprador.setFechaFinPremium(
-                comprador.getFechaFinPremium().plusMonths(3)
-        );
-
-        compradorRepository.save(comprador);
-    }
-
-    public void verificarExpiracion(Long idComprador) {
-
-        Comprador comprador = compradorRepository.findById(idComprador)
-                .orElseThrow(() -> new RuntimeException("No encontrado"));
-
-        if (comprador.getFechaFinPremium() != null &&
-            comprador.getFechaFinPremium().isBefore(LocalDateTime.now())) {
-
-            comprador.setTipoCuenta(TipoCuentaComprador.NORMAL);
-            comprador.setFechaInicioPremium(null);
-            comprador.setFechaFinPremium(null);
-
-            compradorRepository.save(comprador);
-        }
+        return suscripcionRepository.save(suscripcion);
     }
 }

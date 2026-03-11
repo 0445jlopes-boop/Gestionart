@@ -19,21 +19,13 @@ public class CompradorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Comprador>> listar() {
+    public ResponseEntity<List<Comprador>> obtenerTodos() {
         return ResponseEntity.ok(compradorService.listarTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Comprador> obtener(@PathVariable Long id) {
+    public ResponseEntity<Comprador> obtenerPorId(@PathVariable Long id) {
         return ResponseEntity.ok(compradorService.obtenerPorId(id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Comprador> actualizar(
-            @PathVariable Long id,
-            @RequestBody Comprador comprador) {
-
-        return ResponseEntity.ok(compradorService.actualizar(id, comprador));
     }
 
     @DeleteMapping("/{id}")

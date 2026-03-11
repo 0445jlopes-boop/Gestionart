@@ -19,22 +19,13 @@ public class VendedorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Vendedor>> listar() {
+    public ResponseEntity<List<Vendedor>> obtenerTodos() {
         return ResponseEntity.ok(vendedorService.listarTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vendedor> obtener(@PathVariable Long id) {
+    public ResponseEntity<Vendedor> obtenerPorId(@PathVariable Long id) {
         return ResponseEntity.ok(vendedorService.obtenerPorId(id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Vendedor> actualizar(
-            @PathVariable Long id,
-            @RequestBody Vendedor vendedor) {
-
-        return ResponseEntity.ok(
-                vendedorService.actualizarPerfil(id, vendedor));
     }
 
     @DeleteMapping("/{id}")

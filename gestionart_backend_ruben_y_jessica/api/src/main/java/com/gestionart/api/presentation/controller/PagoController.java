@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.PagoService;
 import com.gestionart.api.domain.models.Pago;
+import com.gestionart.api.presentation.dto.request.CrearPagoRequest;
 
 @RestController
 @RequestMapping("/pagos")
@@ -17,13 +18,12 @@ public class PagoController {
     }
 
     @PostMapping
-    public ResponseEntity<Pago> registrar(@RequestBody Pago pago) {
-        return ResponseEntity.ok(pagoService.registrar(pago));
-    }
+    public ResponseEntity<Pago> pagar(@RequestBody CrearPagoRequest request) {
 
-    @PutMapping("/{id}/confirmar")
-    public ResponseEntity<Void> confirmar(@PathVariable Long id) {
-        pagoService.confirmar(id);
-        return ResponseEntity.ok().build();
+        Pago pago = new Pago();
+        pago.setReferenciaId(request.getIdPedido());
+        pago.setImporte(request.getMonto());
+
+        return ResponseEntity.ok(pagoService.registrar(pago));
     }
 }
