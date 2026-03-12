@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.gestionart.api.domain.models.Pedido;
 import com.gestionart.api.infrastructure.persistence.entity.CompradorEntity;
 import com.gestionart.api.infrastructure.persistence.entity.PedidoEntity;
+import com.gestionart.api.presentation.dto.response.PedidoResponse;
 
 @Component
 public class PedidoMapper {
@@ -43,6 +44,15 @@ public class PedidoMapper {
             entity.getFechaConfirmacion(),
             entity.getEstado(),
             null
+        );
+    }
+     public PedidoResponse toResponse(Pedido p) {
+
+        return new PedidoResponse(
+                p.getId(),
+                p.getIdComprador(),
+                p.getEstado(),
+                p.getFechaCreacion()
         );
     }
 }

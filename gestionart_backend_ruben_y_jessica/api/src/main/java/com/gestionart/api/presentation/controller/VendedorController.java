@@ -1,34 +1,49 @@
 package com.gestionart.api.presentation.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.VendedorService;
-import com.gestionart.api.domain.models.Vendedor;
-import com.gestionart.api.presentation.dto.request.VendedorRequest;
+import com.gestionart.api.common.mapper.VendedorMapper;
 import com.gestionart.api.presentation.dto.response.VendedorResponse;
-import com.gestionart.api.presentation.mapper.VendedorMapper;
 
 @RestController
 @RequestMapping("/vendedores")
 public class VendedorController {
 
     private final VendedorService vendedorService;
+    private final VendedorMapper vendedorMapper;
 
-    public VendedorController(VendedorService vendedorService) {
+    public VendedorController(VendedorService vendedorService,
+                              VendedorMapper vendedorMapper) {
         this.vendedorService = vendedorService;
+        this.vendedorMapper = vendedorMapper;
     }
 
-    @PostMapping
-    public ResponseEntity<VendedorResponse> crear(@RequestBody VendedorRequest request) {
-
-        Vendedor vendedor = new Vendedor();
-        vendedor.setNombre(request.getNombre());
-        vendedor.setCorreoElectronico(request.getCorreoElectronico());
-        vendedor.setContrasena(request.getContrasena());
-        vendedor.setDescripcionPerfil(request.getDescripcionPerfil());
+    @GetMapping
+    public ResponseEntity<List<VendedorResponse>> listar() {
 
         return ResponseEntity.ok(
-                VendedorMapper.toResponse(vendedorService.crear(vendedor)));
+                vendedorService.listarTodos()
+                        .stream()
+                        .map(vendedorMapper::toResponse)
+                        .toList());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<VendedorResponse> obtener(@PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                vendedorMapper.toResponse(
+                        vendedorService.obtenerPorId(id)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+
+        vendedorService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }
