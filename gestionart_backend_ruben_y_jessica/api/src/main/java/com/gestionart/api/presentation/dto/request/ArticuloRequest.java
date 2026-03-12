@@ -1,9 +1,8 @@
-package com.gestionart.api.presentation.dto.response;
+package com.gestionart.api.presentation.dto.request;
 
 import com.gestionart.api.domain.enums.Categoria;
 
-public record ArticuloResponse(
-    Long id,
+public record ArticuloRequest(
     String titulo,
     Categoria categoria,
     double precio,

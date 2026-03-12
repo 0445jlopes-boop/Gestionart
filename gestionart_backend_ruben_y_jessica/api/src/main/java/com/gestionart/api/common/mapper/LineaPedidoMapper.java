@@ -1,7 +1,5 @@
 package com.gestionart.api.common.mapper;
 
-package com.gestionart.api.common.mapper;
-
 import org.springframework.stereotype.Component;
 
 import com.gestionart.api.domain.models.LineaPedido;

@@ -6,9 +6,10 @@ import com.gestionart.api.domain.enums.TipoPago;
 
 public record PagoResponse(
     Long id,
-    Long idPedido,
-    double cantidad,
-    TipoPago tipo,
+    TipoPago tipoPago,
+    Long referenciaId,
+    double importe,
     EstadoPago estado,
+    String referenciaExterna,
     LocalDateTime fecha
 ) {}

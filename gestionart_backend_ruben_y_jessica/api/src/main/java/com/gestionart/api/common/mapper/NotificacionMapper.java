@@ -1,6 +1,5 @@
 package com.gestionart.api.common.mapper;
 
-package com.gestionart.api.common.mapper;
 
 import org.springframework.stereotype.Component;
 

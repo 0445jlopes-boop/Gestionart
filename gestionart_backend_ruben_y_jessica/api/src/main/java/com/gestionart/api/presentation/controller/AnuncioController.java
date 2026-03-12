@@ -1,13 +1,16 @@
 package com.gestionart.api.presentation.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.AnuncioService;
 import com.gestionart.api.domain.models.Anuncio;
-import com.gestionart.api.presentation.dto.request.CrearAnuncioRequest;
+import com.gestionart.api.presentation.dto.request.AnuncioRequest;
+import com.gestionart.api.presentation.dto.response.AnuncioResponse;
+import com.gestionart.api.presentation.mapper.AnuncioMapper;
 
 @RestController
 @RequestMapping("/anuncios")
@@ -20,7 +23,7 @@ public class AnuncioController {
     }
 
     @PostMapping
-    public ResponseEntity<Anuncio> crear(@RequestBody CrearAnuncioRequest request) {
+    public ResponseEntity<AnuncioResponse> crear(@RequestBody AnuncioRequest request) {
 
         Anuncio anuncio = new Anuncio();
         anuncio.setTitulo(request.getTitulo());
@@ -29,26 +32,31 @@ public class AnuncioController {
         anuncio.setImagen(request.getImagen());
         anuncio.setIdVendedor(request.getIdVendedor());
 
-        return ResponseEntity.ok(anuncioService.crear(anuncio));
+        Anuncio creado = anuncioService.crear(anuncio);
+
+        return ResponseEntity.ok(AnuncioMapper.toResponse(creado));
     }
 
     @GetMapping
-    public ResponseEntity<List<Anuncio>> listar() {
-        return ResponseEntity.ok(anuncioService.obtenerTodos());
+    public ResponseEntity<List<AnuncioResponse>> obtenerTodos() {
+
+        return ResponseEntity.ok(
+                anuncioService.obtenerTodos()
+                        .stream()
+                        .map(AnuncioMapper::toResponse)
+                        .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Anuncio> obtener(@PathVariable Long id) {
-        return ResponseEntity.ok(anuncioService.obtenerPorId(id));
-    }
+    public ResponseEntity<AnuncioResponse> obtenerPorId(@PathVariable Long id) {
 
-    @PutMapping("/{id}/activar")
-    public ResponseEntity<Anuncio> activar(@PathVariable Long id) {
-        return ResponseEntity.ok(anuncioService.activarPublicidad(id));
+        return ResponseEntity.ok(
+                AnuncioMapper.toResponse(anuncioService.obtenerPorId(id)));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+
         anuncioService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
