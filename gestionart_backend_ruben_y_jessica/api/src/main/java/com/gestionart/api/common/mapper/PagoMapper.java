@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.gestionart.api.domain.models.Pago;
 import com.gestionart.api.infrastructure.persistence.entity.PagoEntity;
+import com.gestionart.api.presentation.dto.response.PagoResponse;
 
 @Component
 public class PagoMapper {
@@ -33,6 +34,18 @@ public class PagoMapper {
             entity.getEstado(),
             entity.getReferenciaExterna(),
             entity.getFecha()
+        );
+    }
+    public PagoResponse toResponse(Pago pago) {
+
+        return new PagoResponse(
+                pago.getId(),
+                pago.getTipoPago(),
+                pago.getReferenciaId(),
+                pago.getImporte(),
+                pago.getEstado(),
+                pago.getReferenciaExterna(),
+                pago.getFecha()
         );
     }
 }

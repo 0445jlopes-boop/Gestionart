@@ -7,21 +7,22 @@ import com.gestionart.api.application.service.AutenticacionService;
 import com.gestionart.api.presentation.dto.request.LoginRequest;
 
 @RestController
-@RequestMapping("/auth")
-public class AutenticacionController {
+@RequestMapping("/users")
+public class UserController {
 
     private final AutenticacionService autenticacionService;
 
-    public AutenticacionController(AutenticacionService autenticacionService) {
+    public UserController(AutenticacionService autenticacionService) {
         this.autenticacionService = autenticacionService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
 
-        return ResponseEntity.ok(
-                autenticacionService.login(
-                        request.getCorreo(),
-                        request.getContrasena()));
+        String token = autenticacionService.login(
+                request.getCorreo(),
+                request.getContrasena());
+
+        return ResponseEntity.ok(token);
     }
 }

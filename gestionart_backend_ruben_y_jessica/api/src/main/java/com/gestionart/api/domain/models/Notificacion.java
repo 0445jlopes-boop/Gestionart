@@ -62,5 +62,13 @@ public class Notificacion {
         this.fecha = fecha;
     }
 
+    public Long getVendedorid() {
+        return vendedorid;
+    }
+
+    public void setVendedorid(Long vendedorid) {
+        this.vendedorid = vendedorid;
+    }
+
     
 }

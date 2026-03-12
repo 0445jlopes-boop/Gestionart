@@ -1,7 +1,6 @@
 package com.gestionart.api.presentation.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +9,6 @@ import com.gestionart.api.application.service.LineaPedidoService;
 import com.gestionart.api.domain.models.LineaPedido;
 import com.gestionart.api.presentation.dto.request.LineaPedidoRequest;
 import com.gestionart.api.presentation.dto.response.LineaPedidoResponse;
-import com.gestionart.api.presentation.mapper.LineaPedidoMapper;
 
 @RestController
 @RequestMapping("/lineas-pedido")
@@ -22,17 +20,26 @@ public class LineaPedidoController {
         this.lineaPedidoService = lineaPedidoService;
     }
 
-    @PostMapping
-    public ResponseEntity<LineaPedidoResponse> crear(@RequestBody LineaPedidoRequest request) {
+    @PostMapping("/{idPedido}")
+    public ResponseEntity<LineaPedidoResponse> crear(@PathVariable Long idPedido,
+                                                     @RequestBody LineaPedidoRequest request) {
 
-        LineaPedido linea = new LineaPedido();
-        linea.setIdPedido(request.getIdPedido());
-        linea.setIdArticulo(request.getIdArticulo());
-        linea.setCantidad(request.getCantidad());
-        linea.setPrecioUnitario(request.getPrecioUnitario());
+        LineaPedido linea = new LineaPedido(
+                null,
+                idPedido,
+                request.idArticulo(),
+                request.cantidad(),
+                request.precioUnitario()
+        );
+
+        LineaPedido creada = lineaPedidoService.crear(linea);
 
         return ResponseEntity.ok(
-                LineaPedidoMapper.toResponse(lineaPedidoService.crear(linea)));
+                new LineaPedidoResponse(
+                        creada.getId(),
+                        creada.getIdArticulo(),
+                        creada.getCantidad(),
+                        creada.getPrecioUnitario()));
     }
 
     @GetMapping("/pedido/{idPedido}")
@@ -41,7 +48,11 @@ public class LineaPedidoController {
         return ResponseEntity.ok(
                 lineaPedidoService.obtenerPorPedido(idPedido)
                         .stream()
-                        .map(LineaPedidoMapper::toResponse)
-                        .collect(Collectors.toList()));
+                        .map(l -> new LineaPedidoResponse(
+                                l.getId(),
+                                l.getIdArticulo(),
+                                l.getCantidad(),
+                                l.getPrecioUnitario()))
+                        .toList());
     }
 }

@@ -4,62 +4,38 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.PagoService;
+import com.gestionart.api.common.mapper.PagoMapper;
 import com.gestionart.api.domain.models.Pago;
 import com.gestionart.api.presentation.dto.request.PagoRequest;
 import com.gestionart.api.presentation.dto.response.PagoResponse;
-import com.gestionart.api.presentation.mapper.PagoMapper;
 
 @RestController
 @RequestMapping("/pagos")
 public class PagoController {
 
     private final PagoService pagoService;
+    private final PagoMapper pagoMapper;
 
-    public PagoController(PagoService pagoService) {
+    public PagoController(PagoService pagoService, PagoMapper pagoMapper) {
         this.pagoService = pagoService;
+        this.pagoMapper = pagoMapper;
     }
 
     @PostMapping
-    public ResponseEntity<PagoResponse> crear(@RequestBody PagoRequest request) {
+    public ResponseEntity<PagoResponse> registrar(@RequestBody PagoRequest request) {
 
-        Pago pago = new Pago();
-        pago.setIdPedido(request.getIdPedido());
-        pago.setCantidad(request.getCantidad());
-        pago.setTipo(request.getTipo());
+        Pago pago = new Pago(
+                null,
+                request.tipoPago(),
+                request.referenciaId(),
+                request.importe(),
+                null,
+                null,
+                null
+        );
 
-        return ResponseEntity.ok(
-                PagoMapper.toResponse(pagoService.registrar(pago)));
-    }
-}package com.gestionart.api.presentation.controller;
+        Pago registrado = pagoService.registrar(pago);
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import com.gestionart.api.application.service.PagoService;
-import com.gestionart.api.domain.models.Pago;
-import com.gestionart.api.presentation.dto.request.PagoRequest;
-import com.gestionart.api.presentation.dto.response.PagoResponse;
-import com.gestionart.api.presentation.mapper.PagoMapper;
-
-@RestController
-@RequestMapping("/pagos")
-public class PagoController {
-
-    private final PagoService pagoService;
-
-    public PagoController(PagoService pagoService) {
-        this.pagoService = pagoService;
-    }
-
-    @PostMapping
-    public ResponseEntity<PagoResponse> crear(@RequestBody PagoRequest request) {
-
-        Pago pago = new Pago();
-        pago.setIdPedido(request.getIdPedido());
-        pago.setCantidad(request.getCantidad());
-        pago.setTipo(request.getTipo());
-
-        return ResponseEntity.ok(
-                PagoMapper.toResponse(pagoService.registrar(pago)));
+        return ResponseEntity.ok(pagoMapper.toResponse(registrado));
     }
 }

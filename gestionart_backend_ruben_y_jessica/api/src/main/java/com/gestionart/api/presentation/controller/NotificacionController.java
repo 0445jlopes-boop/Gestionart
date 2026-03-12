@@ -1,25 +1,44 @@
 package com.gestionart.api.presentation.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.NotificacionService;
+import com.gestionart.api.common.mapper.NotificacionMapper;
+import com.gestionart.api.presentation.dto.response.NotificacionResponse;
 
 @RestController
 @RequestMapping("/notificaciones")
 public class NotificacionController {
 
     private final NotificacionService notificacionService;
+    private final NotificacionMapper notificacionMapper;
 
-    public NotificacionController(NotificacionService notificacionService) {
+    public NotificacionController(NotificacionService notificacionService,
+                                  NotificacionMapper notificacionMapper) {
         this.notificacionService = notificacionService;
+        this.notificacionMapper = notificacionMapper;
     }
 
-    @PostMapping("/pedido-confirmado/{idComprador}")
-    public ResponseEntity<Void> notificarPedido(@PathVariable Long idComprador) {
+    @GetMapping("/vendedor/{idVendedor}")
+    public ResponseEntity<List<NotificacionResponse>> obtenerPorVendedor(@PathVariable Long idVendedor) {
 
-        notificacionService.notificarPedidoConfirmado(idComprador);
+        return ResponseEntity.ok(
+                notificacionService.obtenerPorVendedor(idVendedor)
+                        .stream()
+                        .map(notificacionMapper::toResponse)
+                        .toList());
+    }
 
-        return ResponseEntity.ok().build();
+    @PutMapping("/{id}/leida/{vendedorId}")
+    public ResponseEntity<NotificacionResponse> marcarComoLeida(
+            @PathVariable Long id,
+            @PathVariable Long vendedorId) {
+
+        return ResponseEntity.ok(
+                notificacionMapper.toResponse(
+                        notificacionService.marcarComoLeida(id, vendedorId)));
     }
 }
