@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.SuscripcionService;
 import com.gestionart.api.domain.models.Suscripcion;
-import com.gestionart.api.presentation.dto.request.CrearSuscripcionRequest;
+import com.gestionart.api.presentation.dto.request.SuscripcionRequest;
+import com.gestionart.api.presentation.dto.response.SuscripcionResponse;
+import com.gestionart.api.presentation.mapper.SuscripcionMapper;
 
 @RestController
 @RequestMapping("/suscripciones")
@@ -18,11 +20,11 @@ public class SuscripcionController {
     }
 
     @PostMapping
-    public ResponseEntity<Suscripcion> crear(@RequestBody CrearSuscripcionRequest request) {
+    public ResponseEntity<SuscripcionResponse> activar(@RequestBody SuscripcionRequest request) {
 
-        Suscripcion suscripcion = suscripcionService.activarSuscripcion(request.getIdComprador());
+        Suscripcion suscripcion =
+                suscripcionService.activarSuscripcion(request.getIdComprador());
 
-        return ResponseEntity.ok(suscripcion);
+        return ResponseEntity.ok(SuscripcionMapper.toResponse(suscripcion));
     }
-
 }

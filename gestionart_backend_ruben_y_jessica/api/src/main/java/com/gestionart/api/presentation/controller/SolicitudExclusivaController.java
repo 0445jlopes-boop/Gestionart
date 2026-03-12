@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.SolicitudExclusivaService;
 import com.gestionart.api.domain.models.SolicitudExclusiva;
-import com.gestionart.api.presentation.dto.request.CrearSolicitudExclusivaRequest;
+import com.gestionart.api.presentation.dto.request.SolicitudExclusivaRequest;
+import com.gestionart.api.presentation.dto.response.SolicitudExclusivaResponse;
+import com.gestionart.api.presentation.mapper.SolicitudExclusivaMapper;
 
 @RestController
 @RequestMapping("/solicitudes-exclusivas")
@@ -18,8 +20,8 @@ public class SolicitudExclusivaController {
     }
 
     @PostMapping
-    public ResponseEntity<SolicitudExclusiva> crear(
-            @RequestBody CrearSolicitudExclusivaRequest request) {
+    public ResponseEntity<SolicitudExclusivaResponse> crear(
+            @RequestBody SolicitudExclusivaRequest request) {
 
         SolicitudExclusiva solicitud = new SolicitudExclusiva();
         solicitud.setIdComprador(request.getIdComprador());
@@ -27,6 +29,8 @@ public class SolicitudExclusivaController {
         solicitud.setIdVendedor(request.getIdVendedor());
         solicitud.setMensaje(request.getMensaje());
 
-        return ResponseEntity.ok(solicitudService.crear(solicitud));
+        return ResponseEntity.ok(
+                SolicitudExclusivaMapper.toResponse(
+                        solicitudService.crear(solicitud)));
     }
 }

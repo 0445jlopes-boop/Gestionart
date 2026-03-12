@@ -1,12 +1,13 @@
 package com.gestionart.api.presentation.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.CompradorService;
 import com.gestionart.api.domain.models.Comprador;
+import com.gestionart.api.presentation.dto.request.CompradorRequest;
+import com.gestionart.api.presentation.dto.response.CompradorResponse;
+import com.gestionart.api.presentation.mapper.CompradorMapper;
 
 @RestController
 @RequestMapping("/compradores")
@@ -18,19 +19,16 @@ public class CompradorController {
         this.compradorService = compradorService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Comprador>> obtenerTodos() {
-        return ResponseEntity.ok(compradorService.listarTodos());
-    }
+    @PostMapping
+    public ResponseEntity<CompradorResponse> crear(@RequestBody CompradorRequest request) {
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Comprador> obtenerPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(compradorService.obtenerPorId(id));
-    }
+        Comprador comprador = new Comprador();
+        comprador.setNombre(request.getNombre());
+        comprador.setCorreoElectronico(request.getCorreoElectronico());
+        comprador.setContrasena(request.getContrasena());
+        comprador.setDireccion(request.getDireccion());
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        compradorService.eliminar(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(
+                CompradorMapper.toResponse(compradorService.crear(comprador)));
     }
 }
