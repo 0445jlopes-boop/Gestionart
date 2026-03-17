@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import com.gestionart.api.application.service.AutenticacionService;
 import com.gestionart.api.presentation.dto.request.LoginRequest;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/users")
 public class UserController {

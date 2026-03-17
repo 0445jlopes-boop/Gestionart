@@ -9,6 +9,7 @@ import com.gestionart.api.application.service.CompradorService;
 import com.gestionart.api.common.mapper.CompradorMapper;
 import com.gestionart.api.presentation.dto.response.CompradorResponse;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/compradores")
 public class CompradorController {

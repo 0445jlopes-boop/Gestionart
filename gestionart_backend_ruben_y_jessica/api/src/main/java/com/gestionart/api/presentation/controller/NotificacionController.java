@@ -9,6 +9,7 @@ import com.gestionart.api.application.service.NotificacionService;
 import com.gestionart.api.common.mapper.NotificacionMapper;
 import com.gestionart.api.presentation.dto.response.NotificacionResponse;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/notificaciones")
 public class NotificacionController {

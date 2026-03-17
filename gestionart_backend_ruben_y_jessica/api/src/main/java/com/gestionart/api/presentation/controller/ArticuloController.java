@@ -11,6 +11,7 @@ import com.gestionart.api.domain.models.Articulo;
 import com.gestionart.api.presentation.dto.request.ArticuloRequest;
 import com.gestionart.api.presentation.dto.response.ArticuloResponse;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/articulos")
 public class ArticuloController {

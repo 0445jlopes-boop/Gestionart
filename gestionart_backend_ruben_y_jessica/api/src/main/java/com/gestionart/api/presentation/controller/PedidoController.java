@@ -9,6 +9,7 @@ import com.gestionart.api.domain.models.Pedido;
 import com.gestionart.api.presentation.dto.request.PedidoRequest;
 import com.gestionart.api.presentation.dto.response.PedidoResponse;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/pedidos")
 public class PedidoController {

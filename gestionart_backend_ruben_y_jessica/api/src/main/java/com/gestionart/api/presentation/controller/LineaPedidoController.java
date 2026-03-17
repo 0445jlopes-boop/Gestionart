@@ -10,6 +10,7 @@ import com.gestionart.api.domain.models.LineaPedido;
 import com.gestionart.api.presentation.dto.request.LineaPedidoRequest;
 import com.gestionart.api.presentation.dto.response.LineaPedidoResponse;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/lineas-pedido")
 public class LineaPedidoController {

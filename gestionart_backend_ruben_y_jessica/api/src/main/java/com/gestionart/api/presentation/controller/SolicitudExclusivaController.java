@@ -9,6 +9,7 @@ import com.gestionart.api.domain.models.SolicitudExclusiva;
 import com.gestionart.api.presentation.dto.request.SolicitudExclusivaRequest;
 import com.gestionart.api.presentation.dto.response.SolicitudExclusivaResponse;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/solicitudes-exclusivas")
 public class SolicitudExclusivaController {

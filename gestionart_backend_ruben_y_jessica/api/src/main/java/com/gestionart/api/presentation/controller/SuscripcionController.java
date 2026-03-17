@@ -8,6 +8,7 @@ import com.gestionart.api.common.mapper.SuscripcionMapper;
 import com.gestionart.api.presentation.dto.request.SuscripcionRequest;
 import com.gestionart.api.presentation.dto.response.SuscripcionResponse;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/suscripciones")
 public class SuscripcionController {

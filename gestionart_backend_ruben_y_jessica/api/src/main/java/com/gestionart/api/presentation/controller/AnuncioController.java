@@ -11,6 +11,7 @@ import com.gestionart.api.domain.models.Anuncio;
 import com.gestionart.api.presentation.dto.request.AnuncioRequest;
 import com.gestionart.api.presentation.dto.response.AnuncioResponse;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/anuncios")
 public class AnuncioController {

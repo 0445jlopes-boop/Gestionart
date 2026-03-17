@@ -9,6 +9,7 @@ import com.gestionart.api.domain.models.Pago;
 import com.gestionart.api.presentation.dto.request.PagoRequest;
 import com.gestionart.api.presentation.dto.response.PagoResponse;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/pagos")
 public class PagoController {
