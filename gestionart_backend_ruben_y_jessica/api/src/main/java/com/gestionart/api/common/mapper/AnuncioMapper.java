@@ -20,8 +20,8 @@ public class AnuncioMapper {
             request.imagen(),
             request.fechaInicio(),
             request.fechaFin(),
-            request.idVendedor(),
-            request.activo()
+            request.activo(),
+            request.idVendedor()
         );
     }
 
@@ -52,8 +52,8 @@ public class AnuncioMapper {
             entity.getImagen(),
             entity.getFechaInicio(),
             entity.getFechaFin(),
-            entity.getVendedor().getId(),
-            entity.isActivo()
+            entity.isActivo(),
+            entity.getVendedor().getId()
         );
     }
 
