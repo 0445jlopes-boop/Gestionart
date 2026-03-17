@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.gestionart.api.domain.models.Suscripcion;
 import com.gestionart.api.infrastructure.persistence.entity.CompradorEntity;
 import com.gestionart.api.infrastructure.persistence.entity.SuscripcionEntity;
+import com.gestionart.api.presentation.dto.response.SuscripcionResponse;
 
 @Component
 public class SuscripcionMapper {
@@ -35,5 +36,9 @@ public class SuscripcionMapper {
             entity.getFechaFin(),
             entity.isActiva()
         );
+    }
+
+    public SuscripcionResponse toResponse(Suscripcion suscripcion) {
+        return new SuscripcionResponse(suscripcion.getId(), suscripcion.getIdComprador(), suscripcion.getFechaInicio(), suscripcion.getFechaFin(), suscripcion.isActiva());
     }
 }

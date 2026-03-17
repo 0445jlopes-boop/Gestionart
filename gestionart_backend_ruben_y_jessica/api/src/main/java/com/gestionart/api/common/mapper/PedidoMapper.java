@@ -1,7 +1,5 @@
 package com.gestionart.api.common.mapper;
 
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Component;
 
 import com.gestionart.api.domain.models.Pedido;
@@ -46,13 +44,15 @@ public class PedidoMapper {
             null
         );
     }
-     public PedidoResponse toResponse(Pedido p) {
+     public PedidoResponse toResponse(Pedido pedido) {
 
         return new PedidoResponse(
-                p.getId(),
-                p.getIdComprador(),
-                p.getEstado(),
-                p.getFechaCreacion()
+                pedido.getId(),
+                pedido.getIdComprador(),
+                pedido.getFechaCreacion(),
+                pedido.getFechaConfirmacion(),
+                pedido.getEstado(),
+                pedido.getLineas()
         );
     }
 }

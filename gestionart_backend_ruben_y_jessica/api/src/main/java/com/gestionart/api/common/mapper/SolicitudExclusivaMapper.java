@@ -7,6 +7,7 @@ import com.gestionart.api.infrastructure.persistence.entity.ArticuloEntity;
 import com.gestionart.api.infrastructure.persistence.entity.CompradorEntity;
 import com.gestionart.api.infrastructure.persistence.entity.SolicitudExclusivaEntity;
 import com.gestionart.api.infrastructure.persistence.entity.VendedorEntity;
+import com.gestionart.api.presentation.dto.response.SolicitudExclusivaResponse;
 
 @Component
 public class SolicitudExclusivaMapper {
@@ -47,5 +48,10 @@ public class SolicitudExclusivaMapper {
             entity.getEstado(),
             entity.getFecha()
         );
+    }
+
+    public SolicitudExclusivaResponse toResponse(SolicitudExclusiva solicitud) {
+        return new SolicitudExclusivaResponse(solicitud.getId(),solicitud.getIdComprador(), solicitud.getIdArticulo(),solicitud.getIdVendedor(),solicitud.getMensaje(),solicitud.getEstado(),solicitud.getFecha());
+
     }
 }

@@ -26,7 +26,7 @@ public class SolicitudExclusivaController {
     public ResponseEntity<SolicitudExclusivaResponse> crear(
             @RequestBody SolicitudExclusivaRequest request) {
 
-        SolicitudExclusiva solicitud = new SolicitudExclusiva(
+                SolicitudExclusiva solicitud = new SolicitudExclusiva(
                 null,
                 request.idComprador(),
                 request.idArticulo(),
@@ -36,8 +36,6 @@ public class SolicitudExclusivaController {
                 null
         );
 
-        return ResponseEntity.ok(
-                mapper.toResponse(
-                        solicitudService.crear(solicitud)));
+        return ResponseEntity.ok(mapper.toResponse(solicitudService.crear(solicitud)));
     }
 }
