@@ -9,7 +9,6 @@ services:
       MYSQL_DATABASE: gestionart
       MYSQL_USER: root
       MYSQL_PASSWORD: 1234
-      MYSQL_ROOT_PASSWORD: root
     volumes:
       - datos_mysql:/var/lib/mysql
     healthcheck:
@@ -23,8 +22,11 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_USER: usuario
-      DB_PASSWORD: secreto
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gestionart
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
     depends_on:
       mysql:
         condition: service_healthy
