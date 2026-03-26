@@ -1,0 +1,5 @@
+enum Tipopago {
+  PEDIDO,
+  SUSCRIPCION,
+  PUBLICIDAD
+}

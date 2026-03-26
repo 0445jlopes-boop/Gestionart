@@ -1,0 +1,4 @@
+enum Rol {
+  COMPRADOR,
+  VENDEDOR
+}

@@ -1,0 +1,4 @@
+enum Tipocuentacomprador {
+  NORMAL,
+  PREMIUM
+}
