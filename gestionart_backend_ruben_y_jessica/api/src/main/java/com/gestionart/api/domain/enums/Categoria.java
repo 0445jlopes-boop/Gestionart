@@ -5,10 +5,10 @@ public enum Categoria {
     DIBUJO,
     ESCULTURA,
     FOTOGRAFIA,
-    ARTE_DIGITAL,
-    ARTE_TEXTIL,
+    DIGITAL,
+    TEXTIL,
     MADERA,
     CERAMICA,
     ILUSTRACION,
-    ARTE_CONCEPTUAL
+    CONCEPTUAL
 }

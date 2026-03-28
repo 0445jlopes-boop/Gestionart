@@ -1,4 +1,4 @@
-import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/services/LogicaComprador.dart';
 class Controllercomprador { // Controlador que permite gestionar los Compradores de la aplicación.
   static bool compradorExiste(String nombre, String contrasena){ // Verifico si un comprador exixte

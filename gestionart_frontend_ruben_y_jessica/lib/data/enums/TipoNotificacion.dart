@@ -1,0 +1,6 @@
+enum Tiponotificacion {
+  NUEVO_PEDIDO,
+  STOCK_AGOTADO,
+  STOCK_BAJO,
+  ANUNCIO_EXPIRADO
+}

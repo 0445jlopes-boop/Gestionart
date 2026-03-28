@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaInicioSesion.dart';
 
 void dialogoEliminarCuenta(BuildContext context, Comprador comprador) {

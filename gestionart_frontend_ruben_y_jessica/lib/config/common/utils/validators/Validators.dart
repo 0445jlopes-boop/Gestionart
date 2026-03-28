@@ -1,4 +1,4 @@
-import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/services/LogicaComprador.dart';
 
 class Validators { //Validaciones generales

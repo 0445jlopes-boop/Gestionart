@@ -3,7 +3,7 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/validators/Validators.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 
 void dialogoCambiarContrasena(BuildContext context, Comprador comprador) {
   final _formKey = GlobalKey<FormState>();

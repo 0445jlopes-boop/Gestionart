@@ -1,0 +1,12 @@
+enum Categoria{
+  PINTURA,
+  DIBUJO,
+  ESCULTURA,
+  FOTOGRAFIA,
+  DIGITAL,
+  TEXTIL,
+  MADERA,
+  CERAMICA,
+  ILUSTRACION,
+  CONCEPTUAL, categoria,
+}

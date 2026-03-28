@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: gestionart
+      MYSQL_ROOT_PASSWORD: 1234      
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - datos_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./gestionart_backend_ruben_y_jessica
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gestionart
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # frontend:
+  #   build: ./frontend
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - api
+
+volumes:
+  datos_mysql:
+  datos_redis:

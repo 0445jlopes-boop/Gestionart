@@ -1,0 +1,7 @@
+enum Estadopedido {
+  PENDIENTE,
+  CONFIRMADO,
+  PROCESANDO,
+  CANCELADO,
+  FINALIZADO
+}
