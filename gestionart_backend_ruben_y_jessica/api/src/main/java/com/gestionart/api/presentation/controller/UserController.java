@@ -21,8 +21,8 @@ public class UserController {
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
 
         String token = autenticacionService.login(
-                request.getCorreo(),
-                request.getContrasena());
+                request.correoElectronico(),
+                request.contrasena());
 
         return ResponseEntity.ok(token);
     }
