@@ -2,7 +2,8 @@ package com.gestionart.api.infrastructure.security;
 
 import java.security.Key;
 import java.util.Date;
-import com.gestionart.api.infrastructure.security.JwtService;
+import java.util.function.Function;
+
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -17,11 +18,11 @@ public class JwtService {
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
-    // 🔐 GENERAR TOKEN
-    public String generarToken(Long idUsuario, String rol) {
+    // 🔐 GENERAR TOKEN (GUARDA EMAIL)
+    public String generarToken(String email, String rol) {
 
         return Jwts.builder()
-                .setSubject(idUsuario.toString()) // 👈 guardamos ID
+                .setSubject(email) // 👈 ahora guardamos EMAIL
                 .claim("rol", rol)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
@@ -38,18 +39,22 @@ public class JwtService {
                 .getBody();
     }
 
-    // 👤 EXTRAER ID USUARIO
-    public Long extraerIdUsuario(String token) {
-        return Long.parseLong(extraerClaims(token).getSubject());
+    // 🔧 MÉTODO GENÉRICO
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extraerClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    // 👤 EXTRAER EMAIL
+    public String extractEmail(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
     // 🛡 VALIDAR TOKEN
     public boolean esTokenValido(String token) {
         try {
             Claims claims = extraerClaims(token);
-
             return !claims.getExpiration().before(new Date());
-
         } catch (Exception e) {
             return false;
         }

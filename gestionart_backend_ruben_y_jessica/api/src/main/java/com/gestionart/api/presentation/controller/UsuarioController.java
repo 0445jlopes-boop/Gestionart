@@ -9,11 +9,11 @@ import com.gestionart.api.presentation.dto.request.LoginRequest;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/users")
-public class UserController {
+public class UsuarioController {
 
     private final AutenticacionService autenticacionService;
 
-    public UserController(AutenticacionService autenticacionService) {
+    public UsuarioController(AutenticacionService autenticacionService) {
         this.autenticacionService = autenticacionService;
     }
 

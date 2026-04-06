@@ -12,20 +12,19 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import com.gestionart.api.domain.models.Usuario;
-import com.gestionart.api.infrastructure.persistence.repository.JpaUserRepository;
+import com.gestionart.api.infrastructure.persistence.entity.UsuarioEntity;
 import com.gestionart.api.infrastructure.persistence.repository.UsuarioJpaRepository;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UsuarioJpaRepository userRepository;
+    private final UsuarioJpaRepository usuarioJpaRepository;
 
     public JwtAuthenticationFilter(JwtService jwtService,
-                                   UsuarioJpaRepository userRepository) {
+                                   UsuarioJpaRepository usuarioJpaRepository) {
         this.jwtService = jwtService;
-        this.userRepository = userRepository;
+        this.usuarioJpaRepository = usuarioJpaRepository;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // 🔓 Rutas públicas (IMPORTANTE que coincida con tu SecurityConfig)
+        // 🔓 Rutas públicas
         if (path.startsWith("/auth")) {
             filterChain.doFilter(request, response);
             return;
@@ -54,23 +53,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String email = jwtService.extractEmail(token);
 
-            Usuario user = userRepository
+            UsuarioEntity usuario = usuarioJpaRepository
                     .findByCorreoElectronico(email)
                     .orElse(null);
 
-            if (user != null) {
+            if (usuario != null) {
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
-                                user,
+                                usuario,
                                 null,
-                                null // luego aquí irán roles
+                                null
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
 
         } catch (Exception e) {
-            // puedes loguear si quieres
+            // opcional: log.error(e.getMessage());
         }
 
         filterChain.doFilter(request, response);
