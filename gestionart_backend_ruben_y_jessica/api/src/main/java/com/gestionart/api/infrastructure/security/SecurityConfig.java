@@ -40,11 +40,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/vendedores").permitAll()
 
                 // 🔒 TODO LO DEMÁS
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
 
             // 🔥 FILTRO JWT
-            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+            //.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
 
             // 🔥 DESACTIVAR LOGIN POR DEFECTO
             .httpBasic(httpBasic -> httpBasic.disable())
@@ -56,6 +56,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public org.springframework.security.core.userdetails.UserDetailsService userDetailsService() {
+        return username -> null; // desactiva autenticación por defecto
     }
 }
 

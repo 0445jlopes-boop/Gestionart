@@ -1,6 +1,7 @@
 package com.gestionart.api.infrastructure.security;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -36,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // 🔓 Rutas públicas
-        if (path.startsWith("/auth")) {
+        if (path.contains("/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -62,8 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 usuario,
                                 null,
-                                null
-                        );
+                                new ArrayList<>()                        );
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
