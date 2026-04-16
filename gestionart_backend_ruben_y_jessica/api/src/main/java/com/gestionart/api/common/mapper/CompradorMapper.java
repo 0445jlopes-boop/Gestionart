@@ -47,7 +47,7 @@ public class CompradorMapper {
 
     // Entity -> Domain
     public Comprador toDomain(CompradorEntity entity) {
-
+        if (entity == null) return new Comprador();
         return new Comprador(
             entity.getId(),
             entity.getCorreoElectronico(),
@@ -64,7 +64,7 @@ public class CompradorMapper {
 
     // Domain -> Response
     public CompradorResponse toResponse(Comprador comprador) {
-
+        if(comprador == null) return null;
         return new CompradorResponse(
             comprador.getId(),
             comprador.getCorreoElectronico(),

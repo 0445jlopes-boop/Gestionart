@@ -56,7 +56,7 @@ public class AutenticacionService {
                 .findByCorreoElectronico(correo)
                 .orElse(null);
 
-        if (comprador != null && passwordEncoder.matches(contrasena, comprador.getContrasena())) {
+        if (comprador != null && contrasena.equals(comprador.getContrasena())) {
             return jwtService.generarToken(comprador.getCorreoElectronico(),"COMPRADOR");
         }
 
@@ -64,7 +64,7 @@ public class AutenticacionService {
                 .findByCorreoElectronico(correo)
                 .orElse(null);
 
-        if (vendedor != null && passwordEncoder.matches(contrasena, vendedor.getContrasena())) {
+        if (vendedor != null && contrasena.equals(vendedor.getContrasena())) {
             return jwtService.generarToken(vendedor.getCorreoElectronico(),"VENDEDOR");
         }
         throw new RuntimeException("Credenciales inválidas");

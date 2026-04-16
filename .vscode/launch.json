@@ -4,14 +4,9 @@
             "type": "java",
             "name": "ApiApplication",
             "request": "launch",
+            "cwd": "${workspaceFolder}/gestionart_backend_ruben_y_jessica/api",
             "mainClass": "com.gestionart.api.ApiApplication",
             "projectName": ""
-        },
-        {
-            "type": "java",
-            "name": "Launch Current File",
-            "request": "launch",
-            "mainClass": "${file}"
         }
     ]
 }

@@ -1,4 +1,4 @@
-package com.gestionart.api.infrastructure.config;
+package com.gestionart.api.infrastructure.security;
 
 import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
@@ -8,7 +8,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.gestionart.api.infrastructure.security.JwtAuthenticationFilter;
 @Configuration
 public class SecurityConfig {
 
@@ -32,23 +31,24 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                // 🔓 LOGIN
-                .requestMatchers("/auth/**").permitAll()
+                // // 🔓 LOGIN
+                // .requestMatchers("/auth/**").permitAll()
 
-                // 🔓 REGISTRO
-                .requestMatchers(HttpMethod.POST, "/compradores").permitAll()
-                .requestMatchers(HttpMethod.POST, "/vendedores").permitAll()
+                // // 🔓 REGISTRO
+                //  .requestMatchers(HttpMethod.GET, "/compradores").permitAll()
+                //  .requestMatchers(HttpMethod.POST, "/vendedores").permitAll()
 
                 // 🔒 TODO LO DEMÁS
+                
                 .anyRequest().permitAll()
             )
 
             // 🔥 FILTRO JWT
-            //.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-
+            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+;
             // 🔥 DESACTIVAR LOGIN POR DEFECTO
-            .httpBasic(httpBasic -> httpBasic.disable())
-            .formLogin(form -> form.disable());
+            // .httpBasic(httpBasic -> httpBasic.disable())
+            // .formLogin(form -> form.disable());
 
         return http.build();
     }

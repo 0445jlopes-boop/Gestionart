@@ -19,8 +19,8 @@ public class CompradorService {
     }
 
     public Comprador obtenerPorId(Long id) {
-        return compradorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comprador no encontrado"));
+        return compradorRepository.findById(id).orElse(null);
+
     }
 
     @Transactional(readOnly = true)
@@ -41,5 +41,9 @@ public class CompradorService {
 
     public void eliminar(Long id) {
         compradorRepository.deleteById(id);
+    }
+
+    public Comprador obtenerPorCorreo(String correoElectronico) {
+        return compradorRepository.findByCorreoElectronico(correoElectronico).orElse(null);
     }
 }
