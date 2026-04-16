@@ -3,31 +3,38 @@ package com.gestionart.api.application.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.gestionart.api.infrastructure.persistence.entity.UsuarioEntity;
-import com.gestionart.api.infrastructure.persistence.repository.UsuarioJpaRepository;
-
+import com.gestionart.api.domain.models.Usuario;
+import com.gestionart.api.domain.repository.UsuarioRepository;
+import com.gestionart.api.exception.BadRequestPassword;
+import com.gestionart.api.exception.ConflictBySecondaryId;
+import com.gestionart.api.exception.NotFoundByCorreoException;
+import com.gestionart.api.exception.NotFoundByIdException;
 @Service
 public class UsuarioService {
 
-    private final UsuarioJpaRepository userRepository;
+    private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioJpaRepository usuarioJpaRepository,
-                       PasswordEncoder passwordEncoder) {
-        this.userRepository = usuarioJpaRepository;
+    public UsuarioService(PasswordEncoder passwordEncoder, UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-   public UsuarioEntity login(String email, String password) {
+   public Usuario login(String email, String password) {
 
-    UsuarioEntity usuario = userRepository
+    Usuario usuario = usuarioRepository
             .findByCorreoElectronico(email)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            .orElseThrow(() -> new NotFoundByCorreoException(email));
 
     if (!usuario.getContrasena().equals(password)) {
-        throw new RuntimeException("Contraseña incorrecta");
+        throw new BadRequestPassword();
     }
 
     return usuario;
 }
+
+   public Usuario obtenerPorId(Long id) {
+    return usuarioRepository.findById(id)
+            .orElseThrow(() -> new NotFoundByIdException(id));
+   }
 }

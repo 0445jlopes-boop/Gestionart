@@ -9,6 +9,9 @@ import com.gestionart.api.domain.models.Comprador;
 import com.gestionart.api.domain.models.Vendedor;
 import com.gestionart.api.domain.repository.CompradorRepository;
 import com.gestionart.api.domain.repository.VendedorRepository;
+import com.gestionart.api.exception.ConflictBySecondaryId;
+import com.gestionart.api.exception.InvalidCredentials;
+import com.gestionart.api.exception.NotFoundByCorreoException;
 import com.gestionart.api.infrastructure.security.JwtService;
 
 @Service
@@ -34,7 +37,9 @@ public class AutenticacionService {
 
     public Comprador registrarComprador(Comprador comprador) {
         if (compradorRepository.findByCorreoElectronico(comprador.getCorreoElectronico()).isPresent()) {
-            throw new RuntimeException("Correo ya registrado");
+            throw new ConflictBySecondaryId(comprador.getCorreoElectronico(), 1);
+        }else if (compradorRepository.findByNombre(comprador.getNombre()).isPresent()) {
+            throw new ConflictBySecondaryId(comprador.getNombre(), 2);
         }
         comprador.setContrasena(passwordEncoder.encode(comprador.getContrasena()));
         comprador.setTipoCuenta(TipoCuentaComprador.NORMAL);
@@ -43,7 +48,9 @@ public class AutenticacionService {
 
     public Vendedor registrarVendedor(Vendedor vendedor) {
         if (vendedorRepository.findByCorreoElectronico(vendedor.getCorreoElectronico()).isPresent()) {
-            throw new RuntimeException("Correo ya registrado");
+            throw new ConflictBySecondaryId(vendedor.getCorreoElectronico(), 1);
+        }else if (vendedorRepository.findByNombre(vendedor.getNombre()).isPresent()) {
+            throw new ConflictBySecondaryId(vendedor.getNombre(), 2);
         }
         vendedor.setContrasena(passwordEncoder.encode(vendedor.getContrasena()));
         return vendedorRepository.save(vendedor);
@@ -54,7 +61,7 @@ public class AutenticacionService {
 
         Comprador comprador = compradorRepository
                 .findByCorreoElectronico(correo)
-                .orElse(null);
+                .orElseThrow(() -> new NotFoundByCorreoException(correo));
 
         if (comprador != null && contrasena.equals(comprador.getContrasena())) {
             return jwtService.generarToken(comprador.getCorreoElectronico(),"COMPRADOR");
@@ -62,11 +69,13 @@ public class AutenticacionService {
 
         Vendedor vendedor = vendedorRepository
                 .findByCorreoElectronico(correo)
-                .orElse(null);
+                .orElseThrow(() -> new NotFoundByCorreoException(correo));
 
         if (vendedor != null && contrasena.equals(vendedor.getContrasena())) {
             return jwtService.generarToken(vendedor.getCorreoElectronico(),"VENDEDOR");
         }
-        throw new RuntimeException("Credenciales inválidas");
+        throw new InvalidCredentials();
     }
+
+
 }

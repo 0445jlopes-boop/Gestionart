@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gestionart.api.domain.models.Comprador;
 import com.gestionart.api.domain.repository.CompradorRepository;
+import com.gestionart.api.exception.NotFoundByIdException;
 
 @Service
 @Transactional
@@ -19,7 +20,7 @@ public class CompradorService {
     }
 
     public Comprador obtenerPorId(Long id) {
-        return compradorRepository.findById(id).orElse(null);
+        return compradorRepository.findById(id).orElseThrow(() -> new NotFoundByIdException(id));
 
     }
 

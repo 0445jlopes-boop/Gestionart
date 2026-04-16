@@ -24,10 +24,11 @@ public class CompradorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompradorResponse> obtener(@PathVariable Long id) {
-        if(compradorService.obtenerPorId(id) == null) {
+    public ResponseEntity<CompradorResponse> obtenerPorId(@PathVariable Long id) {
+        
+       /*  if(compradorService.obtenerPorId(id) == null) {
             return ResponseEntity.notFound().build();
-        }
+        } */
         return ResponseEntity.ok(
                 compradorMapper.toResponse(
                         compradorService.obtenerPorId(id)));
