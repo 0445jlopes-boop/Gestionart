@@ -8,6 +8,7 @@ public record CompradorResponse(
     String correoElectronico,
     String nombre,
     String imagen,
+    String contrasena,
     String direccion,
     TipoCuentaComprador tipoCuenta,
     LocalDateTime fechaInicioPremium,

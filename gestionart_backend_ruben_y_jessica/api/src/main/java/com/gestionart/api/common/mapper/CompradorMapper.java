@@ -70,10 +70,30 @@ public class CompradorMapper {
             comprador.getCorreoElectronico(),
             comprador.getNombre(),
             comprador.getImagen(),
+            comprador.getContrasena(),
             comprador.getDireccion(),
             comprador.getTipoCuenta(),
             comprador.getFechaInicioPremium(),
             comprador.getFechaFinPremium()
         );
+    }
+
+    // Response -> Domain
+    public Comprador toModel(CompradorResponse request) {
+        if(request == null) return null;
+        Comprador comprador = new Comprador();
+
+        comprador.setId(request.id());
+        comprador.setCorreoElectronico(request.correoElectronico());
+        comprador.setNombre(request.nombre());
+        comprador.setImagen(request.imagen());
+        comprador.setContrasena(request.contrasena());
+        comprador.setDireccion(request.direccion());
+        comprador.setTipoCuenta(request.tipoCuenta());
+        comprador.setFechaInicioPremium(request.fechaInicioPremium());
+        comprador.setFechaFinPremium(request.fechaFinPremium());
+
+        return comprador;
+
     }
 }

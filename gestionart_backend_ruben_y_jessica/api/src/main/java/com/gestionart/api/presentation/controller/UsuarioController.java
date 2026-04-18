@@ -1,12 +1,10 @@
 package com.gestionart.api.presentation.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import com.gestionart.api.common.mapper.UsuarioMapper;
 import com.gestionart.api.application.service.UsuarioService;
 import com.gestionart.api.application.service.AutenticacionService;
-import com.gestionart.api.domain.models.Usuario;
 import com.gestionart.api.presentation.dto.request.LoginRequest;
 import com.gestionart.api.presentation.dto.response.UsuarioResponse;
 

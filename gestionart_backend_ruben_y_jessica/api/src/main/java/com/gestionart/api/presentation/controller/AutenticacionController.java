@@ -1,13 +1,16 @@
 package com.gestionart.api.presentation.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import com.gestionart.api.infrastructure.security.JwtService;
 import com.gestionart.api.presentation.dto.request.CompradorRequest;
 import com.gestionart.api.presentation.dto.request.LoginRequest;
+
+import jakarta.validation.Valid;
+
 import com.gestionart.api.application.service.AutenticacionService;
 import com.gestionart.api.application.service.UsuarioService;
+import com.gestionart.api.domain.enums.TipoCuentaComprador;
 import com.gestionart.api.domain.models.Comprador;
 import com.gestionart.api.domain.models.Usuario;
 
@@ -42,7 +45,7 @@ public class AutenticacionController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody CompradorRequest request) {
+    public ResponseEntity<String> register(@Valid @RequestBody CompradorRequest request) {
 
         Comprador comprador = new Comprador();
         comprador.setCorreoElectronico(request.correoElectronico());
@@ -50,7 +53,7 @@ public class AutenticacionController {
         comprador.setNombre(request.nombre());
         comprador.setDireccion(request.direccion());
         comprador.setImagen(request.imagen());
-        comprador.setTipoCuenta(request.tipoCuenta());  
+        comprador.setTipoCuenta(TipoCuentaComprador.NORMAL);  
         autenticacionService.registrarComprador(comprador);
 
         return ResponseEntity.ok("Usuario registrado exitosamente");
