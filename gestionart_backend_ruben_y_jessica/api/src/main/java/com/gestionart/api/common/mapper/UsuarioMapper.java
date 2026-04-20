@@ -49,6 +49,7 @@ public class UsuarioMapper {
             usuario.getCorreoElectronico(),
             usuario.getNombre(),
             usuario.getImagen(),
+            usuario.getContrasena(), 
             usuario.getRol()
         );
     }

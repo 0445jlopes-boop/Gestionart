@@ -48,7 +48,6 @@ public class CompradorService {
             comprador.setImagen(datos.getImagen());
         }
         if(datos.getContrasena() != null) {
-            System.out.println(datos.getContrasena());
             comprador.setContrasena(datos.getContrasena());
         }
 

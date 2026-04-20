@@ -15,7 +15,8 @@ public class Anuncio {
     private Long idVendedor;
     private boolean activo;
     
-
+    public Anuncio() {
+    }
 
     public Anuncio(Long id, String titulo, Categoria categoria, double precio, String imagen, LocalDateTime fechaInicio,
             LocalDateTime fechaFin, boolean activo, Long idVendedor) {

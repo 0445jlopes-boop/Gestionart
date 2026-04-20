@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gestionart.api.domain.enums.Rol;
 import com.gestionart.api.domain.enums.TipoCuentaComprador;
 import com.gestionart.api.domain.models.Comprador;
 import com.gestionart.api.domain.models.Vendedor;
@@ -42,7 +43,10 @@ public class AutenticacionService {
             throw new ConflictBySecondaryId(comprador.getNombre(), 2);
         }
         comprador.setContrasena(passwordEncoder.encode(comprador.getContrasena()));
+        comprador.setRol(Rol.COMPRADOR);
         comprador.setTipoCuenta(TipoCuentaComprador.NORMAL);
+        comprador.setFechaInicioPremium(null);
+        comprador.setFechaFinPremium(null);
         return compradorRepository.save(comprador);
     }
 
@@ -59,22 +63,30 @@ public class AutenticacionService {
     @Transactional(readOnly = true)
     public String login(String correo, String contrasena) {
 
-        Comprador comprador = compradorRepository
-                .findByCorreoElectronico(correo)
-                .orElseThrow(() -> new NotFoundByCorreoException(correo));
-
-        if (comprador != null && contrasena.equals(comprador.getContrasena())) {
-            return jwtService.generarToken(comprador.getCorreoElectronico(),"COMPRADOR");
+        // Buscar en Compradores
+        var compradorOpt = compradorRepository.findByCorreoElectronico(correo);
+        if (compradorOpt.isPresent()) {
+            Comprador comprador = compradorOpt.get();
+            if (passwordEncoder.matches(contrasena, comprador.getContrasena())) {
+                return jwtService.generarToken(comprador.getCorreoElectronico(), "COMPRADOR");
+            }
+            // Si existe pero contraseña incorrecta
+            throw new InvalidCredentials();
         }
 
-        Vendedor vendedor = vendedorRepository
-                .findByCorreoElectronico(correo)
-                .orElseThrow(() -> new NotFoundByCorreoException(correo));
-
-        if (vendedor != null && contrasena.equals(vendedor.getContrasena())) {
-            return jwtService.generarToken(vendedor.getCorreoElectronico(),"VENDEDOR");
+        // Buscar en Vendedores
+        var vendedorOpt = vendedorRepository.findByCorreoElectronico(correo);
+        if (vendedorOpt.isPresent()) {
+            Vendedor vendedor = vendedorOpt.get();
+            if (passwordEncoder.matches(contrasena, vendedor.getContrasena())) {
+                return jwtService.generarToken(vendedor.getCorreoElectronico(), "VENDEDOR");
+            }
+            // Si existe pero contraseña incorrecta
+            throw new InvalidCredentials();
         }
-        throw new InvalidCredentials();
+
+        // Usuario no encontrado en ninguna tabla
+        throw new NotFoundByCorreoException(correo);
     }
 
 

@@ -5,14 +5,17 @@ import org.springframework.web.bind.annotation.*;
 import com.gestionart.api.infrastructure.security.JwtService;
 import com.gestionart.api.presentation.dto.request.CompradorRequest;
 import com.gestionart.api.presentation.dto.request.LoginRequest;
+import com.gestionart.api.presentation.dto.request.VendedorRequest;
 
 import jakarta.validation.Valid;
 
 import com.gestionart.api.application.service.AutenticacionService;
 import com.gestionart.api.application.service.UsuarioService;
+import com.gestionart.api.domain.enums.Rol;
 import com.gestionart.api.domain.enums.TipoCuentaComprador;
 import com.gestionart.api.domain.models.Comprador;
 import com.gestionart.api.domain.models.Usuario;
+import com.gestionart.api.domain.models.Vendedor;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,29 +25,24 @@ public class AutenticacionController {
     private final UsuarioService userService;
     private final AutenticacionService autenticacionService;
 
-    public AutenticacionController(JwtService jwtService, UsuarioService userService) {
+    public AutenticacionController(JwtService jwtService, UsuarioService userService, AutenticacionService autenticacionService) {
         this.jwtService = jwtService;
         this.userService = userService;
-        this.autenticacionService = null;
+        this.autenticacionService = autenticacionService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
 
-        Usuario usuario = userService.login(
+        String token = autenticacionService.login(
                 request.correoElectronico(),
                 request.contrasena()
-        );
-
-        String token = jwtService.generarToken(
-            usuario.getCorreoElectronico(),
-            usuario.getRol().name()
         );
 
         return ResponseEntity.ok(token);
     }
 
-    @PostMapping("/register")
+    @PostMapping("/registerComprador")
     public ResponseEntity<String> register(@Valid @RequestBody CompradorRequest request) {
 
         Comprador comprador = new Comprador();
@@ -53,11 +51,30 @@ public class AutenticacionController {
         comprador.setNombre(request.nombre());
         comprador.setDireccion(request.direccion());
         comprador.setImagen(request.imagen());
-        comprador.setTipoCuenta(TipoCuentaComprador.NORMAL);  
+        comprador.setRol(Rol.COMPRADOR);
+        comprador.setTipoCuenta(TipoCuentaComprador.NORMAL);
+        comprador.setFechaInicioPremium(null);
+        comprador.setFechaFinPremium(null);
         autenticacionService.registrarComprador(comprador);
 
         return ResponseEntity.ok("Usuario registrado exitosamente");
     }
+
+    @PostMapping("/registerVendedor")
+    public ResponseEntity<String> registerVendedor(@Valid @RequestBody VendedorRequest request) {
+
+        Vendedor vendedor = new Vendedor();
+        vendedor.setCorreoElectronico(request.correoElectronico());
+        vendedor.setContrasena(request.contrasena()); 
+        vendedor.setNombre(request.nombre());
+        vendedor.setImagen(request.imagen());
+        vendedor.setRol(Rol.VENDEDOR);
+        autenticacionService.registrarVendedor(vendedor);
+
+        return ResponseEntity.ok("Usuario registrado exitosamente");
+    }
+
+    
 
       
 }

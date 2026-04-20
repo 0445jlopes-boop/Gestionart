@@ -1,5 +1,6 @@
 package com.gestionart.api.infrastructure.persistence.adapter;
 
+import com.gestionart.api.domain.enums.Categoria;
 import com.gestionart.api.domain.models.Articulo;
 import com.gestionart.api.domain.repository.ArticuloRepository;
 import com.gestionart.api.infrastructure.persistence.entity.ArticuloEntity;
@@ -80,4 +81,12 @@ public class ArticuloRepositoryAdapter implements ArticuloRepository {
         }
         return e;
     }
+
+    @Override
+    public List<Articulo> findByCategoria(Categoria categoria) {
+        return repository.findByCategoria(categoria).stream().map(this::toDomain).collect(Collectors.toList());
+    }
+
+   
+
 }

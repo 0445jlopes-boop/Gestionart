@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.ArticuloService;
 import com.gestionart.api.common.mapper.ArticuloMapper;
+import com.gestionart.api.domain.enums.Categoria;
+import com.gestionart.api.domain.enums.EstadoPedido;
 import com.gestionart.api.domain.models.Articulo;
 import com.gestionart.api.presentation.dto.request.ArticuloRequest;
 import com.gestionart.api.presentation.dto.response.ArticuloResponse;
@@ -22,6 +24,15 @@ public class ArticuloController {
     public ArticuloController(ArticuloService articuloService, ArticuloMapper articuloMapper) {
         this.articuloService = articuloService;
         this.articuloMapper = articuloMapper;
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ArticuloResponse> actualizar(@PathVariable Long id, @RequestBody ArticuloRequest request) {
+
+        Articulo articulo = articuloMapper.toDomain(request);
+        Articulo actualizado = articuloService.actualizar(id, articulo);
+
+        return ResponseEntity.ok(articuloMapper.toResponse(actualizado));
     }
 
     @PostMapping
@@ -48,6 +59,26 @@ public class ArticuloController {
 
         return ResponseEntity.ok(
                 articuloMapper.toResponse(articuloService.obtenerPorId(id)));
+    }
+
+    @GetMapping("/vendedor/{idVendedor}")
+    public ResponseEntity<List<ArticuloResponse>> buscarPorVendedor(@PathVariable Long idVendedor) {
+
+        return ResponseEntity.ok(
+                articuloService.buscarPorVendedor(idVendedor)
+                        .stream()
+                        .map(articuloMapper::toResponse)
+                        .toList());
+    }       
+
+    @GetMapping("/categoria/{categoria}")
+    public ResponseEntity<List<ArticuloResponse>> buscarPorCategoria(@RequestParam("categoria") Categoria categoria) {
+
+        return ResponseEntity.ok(
+                articuloService.buscarPorCategoria(categoria)
+                        .stream()
+                        .map(articuloMapper::toResponse)
+                        .toList());
     }
 
     @DeleteMapping("/{id}")

@@ -26,7 +26,7 @@ public class UsuarioService {
             .findByCorreoElectronico(email)
             .orElseThrow(() -> new NotFoundByCorreoException(email));
 
-    if (!usuario.getContrasena().equals(password)) {
+    if (!passwordEncoder.matches(password, usuario.getContrasena())) {
         throw new BadRequestPassword();
     }
 

@@ -1,5 +1,6 @@
 package com.gestionart.api.infrastructure.persistence.adapter;
 
+import com.gestionart.api.domain.enums.Categoria;
 import com.gestionart.api.domain.models.Anuncio;
 import com.gestionart.api.domain.repository.AnuncioRepository;
 import com.gestionart.api.infrastructure.persistence.entity.AnuncioEntity;
@@ -32,14 +33,12 @@ public class AnuncioRepositoryAdapter implements AnuncioRepository {
         return repository.findAll().stream().map(this::toDomain).collect(Collectors.toList());
     }
 
-    public List<Anuncio> findByIdVendedor(Long id) {
-        return repository.findByVendedor_Id(id).stream().map(this::toDomain).collect(Collectors.toList());
+    public Optional<Anuncio> findByIdVendedor(Long id) {
+        return repository.findByVendedor_Id(id).map(this::toDomain);
     }
 
-    public List<Anuncio> findByCategoria(String categoria) {
-        return repository.findByCategoria(
-                com.gestionart.api.domain.enums.Categoria.valueOf(categoria)
-        ).stream().map(this::toDomain).collect(Collectors.toList());
+    public Optional<Anuncio> findByCategoria(Categoria categoria) {
+        return repository.findByCategoria(categoria).map(this::toDomain);
     }
 
     public void deleteById(Long id) {

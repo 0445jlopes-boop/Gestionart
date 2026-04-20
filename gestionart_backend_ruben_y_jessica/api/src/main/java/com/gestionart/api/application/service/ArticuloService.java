@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gestionart.api.domain.enums.Categoria;
 import com.gestionart.api.domain.models.Articulo;
 import com.gestionart.api.domain.repository.ArticuloRepository;
+import com.gestionart.api.exception.NotFoundByIdException;
 
 @Service
 @Transactional
@@ -30,7 +32,7 @@ public class ArticuloService {
     @Transactional(readOnly = true)
     public Articulo obtenerPorId(Long idArticulo) {
         return articuloRepository.findById(idArticulo)
-                .orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
+                .orElseThrow(() -> new NotFoundByIdException(idArticulo));
     }
 
     @Transactional(readOnly = true)
@@ -38,15 +40,40 @@ public class ArticuloService {
         return articuloRepository.findByIdVendedor(idVendedor);
     }
 
-    public Articulo actualizarStock(Long idArticulo, int nuevoStock) {
-        Articulo articulo = articuloRepository.findById(idArticulo)
-                .orElseThrow(() -> new RuntimeException("Articulo no encontrado"));
-
-        articulo.setStock(nuevoStock);
-        return articuloRepository.save(articulo);
-    }
-
     public void eliminar(Long idArticulo) {
         articuloRepository.deleteById(idArticulo);
+    }
+
+    public Articulo actualizar(Long id, Articulo articulo) {
+        Articulo existente = articuloRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByIdException(id));
+
+        if (articulo.getTitulo() != null) {
+            existente.setTitulo(articulo.getTitulo());
+        }
+        if (articulo.getDescripcion() != null) {
+            existente.setDescripcion(articulo.getDescripcion());
+        }
+        if (articulo.getPrecio() > 0) {
+            existente.setPrecio(articulo.getPrecio());
+        }
+        if (articulo.getStock() >= 0) {
+            existente.setStock(articulo.getStock());
+        }
+        if (articulo.getImagen() != null) {
+            existente.setImagen(articulo.getImagen());
+        }
+        if (articulo.getCategoria() != null) {
+            existente.setCategoria(articulo.getCategoria());
+        }
+        if (articulo.getIdVendedor() != null) {
+            existente.setIdVendedor(articulo.getIdVendedor());
+        }
+
+        return articuloRepository.save(existente);
+    }
+
+    public List<Articulo> buscarPorCategoria(Categoria categoria) {
+        return articuloRepository.findByCategoria(categoria);
     }
 }

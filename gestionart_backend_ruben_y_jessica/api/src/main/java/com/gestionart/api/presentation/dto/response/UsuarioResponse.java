@@ -7,5 +7,6 @@ public record UsuarioResponse(
     String correoElectronico,
     String nombre,
     String imagen,
+    String contrasena,
     Rol rol
 ) {}

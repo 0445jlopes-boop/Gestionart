@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.AnuncioService;
 import com.gestionart.api.common.mapper.AnuncioMapper;
+import com.gestionart.api.domain.enums.Categoria;
 import com.gestionart.api.domain.models.Anuncio;
 import com.gestionart.api.presentation.dto.request.AnuncioRequest;
 import com.gestionart.api.presentation.dto.response.AnuncioResponse;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -24,17 +26,41 @@ public class AnuncioController {
         this.anuncioMapper = anuncioMapper;
     }
 
-    @PostMapping
+    @PostMapping ("/crear")
     public ResponseEntity<AnuncioResponse> crear(@RequestBody AnuncioRequest request) {
 
-        Anuncio anuncio = anuncioMapper.toDomain(request);
+        Anuncio anuncio = new Anuncio();
+        if(request.titulo() == null || request.categoria() == null || request.precio() == 0 || request.idVendedor() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        anuncio.setId(request.id().longValue());
+        anuncio.setTitulo(request.titulo());
+        anuncio.setCategoria(request.categoria());
+        anuncio.setPrecio(request.precio());
+        anuncio.setIdVendedor(request.idVendedor());
+        anuncio.setImagen(request.imagen());
+
         Anuncio creado = anuncioService.crear(anuncio);
 
         return ResponseEntity.ok(anuncioMapper.toResponse(creado));
     }
 
+    @GetMapping("/vendedor/{idVendedor}")
+    public ResponseEntity<AnuncioResponse> obtenerPorIdVendedor(@PathVariable Long idVendedor) {
+
+        return ResponseEntity.ok(
+                anuncioMapper.toResponse(anuncioService.obtenerPorIdVendedor(idVendedor)));
+    }
+
+    @GetMapping("/categoria/{categoria}")
+    public ResponseEntity<AnuncioResponse> obtenerPorCategoria(@RequestParam("categoria") Categoria categoria) {    
+
+        return ResponseEntity.ok(
+                anuncioMapper.toResponse(anuncioService.obtenerPorCategoria(categoria)));
+    }
+
     @GetMapping
-    public ResponseEntity<List<AnuncioResponse>> obtenerTodos() {
+    public ResponseEntity<List<AnuncioResponse>> listar() {
 
         return ResponseEntity.ok(
                 anuncioService.obtenerTodos()
@@ -48,6 +74,20 @@ public class AnuncioController {
 
         return ResponseEntity.ok(
                 anuncioMapper.toResponse(anuncioService.obtenerPorId(id)));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AnuncioResponse> actualizar(@PathVariable Long id, @RequestBody AnuncioRequest request) {
+
+        Anuncio anuncio = new Anuncio();
+        anuncio.setTitulo(request.titulo());
+        anuncio.setCategoria(request.categoria());
+        anuncio.setPrecio(request.precio());
+        anuncio.setImagen(request.imagen());
+
+        return ResponseEntity.ok(
+                anuncioMapper.toResponse(
+                        anuncioService.actualizar(id, anuncio)));
     }
 
     @DeleteMapping("/{id}")

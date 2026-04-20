@@ -31,7 +31,7 @@ public class UsuarioRepositoryAdapter implements UsuarioRepository {
         return repository.findByCorreoElectronico(correo).map(this::toDomain);
     }
 
-    public Optional<Usuario> findBynombreCorreoElectronico(String nombre) {
+    public Optional<Usuario> findByNombre(String nombre) {
         return repository.findByNombre(nombre).map(this::toDomain);
     }
 
@@ -64,4 +64,5 @@ public class UsuarioRepositoryAdapter implements UsuarioRepository {
         e.setRol(d.getRol());
         return e;
     }
+
 }

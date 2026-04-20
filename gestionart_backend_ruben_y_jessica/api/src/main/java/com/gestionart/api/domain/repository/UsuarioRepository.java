@@ -9,7 +9,7 @@ public interface UsuarioRepository {
     Usuario save(Usuario usuario);
     Optional<Usuario> findById(Long id);
     Optional<Usuario> findByCorreoElectronico(String correoElectronico);
-    Optional<Usuario> findBynombreCorreoElectronico(String nombre);
+    Optional<Usuario> findByNombre(String nombre);
     List<Usuario> findAll();
     void deleteById(Long id);
 }
