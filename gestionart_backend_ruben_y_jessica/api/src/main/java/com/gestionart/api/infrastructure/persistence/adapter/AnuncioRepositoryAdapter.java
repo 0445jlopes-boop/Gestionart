@@ -46,7 +46,7 @@ public class AnuncioRepositoryAdapter implements AnuncioRepository {
     }
 
     private Anuncio toDomain(AnuncioEntity e) {
-        return new Anuncio(e.getId(), e.getTitulo(), e.getCategoria(), e.getPrecio(),
+        return new Anuncio(e.getTitulo(), e.getCategoria(), e.getPrecio(),
                 e.getImagen(), e.getFechaInicio(), e.getFechaFin(), e.isActivo(),
                 e.getVendedor() != null ? e.getVendedor().getId() : null);
     }

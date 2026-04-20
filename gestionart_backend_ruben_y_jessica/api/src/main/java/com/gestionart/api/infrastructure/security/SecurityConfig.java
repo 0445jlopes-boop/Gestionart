@@ -32,15 +32,15 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 
                 // // 🔓 LOGIN
-                // .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/auth/**").permitAll()
 
                 // // 🔓 REGISTRO
                 //  .requestMatchers(HttpMethod.GET, "/compradores").permitAll()
                 //  .requestMatchers(HttpMethod.POST, "/vendedores").permitAll()
 
                 // 🔒 TODO LO DEMÁS
-                
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
+                //.anyRequest().permitAll()
             )
 
             // 🔥 FILTRO JWT
