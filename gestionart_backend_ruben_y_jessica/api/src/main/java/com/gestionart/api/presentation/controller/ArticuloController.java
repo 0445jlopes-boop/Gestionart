@@ -35,10 +35,20 @@ public class ArticuloController {
         return ResponseEntity.ok(articuloMapper.toResponse(actualizado));
     }
 
-    @PostMapping
+    @PostMapping("/crear")
     public ResponseEntity<ArticuloResponse> crear(@RequestBody ArticuloRequest request) {
 
-        Articulo articulo = articuloMapper.toDomain(request);
+       Articulo articulo = articuloMapper.toDomain(request);
+       if(articulo.getTitulo() == null || articulo.getCategoria() == null || articulo.getPrecio() == 0 || articulo.getIdVendedor() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        articulo.setCategoria(request.categoria());
+        articulo.setPrecio(request.precio());
+        articulo.setImagen(request.imagen());
+        articulo.setDescripcion(request.descripcion());
+        articulo.setStock(request.stock());
+        articulo.setIdVendedor(request.idVendedor());
+        articulo.setTitulo(request.titulo());
         Articulo creado = articuloService.crear(articulo);
 
         return ResponseEntity.ok(articuloMapper.toResponse(creado));

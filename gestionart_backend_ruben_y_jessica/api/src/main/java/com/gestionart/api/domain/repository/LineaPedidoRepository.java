@@ -8,7 +8,7 @@ import com.gestionart.api.domain.models.LineaPedido;
 public interface LineaPedidoRepository {
     LineaPedido save(LineaPedido lineaPedido);
     Optional<LineaPedido> findById(Long id);
-    List<LineaPedido> findByIdPedido(Long idPedido);
+    Optional<LineaPedido> findByIdPedido(Long idPedido);
+    List<LineaPedido> findAllByPedidoId(Long idPedido);
     void deleteById(Long id);
-    void deleteByIdPedido(Long idPedido);
 }

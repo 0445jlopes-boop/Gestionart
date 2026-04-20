@@ -1,11 +1,14 @@
 package com.gestionart.api.common.mapper;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import com.gestionart.api.domain.models.LineaPedido;
 import com.gestionart.api.infrastructure.persistence.entity.ArticuloEntity;
 import com.gestionart.api.infrastructure.persistence.entity.LineaPedidoEntity;
 import com.gestionart.api.infrastructure.persistence.entity.PedidoEntity;
+import com.gestionart.api.presentation.dto.request.LineaPedidoRequest;
+import com.gestionart.api.presentation.dto.response.LineaPedidoResponse;
 
 @Component
 public class LineaPedidoMapper {
@@ -30,14 +33,25 @@ public class LineaPedidoMapper {
         return entity;
     }
 
-    public LineaPedido toDomain(LineaPedidoEntity entity) {
+    public LineaPedido toDomain(LineaPedidoRequest request) {
 
         return new LineaPedido(
-            entity.getId(),
-            entity.getPedido().getId(),
-            entity.getArticulo().getId(),
-            entity.getCantidad(),
-            entity.getPrecioUnitario()
+            null,
+            request.idPedido(),
+            request.idArticulo(),
+            request.cantidad(),
+            request.precioUnitario()
         );
+    }
+
+    public LineaPedidoResponse toResponse(LineaPedido lineaPedido) 
+    {
+        return new LineaPedidoResponse(
+            lineaPedido.getId(),
+            lineaPedido.getIdArticulo(),
+            lineaPedido.getCantidad(),
+            lineaPedido.getPrecioUnitario()
+        );
+       
     }
 }

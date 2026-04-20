@@ -2,10 +2,13 @@ package com.gestionart.api.presentation.controller;
 
 import java.util.List;
 
+import javax.sound.sampled.Line;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.gestionart.api.application.service.LineaPedidoService;
+import com.gestionart.api.common.mapper.LineaPedidoMapper;
 import com.gestionart.api.domain.models.LineaPedido;
 import com.gestionart.api.presentation.dto.request.LineaPedidoRequest;
 import com.gestionart.api.presentation.dto.response.LineaPedidoResponse;
@@ -16,44 +19,38 @@ import com.gestionart.api.presentation.dto.response.LineaPedidoResponse;
 public class LineaPedidoController {
 
     private final LineaPedidoService lineaPedidoService;
+    private final LineaPedidoMapper lineaPedidoMapper;
 
     public LineaPedidoController(LineaPedidoService lineaPedidoService) {
         this.lineaPedidoService = lineaPedidoService;
+        this.lineaPedidoMapper = new LineaPedidoMapper();
     }
 
-    @PostMapping("/{idPedido}")
-    public ResponseEntity<LineaPedidoResponse> crear(@PathVariable Long idPedido,
-                                                     @RequestBody LineaPedidoRequest request) {
+    @PostMapping("/crear")
+    public ResponseEntity<LineaPedidoResponse> crear(@RequestBody LineaPedidoRequest request) {
+        LineaPedido linea = lineaPedidoMapper.toDomain(request);
+                if(linea.getIdArticulo() == null || linea.getCantidad() == 0 || linea.getPrecioUnitario() == 0 || linea.getIdPedido() == null) {
+                return ResponseEntity.badRequest().build();
+                }
 
-        LineaPedido linea = new LineaPedido(
-                null,
-                idPedido,
-                request.idArticulo(),
-                request.cantidad(),
-                request.precioUnitario()
-        );
-
-        LineaPedido creada = lineaPedidoService.crear(linea);
-
-        return ResponseEntity.ok(
-                new LineaPedidoResponse(
-                        creada.getId(),
-                        creada.getIdArticulo(),
-                        creada.getCantidad(),
-                        creada.getPrecioUnitario()));
+        linea.setIdPedido(request.idPedido());
+        linea.setIdArticulo(request.idArticulo());
+        linea.setCantidad(request.cantidad());
+        linea.setPrecioUnitario(request.precioUnitario());
+        LineaPedido creado = lineaPedidoService.crear(linea);
+        return ResponseEntity.ok(lineaPedidoMapper.toResponse(creado));
     }
 
     @GetMapping("/pedido/{idPedido}")
-    public ResponseEntity<List<LineaPedidoResponse>> obtenerPorPedido(@PathVariable Long idPedido) {
+    public ResponseEntity<LineaPedidoResponse> obtenerPorPedido(@PathVariable Long idPedido){
+        return ResponseEntity.ok(
+                lineaPedidoMapper.toResponse(lineaPedidoService.obtenerPorPedido(idPedido)));
+    }   
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LineaPedidoResponse> obtenerPorId(@PathVariable Long id) {
 
         return ResponseEntity.ok(
-                lineaPedidoService.obtenerPorPedido(idPedido)
-                        .stream()
-                        .map(l -> new LineaPedidoResponse(
-                                l.getId(),
-                                l.getIdArticulo(),
-                                l.getCantidad(),
-                                l.getPrecioUnitario()))
-                        .toList());
+                lineaPedidoMapper.toResponse(lineaPedidoService.obtenerPorId(id)));
     }
 }

@@ -29,15 +29,12 @@ public class LineaPedidoRepositoryAdapter implements LineaPedidoRepository {
         return repository.findById(id).map(this::toDomain);
     }
 
-    public List<LineaPedido> findByIdPedido(Long idPedido) {
-        return repository.findByPedido_Id(idPedido)
-                .stream()
-                .map(this::toDomain)
-                .collect(Collectors.toList());
+    public Optional<LineaPedido> findByIdPedido(Long idPedido) {
+        return repository.findByPedido_Id(idPedido).stream().findFirst().map(this::toDomain);
     }
 
-    public void deleteById(Long id) {
-        repository.deleteById(id);
+    public List<LineaPedido> findAllByPedidoId(Long idPedido) {
+        return repository.findByPedido_Id(idPedido).stream().map(this::toDomain).collect(Collectors.toList());
     }
 
     public void deleteByIdPedido(Long idPedido) {
@@ -73,5 +70,10 @@ public class LineaPedidoRepositoryAdapter implements LineaPedidoRepository {
         }
 
         return e;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 }

@@ -18,9 +18,9 @@ public class AnuncioMapper {
             request.categoria(),
             request.precio(),
             request.imagen(),
-            request.fechaInicio(),
-            request.fechaFin(),
-            request.activo(),
+            null, 
+            null, 
+            false, 
             request.idVendedor()
         );
     }
