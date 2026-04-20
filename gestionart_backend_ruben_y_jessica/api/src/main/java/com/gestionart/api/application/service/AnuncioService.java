@@ -26,6 +26,7 @@ public class AnuncioService {
         anuncio.setActivo(true);
         anuncio.setFechaInicio(LocalDateTime.now());
         anuncio.setFechaFin(LocalDateTime.now().plusDays(30));
+        //anuncio.setCategoria(null);
         return anuncioRepository.save(anuncio);
     }
 

@@ -13,7 +13,6 @@ public class AnuncioMapper {
 
     public Anuncio toDomain(AnuncioRequest request) {
         return new Anuncio(
-            null,
             request.titulo(),
             request.categoria(),
             request.precio(),
@@ -45,7 +44,6 @@ public class AnuncioMapper {
 
     public Anuncio toDomain(AnuncioEntity entity) {
         return new Anuncio(
-            entity.getId(),
             entity.getTitulo(),
             entity.getCategoria(),
             entity.getPrecio(),

@@ -33,7 +33,7 @@ public class AnuncioController {
         if(request.titulo() == null || request.categoria() == null || request.precio() == 0 || request.idVendedor() == null) {
             return ResponseEntity.badRequest().build();
         }
-        anuncio.setId(request.id().longValue());
+        //anuncio.setId(request.id().longValue());
         anuncio.setTitulo(request.titulo());
         anuncio.setCategoria(request.categoria());
         anuncio.setPrecio(request.precio());

@@ -18,9 +18,8 @@ public class Anuncio {
     public Anuncio() {
     }
 
-    public Anuncio(Long id, String titulo, Categoria categoria, double precio, String imagen, LocalDateTime fechaInicio,
+    public Anuncio(String titulo, Categoria categoria, double precio, String imagen, LocalDateTime fechaInicio,
             LocalDateTime fechaFin, boolean activo, Long idVendedor) {
-        this.id = id;
         this.titulo = titulo;
         this.categoria = categoria;
         this.precio = precio;
