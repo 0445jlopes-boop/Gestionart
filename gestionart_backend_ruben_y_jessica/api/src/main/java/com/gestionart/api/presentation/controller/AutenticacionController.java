@@ -25,6 +25,8 @@ public class AutenticacionController {
     private final UsuarioService userService;
     private final AutenticacionService autenticacionService;
 
+    
+
     public AutenticacionController(JwtService jwtService, UsuarioService userService, AutenticacionService autenticacionService) {
         this.jwtService = jwtService;
         this.userService = userService;
@@ -43,7 +45,7 @@ public class AutenticacionController {
     }
 
     @PostMapping("/registerComprador")
-    public ResponseEntity<String> register(@Valid @RequestBody CompradorRequest request) {
+    public ResponseEntity<String> register(@Valid@RequestBody CompradorRequest request) {
 
         Comprador comprador = new Comprador();
         comprador.setCorreoElectronico(request.correoElectronico());
@@ -52,7 +54,7 @@ public class AutenticacionController {
         comprador.setDireccion(request.direccion());
         comprador.setImagen(request.imagen());
         comprador.setRol(Rol.COMPRADOR);
-        comprador.setTipoCuenta(TipoCuentaComprador.NORMAL);
+        comprador.setTipoCuenta(request.tipoCuenta());
         comprador.setFechaInicioPremium(null);
         comprador.setFechaFinPremium(null);
         autenticacionService.registrarComprador(comprador);
@@ -69,6 +71,7 @@ public class AutenticacionController {
         vendedor.setNombre(request.nombre());
         vendedor.setImagen(request.imagen());
         vendedor.setRol(Rol.VENDEDOR);
+        vendedor.setDescripcionPerfil(request.descripcionPerfil());
         autenticacionService.registrarVendedor(vendedor);
 
         return ResponseEntity.ok("Usuario registrado exitosamente");

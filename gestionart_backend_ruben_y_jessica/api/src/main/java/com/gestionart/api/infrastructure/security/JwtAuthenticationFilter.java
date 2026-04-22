@@ -37,10 +37,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // 🔓 Rutas públicas
-        if (path.contains("/auth")) {
+        /*if (path.contains("/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }*/
+                
+        if(request.getServletPath().startsWith("/auth/")) {
             filterChain.doFilter(request, response);
             return;
         }
+        
 
         final String authHeader = request.getHeader("Authorization");
 

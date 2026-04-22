@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "compradores")
+@PrimaryKeyJoinColumn(name = "id")
 public class CompradorEntity extends UsuarioEntity {
 
     private String direccion;

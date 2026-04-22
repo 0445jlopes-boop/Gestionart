@@ -33,12 +33,12 @@ public class AnuncioRepositoryAdapter implements AnuncioRepository {
         return repository.findAll().stream().map(this::toDomain).collect(Collectors.toList());
     }
 
-    public Optional<Anuncio> findByIdVendedor(Long id) {
-        return repository.findByVendedor_Id(id).map(this::toDomain);
+    public List<Anuncio> findByIdVendedor(Long id) {
+        return repository.findByVendedor_Id(id).stream().map(this::toDomain).collect(Collectors.toList());
     }
 
-    public Optional<Anuncio> findByCategoria(Categoria categoria) {
-        return repository.findByCategoria(categoria).map(this::toDomain);
+    public List<Anuncio> findByCategoria(Categoria categoria) {
+        return repository.findByCategoria(categoria).stream().map(this::toDomain).collect(Collectors.toList());
     }
 
     public void deleteById(Long id) {

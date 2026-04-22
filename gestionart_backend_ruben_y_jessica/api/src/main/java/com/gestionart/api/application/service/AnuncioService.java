@@ -40,14 +40,12 @@ public class AnuncioService {
                 .orElseThrow(() -> new NotFoundByIdException(id));
     }
 
-    public Anuncio obtenerPorIdVendedor(Long idVendedor) {
-        return anuncioRepository.findByIdVendedor(idVendedor)
-                .orElseThrow(() -> new NotFoundByIdException(idVendedor));
+    public List<Anuncio> obtenerPorIdVendedor(Long idVendedor) {
+        return anuncioRepository.findByIdVendedor(idVendedor);
     }
 
-    public Anuncio obtenerPorCategoria(Categoria categoria) {
-        return anuncioRepository.findByCategoria(categoria)
-                .orElseThrow(() -> new NotfoundByCategoriaException(categoria.toString()));
+    public List<Anuncio> obtenerPorCategoria(Categoria categoria) {
+        return anuncioRepository.findByCategoria(categoria);
     }
 
     public Anuncio actualizar(Long id, Anuncio datos) {

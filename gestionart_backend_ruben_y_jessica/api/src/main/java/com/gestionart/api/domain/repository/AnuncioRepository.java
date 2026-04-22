@@ -10,7 +10,7 @@ public interface AnuncioRepository {
     Anuncio save(Anuncio anuncio);
     Optional<Anuncio> findById(Long id);
     List<Anuncio> findAll();
-    Optional<Anuncio> findByIdVendedor(Long idVendedor);
-    Optional<Anuncio> findByCategoria(Categoria categoria);
+    List<Anuncio> findByIdVendedor(Long idVendedor);
+    List<Anuncio> findByCategoria(Categoria categoria);
     void deleteById(Long id);
 }

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import com.gestionart.api.application.service.ArticuloService;
 import com.gestionart.api.common.mapper.ArticuloMapper;
 import com.gestionart.api.domain.enums.Categoria;
-import com.gestionart.api.domain.enums.EstadoPedido;
 import com.gestionart.api.domain.models.Articulo;
 import com.gestionart.api.presentation.dto.request.ArticuloRequest;
 import com.gestionart.api.presentation.dto.response.ArticuloResponse;
@@ -82,7 +81,7 @@ public class ArticuloController {
     }       
 
     @GetMapping("/categoria/{categoria}")
-    public ResponseEntity<List<ArticuloResponse>> buscarPorCategoria(@RequestParam("categoria") Categoria categoria) {
+    public ResponseEntity<List<ArticuloResponse>> buscarPorCategoria(@PathVariable Categoria categoria) {
 
         return ResponseEntity.ok(
                 articuloService.buscarPorCategoria(categoria)

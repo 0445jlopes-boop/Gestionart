@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "vendedores")
+@PrimaryKeyJoinColumn(name = "id")
 public class VendedorEntity extends UsuarioEntity {
 
     private String descripcionPerfil;

@@ -45,17 +45,21 @@ public class AnuncioController {
     }
 
     @GetMapping("/vendedor/{idVendedor}")
-    public ResponseEntity<AnuncioResponse> obtenerPorIdVendedor(@PathVariable Long idVendedor) {
+    public ResponseEntity<List<AnuncioResponse>> obtenerPorIdVendedor(@PathVariable Long idVendedor) {
 
-        return ResponseEntity.ok(
-                anuncioMapper.toResponse(anuncioService.obtenerPorIdVendedor(idVendedor)));
+        return ResponseEntity.ok(anuncioService.obtenerPorIdVendedor(idVendedor)
+                .stream()
+                .map(anuncioMapper::toResponse)
+                .toList());
     }
 
     @GetMapping("/categoria/{categoria}")
-    public ResponseEntity<AnuncioResponse> obtenerPorCategoria(@RequestParam("categoria") Categoria categoria) {    
+    public ResponseEntity<List<AnuncioResponse>> obtenerPorCategoria(@PathVariable Categoria categoria) {    
 
-        return ResponseEntity.ok(
-                anuncioMapper.toResponse(anuncioService.obtenerPorCategoria(categoria)));
+        return ResponseEntity.ok(anuncioService.obtenerPorCategoria(categoria)
+                .stream()
+                .map(anuncioMapper::toResponse)
+                .toList());
     }
 
     @GetMapping
