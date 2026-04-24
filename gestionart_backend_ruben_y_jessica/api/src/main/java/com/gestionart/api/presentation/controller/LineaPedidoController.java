@@ -41,6 +41,18 @@ public class LineaPedidoController {
         return ResponseEntity.ok(lineaPedidoMapper.toResponse(creado));
     }
 
+    @PutMapping("/{id}/editar")
+    public ResponseEntity<LineaPedidoResponse> actualizar(@PathVariable Long id, @RequestBody LineaPedidoRequest request) {
+        LineaPedido linea = lineaPedidoMapper.toDomain(request);
+        if(linea.getIdArticulo() == null || linea.getCantidad() == 0 || linea.getPrecioUnitario() == 0 || linea.getIdPedido() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        linea.setCantidad(request.cantidad());
+        linea.setPrecioUnitario(request.precioUnitario());
+        LineaPedido actualizado = lineaPedidoService.crear(linea);
+        return ResponseEntity.ok(lineaPedidoMapper.toResponse(actualizado));
+    }
+
     @GetMapping("/pedido/{idPedido}")
     public ResponseEntity<LineaPedidoResponse> obtenerPorPedido(@PathVariable Long idPedido){
         return ResponseEntity.ok(
@@ -52,5 +64,11 @@ public class LineaPedidoController {
 
         return ResponseEntity.ok(
                 lineaPedidoMapper.toResponse(lineaPedidoService.obtenerPorId(id)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        lineaPedidoService.eliminar(id);
+        return ResponseEntity.ok().build();
     }
 }

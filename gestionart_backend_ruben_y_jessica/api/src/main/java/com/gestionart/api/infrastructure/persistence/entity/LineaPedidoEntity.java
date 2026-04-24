@@ -11,11 +11,11 @@ public class LineaPedidoEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "pedido_id")
+    @JoinColumn(name = "pedido_id", nullable = false)
     private PedidoEntity pedido;
 
     @ManyToOne
-    @JoinColumn(name = "articulo_id")
+    @JoinColumn(name = "articulo_id", nullable = false)
     private ArticuloEntity articulo;
 
     private int cantidad;

@@ -5,12 +5,13 @@ import org.springframework.stereotype.Component;
 import com.gestionart.api.domain.models.Pedido;
 import com.gestionart.api.infrastructure.persistence.entity.CompradorEntity;
 import com.gestionart.api.infrastructure.persistence.entity.PedidoEntity;
+import com.gestionart.api.presentation.dto.request.PedidoRequest;
 import com.gestionart.api.presentation.dto.response.PedidoResponse;
 
 @Component
 public class PedidoMapper {
 
-    private final LineaPedidoMapper lineaMapper;
+    public final LineaPedidoMapper lineaMapper;
 
     public PedidoMapper(LineaPedidoMapper lineaMapper) {
         this.lineaMapper = lineaMapper;
@@ -53,6 +54,17 @@ public class PedidoMapper {
                 pedido.getFechaConfirmacion(),
                 pedido.getEstado(),
                 pedido.getLineas()
+        );
+    }
+
+    public Pedido toDomain(PedidoRequest request) {
+        return new Pedido(
+            null,
+            request.idComprador(),
+            null,
+            null,
+            request.estado(),
+            null
         );
     }
 }

@@ -3,6 +3,7 @@ package com.gestionart.api.infrastructure.persistence.entity;
 import com.gestionart.api.domain.enums.EstadoPedido;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "pedidos")
@@ -21,6 +22,9 @@ public class PedidoEntity {
 
     @Enumerated(EnumType.STRING)
     private EstadoPedido estado;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LineaPedidoEntity> lineas;
 
     public PedidoEntity() {}
 

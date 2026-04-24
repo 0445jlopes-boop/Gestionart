@@ -28,9 +28,11 @@ public class PedidoRepositoryAdapter implements PedidoRepository {
         return repository.findById(id).map(this::toDomain);
     }
 
-    public Optional<Pedido> findByIdCompradorAndEstado(Long idComprador, com.gestionart.api.domain.enums.EstadoPedido estado) {
+    public List<Pedido> findByIdCompradorAndEstado(Long idComprador, com.gestionart.api.domain.enums.EstadoPedido estado) {
         return repository.findByComprador_IdAndEstado(idComprador, estado)
-                .map(this::toDomain);
+                .stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
     }
 
     public List<Pedido> findByIdComprador(Long idComprador) {
