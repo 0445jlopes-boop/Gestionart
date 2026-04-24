@@ -14,17 +14,16 @@ import com.gestionart.api.domain.repository.NotificacionRepository;
 @Transactional
 public class NotificacionService {
     private final NotificacionRepository notificacionRepository;
+    private final VendedorService vendedorService;
 
-    public NotificacionService(NotificacionRepository notificacionRepository) {
+
+    public NotificacionService(NotificacionRepository notificacionRepository, VendedorService vendedorService) {
         this.notificacionRepository = notificacionRepository;
+        this.vendedorService = vendedorService; 
     }
 
     public Notificacion crearNotificacion(Long vendedorId, TipoNotificacion tipo) {
-
-        if (vendedorId == null || tipo == null) {
-            throw new IllegalArgumentException("Datos inválidos para crear notificación");
-        }
-
+        vendedorService.obtenerPorId(vendedorId);
         Notificacion notificacion = new Notificacion();
         notificacion.setVendedorId(vendedorId);
         notificacion.setTipo(tipo);
@@ -36,42 +35,39 @@ public class NotificacionService {
 
     @Transactional(readOnly = true)
     public List<Notificacion> obtenerPorVendedor(Long vendedorId) {
-
-        if (vendedorId == null) {
-            throw new IllegalArgumentException("VendedorId inválido");
-        }
-
+        vendedorService.obtenerPorId(vendedorId);
         return notificacionRepository.findByVendedorId(vendedorId);
     }
 
     @Transactional(readOnly = true)
     public List<Notificacion> obtenerNoLeidas(Long vendedorId) {
+        vendedorService.obtenerPorId(vendedorId);
         return notificacionRepository
                 .findByVendedorIdAndLeidoFalse(vendedorId, false);
     }
 
     @Transactional(readOnly = true)
     public List<Notificacion> obtenerLeidas(Long vendedorId) {
+        vendedorService.obtenerPorId(vendedorId);
         return notificacionRepository
                 .findByVendedorIdAndLeidoTrue(vendedorId, true);
     }
 
     @Transactional(readOnly = true)
-    public List<Notificacion> obtenerPorTipo(Long vendedorId, TipoNotificacion tipo) {
+    public List<Notificacion> obtenerPorVendedorYTipo(Long vendedorId, TipoNotificacion tipo) {
+        vendedorService.obtenerPorId(vendedorId);
+        
         return notificacionRepository
                 .findByVendedorIdAndTipo(vendedorId, tipo);
     }
 
-    public Notificacion marcarComoLeida(Long id, Long vendedorId) {
-
-        List<Notificacion> notificaciones = 
-                notificacionRepository.findByVendedorId(vendedorId);
-
-        Notificacion notificacion = notificaciones.stream()
-                .filter(n -> n.getId().equals(id))
-                .findFirst()
+    public Notificacion obtenerPorId(Long id) {
+        return notificacionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Notificación no encontrada"));
+    }
 
+    public Notificacion marcarComoLeida(Long id) {
+        Notificacion notificacion = obtenerPorId(id);
         notificacion.setLeido(true);
 
         return notificacionRepository.save(notificacion);

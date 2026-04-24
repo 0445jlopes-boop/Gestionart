@@ -8,6 +8,7 @@ import com.gestionart.api.infrastructure.persistence.repository.NotificacionJpaR
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -79,5 +80,11 @@ public class NotificacionRepositoryAdapter implements NotificacionRepository {
         }
 
         return e;
+    }
+
+    @Override
+    public Optional<Notificacion> findById(Long id) {
+        return repository.findById(id)
+                .map(this::toDomain);
     }
 }
