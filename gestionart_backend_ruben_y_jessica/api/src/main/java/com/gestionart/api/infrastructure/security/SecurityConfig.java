@@ -1,7 +1,6 @@
 package com.gestionart.api.infrastructure.security;
 
 import org.springframework.context.annotation.*;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -39,7 +38,7 @@ public class SecurityConfig {
                 //  .requestMatchers(HttpMethod.POST, "/vendedores").permitAll()
 
                 // 🔒 TODO LO DEMÁS
-                // .anyRequest().authenticated()
+                 //.anyRequest().authenticated()
                 .anyRequest().permitAll() //ESTO PARA HACER PRUEBAS AHORA :(
             )
 

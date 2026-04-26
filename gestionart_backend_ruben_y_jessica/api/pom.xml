@@ -59,7 +59,12 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
-
+		<!-- Dependencia Stripe -->
+   		<dependency>
+  			<groupId>com.stripe</groupId>
+  			<artifactId>stripe-java</artifactId>
+  			<version>24.21.0</version>
+		</dependency>
 
 
 		<dependency>
