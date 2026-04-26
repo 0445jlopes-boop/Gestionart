@@ -45,7 +45,7 @@ public class UsuarioController {
                         usuarioService.obtenerPorId(id)));
     }
 
-    @PostMapping("/register-comprador")
+   /* @PostMapping("/register-comprador")
     public ResponseEntity<String> register(@Valid @RequestBody CompradorRequest request) {
 
         Comprador comprador = new Comprador(); //Tengo error con id al registrar, no se si es por el mapper o por el constructor del modelo, lo dejo asi por ahora
@@ -57,6 +57,6 @@ public class UsuarioController {
         autenticacionService.registrarComprador(comprador);
 
         return ResponseEntity.ok("Usuario registrado exitosamente");
-    }
+    }*/
 
 }
