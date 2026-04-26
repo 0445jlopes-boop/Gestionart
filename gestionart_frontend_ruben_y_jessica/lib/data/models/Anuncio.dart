@@ -23,4 +23,62 @@ class Anuncio { //Calse de anuncios
     required this.idVendedor, 
     required this.activo,
   });
+
+  Long getId() {
+    return id;
+  }
+  String getTitulo() {
+    return titulo;
+  }
+  String getCategoria() {
+    return categoria;
+  }
+  double getPrecio() {
+    return precio;
+  }
+  String getImagen() {
+    return imagen;
+  }
+  DateTime getFechaInicio() {
+    return fechaInicio;
+  }
+  DateTime getFechaFin() {
+    return fechaFin;
+  }
+  Long getIdVendedor() {
+    return idVendedor;
+  }
+  bool getActivo() {
+    return activo;
+  }
+
+  factory Anuncio.fromJson(Map<String, dynamic> json) {
+    return Anuncio(
+      id: json['id'],
+      titulo: json['titulo'],
+      categoria: json['categoria'],
+      precio: json['precio'],
+      imagen: json['imagen'],
+      fechaInicio: DateTime.parse(json['fechaInicio']),
+      fechaFin: DateTime.parse(json['fechaFin']),
+      idVendedor: json['idVendedor'],
+      activo: json['activo']
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'titulo': titulo,
+      'categoria': categoria,
+      'precio': precio,
+      'imagen': imagen,
+      'fechaInicio': fechaInicio.toIso8601String(),
+      'fechaFin': fechaFin.toIso8601String(),
+      'idVendedor': idVendedor,
+      'activo': activo
+    };
+  }
+  
+
 }

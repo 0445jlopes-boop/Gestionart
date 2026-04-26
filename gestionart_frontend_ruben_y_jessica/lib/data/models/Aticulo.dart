@@ -20,4 +20,57 @@ class Articulo { //Calse de articulos
     required this.stock, 
     required this.idVendedor,
   });
+
+  Long getId() {
+    return id;
+  }
+  String getTitulo() {
+    return titulo;
+  }
+  String getCategoria() {
+    return categoria;
+  }
+  double getPrecio() {
+    return precio;
+  }
+  String getImagen() {
+    return imagen;
+  }
+  String getDescripcion() {
+    return descripcion;
+  }
+  int getStock() {
+    return stock;
+  }
+  Long getIdVendedor() {
+    return idVendedor;
+  }
+
+  factory Articulo.fromJson(Map<String, dynamic> json) {
+    return Articulo(
+      id: json['id'],
+      titulo: json['titulo'],
+      categoria: json['categoria'],
+      precio: json['precio'],
+      imagen: json['imagen'],
+      descripcion: json['descripcion'],
+      stock: json['stock'],
+      idVendedor: json['idVendedor']
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'titulo': titulo,
+      'categoria': categoria,
+      'precio': precio,
+      'imagen': imagen,
+      'descripcion': descripcion,
+      'stock': stock,
+      'idVendedor': idVendedor
+    };
+  }
+  
+
 }

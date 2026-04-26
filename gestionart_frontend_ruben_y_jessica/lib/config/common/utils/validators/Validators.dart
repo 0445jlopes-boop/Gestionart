@@ -1,5 +1,4 @@
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/services/LogicaComprador.dart';
 
 class Validators { //Validaciones generales
   static String? validateEmpty(String? value){ //Valida que no esté vacio
