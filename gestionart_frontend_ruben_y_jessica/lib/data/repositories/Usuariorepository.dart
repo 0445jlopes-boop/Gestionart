@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Usuario.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/services/ApiService.dart';
 
@@ -7,7 +9,7 @@ class UsuarioRepository {
 
   UsuarioRepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
-  Future<Usuario> getUsuarioPorId(int id) async {
+  Future<Usuario> getUsuarioPorId(Long id) async {
 
     try{
       final response = await _apiService.dio.get("http://localhost:8080/users/$id");

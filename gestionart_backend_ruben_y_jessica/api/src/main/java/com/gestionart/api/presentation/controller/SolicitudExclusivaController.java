@@ -69,8 +69,8 @@ public class SolicitudExclusivaController {
                 .toList());
     }
 
-    @PutMapping("/{id}/estado")
-    public ResponseEntity<SolicitudExclusivaResponse> actualizarEstado(@PathVariable Long id, @RequestParam EstadoSolicitud nuevoEstado) {
+    @PutMapping("/{id}/estado/{nuevoEstado}")
+    public ResponseEntity<SolicitudExclusivaResponse> actualizarEstado(@PathVariable Long id, @PathVariable EstadoSolicitud nuevoEstado) {
         return ResponseEntity.ok(mapper.toResponse(solicitudService.actualizarEstado(id, nuevoEstado)));
     }
 

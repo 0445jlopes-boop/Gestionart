@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/services/ApiService.dart';
 
@@ -6,7 +8,7 @@ class Compradorrepository {
   final ApiService _apiService;
   Compradorrepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
-  Future<void> actualizarComprador(int id, String correoElectronico, String nombre, String direccion, String imagen, String contrasena) async {
+  Future<void> actualizarComprador(Long id, String correoElectronico, String nombre, String direccion, String imagen, String contrasena) async {
     try {
       final response = await _apiService.dio.put("http://localhost:8080/compradores/$id", data: {
         "correoElectronico": correoElectronico,
@@ -23,7 +25,7 @@ class Compradorrepository {
     }
   }
 
-  Future<void> activarPremium(int id) async {
+  Future<void> activarPremium(Long id) async {
     try {
       final response = await _apiService.dio.post("http://localhost:8080/compradores/$id/activar-premium");
       if (response.statusCode != 200) {
@@ -34,7 +36,7 @@ class Compradorrepository {
     }
   }
 
-  Future<void> desactivarPremium(int id) async {
+  Future<void> desactivarPremium(Long id) async {
     try {
       final response = await _apiService.dio.post("http://localhost:8080/compradores/$id/desactivar-premium");
       if (response.statusCode != 200) {
@@ -62,7 +64,7 @@ class Compradorrepository {
     }
   }
 
-  Future<Comprador> getCompradorPorId(int id) async {
+  Future<Comprador> getCompradorPorId(Long id) async {
     try {
       final response = await _apiService.dio.get("http://localhost:8080/compradores/$id");
       if (response.statusCode == 200) {
@@ -101,7 +103,7 @@ class Compradorrepository {
     }
   }
 
-  Future<void> eliminarComprador(int id) async {
+  Future<void> eliminarComprador(Long id) async {
     try {
       final response = await _apiService.dio.delete("http://localhost:8080/compradores/$id");
       if (response.statusCode != 200) {
