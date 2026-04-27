@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/EstadoSolicitud.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/SolicitudExclusiva.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/services/ApiService.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
 
 class Solicitudexclusivarepository {
   ApiService _apiService;

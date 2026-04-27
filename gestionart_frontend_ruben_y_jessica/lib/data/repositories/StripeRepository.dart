@@ -1,4 +1,4 @@
-import 'package:gestionart_frontend_ruben_y_jessica/services/ApiService.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
 
 class Striperepository {
   final ApiService _apiService;

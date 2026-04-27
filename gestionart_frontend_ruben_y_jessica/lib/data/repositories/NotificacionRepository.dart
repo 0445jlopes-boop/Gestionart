@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoNotificacion.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Notificacion.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/services/ApiService.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
 
 class Notificacionrepository {
   final ApiService _apiService;
