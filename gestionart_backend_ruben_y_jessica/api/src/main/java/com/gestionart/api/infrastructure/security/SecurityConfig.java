@@ -38,7 +38,7 @@ public class SecurityConfig {
                 //  .requestMatchers(HttpMethod.POST, "/vendedores").permitAll()
 
                 // 🔒 TODO LO DEMÁS
-                 //.anyRequest().authenticated()
+                // .anyRequest().authenticated()
                 .anyRequest().permitAll() //ESTO PARA HACER PRUEBAS AHORA :(
             )
 

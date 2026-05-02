@@ -1,9 +1,10 @@
 import 'dart:ffi';
 
+import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Aticulo.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/ArticuloController.dart';
 
-class Articuloprovider {
+class Articuloprovider with ChangeNotifier {
   final Articulocontroller articulocontroller;
   Articuloprovider(Articulocontroller? articulocontroller) : articulocontroller = articulocontroller ?? Articulocontroller(null);
   List<Articulo> _articulos = [];

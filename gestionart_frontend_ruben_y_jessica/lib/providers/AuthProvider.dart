@@ -1,4 +1,6 @@
-class Authprovider {
+import 'package:flutter/material.dart';
+
+class Authprovider with ChangeNotifier{
   final Authprovider _authrepository;
   Authprovider(Authprovider authrepository) : _authrepository = authrepository;
   

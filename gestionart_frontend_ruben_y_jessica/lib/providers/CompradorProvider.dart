@@ -1,10 +1,11 @@
 import 'dart:ffi';
 
+import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/CompradorRepository.dart';
 
 
-class Compradorprovider {
+class Compradorprovider with ChangeNotifier {
   final Compradorrepository _repository;
   List<Comprador> compradores = [];
   Compradorprovider ({Compradorrepository? repository}) : _repository = repository ?? Compradorrepository(null);  

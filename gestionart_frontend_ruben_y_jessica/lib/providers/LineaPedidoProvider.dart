@@ -1,9 +1,10 @@
 import 'dart:ffi';
 
+import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/LineaPedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/LineaPedidoRepository.dart';
 
-class Lineapedidoprovider {
+class Lineapedidoprovider with ChangeNotifier{
   final LineaPedidoRepository _lineaPedidoRepository;
   Lineapedidoprovider(LineaPedidoRepository? lineaPedidoRepository) : _lineaPedidoRepository = lineaPedidoRepository ?? LineaPedidoRepository(null);  
   List<Lineapedido> _lineasPedido = [];

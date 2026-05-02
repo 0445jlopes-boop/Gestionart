@@ -42,8 +42,8 @@ public class AutenticacionService {
         }else if (compradorRepository.findByNombre(comprador.getNombre()).isPresent() || vendedorRepository.findByNombre(comprador.getNombre()).isPresent()) {
             throw new ConflictBySecondaryId(comprador.getNombre(), 2);
         }
-        /*comprador.setContrasena(passwordEncoder.encode(comprador.getContrasena()));
-        comprador.setRol(Rol.COMPRADOR);
+       comprador.setContrasena(passwordEncoder.encode(comprador.getContrasena()));
+         /*comprador.setRol(Rol.COMPRADOR);
         comprador.setTipoCuenta(TipoCuentaComprador.NORMAL);
         comprador.setFechaInicioPremium(null);
         comprador.setFechaFinPremium(null); */
@@ -56,8 +56,8 @@ public class AutenticacionService {
         }else if (vendedorRepository.findByNombre(vendedor.getNombre()).isPresent() || compradorRepository.findByNombre(vendedor.getNombre()).isPresent()) {
             throw new ConflictBySecondaryId(vendedor.getNombre(), 2);
         }
-        /*vendedor.setContrasena(passwordEncoder.encode(vendedor.getContrasena()));
-        vendedor.setRol(Rol.VENDEDOR);
+        vendedor.setContrasena(passwordEncoder.encode(vendedor.getContrasena()));
+        /*vendedor.setRol(Rol.VENDEDOR);
         vendedor.setDescripcionPerfil(vendedor.getDescripcionPerfil() != null ? vendedor.getDescripcionPerfil() : "");
         vendedor.setImagen(vendedor.getImagen() != null ? vendedor.getImagen() : "");
         */
