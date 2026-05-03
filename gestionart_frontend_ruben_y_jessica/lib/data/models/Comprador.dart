@@ -3,10 +3,10 @@ import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoCuentaComprad
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Usuario.dart';
 
 class Comprador extends Usuario{ //Clase comprador
- final String direccion;
- final Tipocuentacomprador tipoCuenta;
- final DateTime fechaInicioPremium;
- final DateTime fechafinPremium;
+  String direccion;
+  Tipocuentacomprador tipoCuenta;
+  DateTime fechaInicioPremium;
+  DateTime fechafinPremium;
 
   Comprador({
     required super.id, 
@@ -34,6 +34,7 @@ class Comprador extends Usuario{ //Clase comprador
   DateTime getFechafinPremium() {
     return fechafinPremium;
   }
+
 
   factory Comprador.fromJson(Map<String, dynamic> json) {
     return Comprador(

@@ -47,7 +47,7 @@ class Compradorrepository {
     }
   }
 
-  Future<List<Comprador>> getCompradores() async {
+  Future<List<Comprador>?> getCompradores() async {
     try {
       final response = await _apiService.dio.get("http://localhost:8080/compradores");
       if (response.statusCode == 200) {
@@ -57,46 +57,46 @@ class Compradorrepository {
         }
         return compradores;
       } else {
-        throw Exception("Error al obtener los compradores: ${response.statusCode}");
+        return null;
       }
     } catch (e) {
       throw Exception("Error al obtener los compradores: $e");
     }
   }
 
-  Future<Comprador> getCompradorPorId(Long id) async {
+  Future<Comprador?> getCompradorPorId(Long id) async {
     try {
       final response = await _apiService.dio.get("http://localhost:8080/compradores/$id");
       if (response.statusCode == 200) {
         return Comprador.fromJson(response.data);
       } else {
-        throw Exception("Error al obtener el comprador por ID: ${response.statusCode}");
+        return null;
       }
     } catch (e) {
       throw Exception("Error al obtener el comprador por ID: $e");
     }
   }
 
-  Future<Comprador> getCompradorPorCorreoElectronico(String correoElectronico) async {
+  Future<Comprador?> getCompradorPorCorreoElectronico(String correoElectronico) async {
     try {
       final response = await _apiService.dio.get("http://localhost:8080/compradores/correo/$correoElectronico");
       if (response.statusCode == 200) {
         return Comprador.fromJson(response.data);
       } else {
-        throw Exception("Error al obtener el comprador por correo electrónico: ${response.statusCode}");
+        return null;
       }
     } catch (e) {
       throw Exception("Error al obtener el comprador por correo electrónico: $e");
     }
   }
 
-  Future<Comprador> getCompradorPorNombre(String nombre) async {
+  Future<Comprador?> getCompradorPorNombre(String nombre) async {
     try {
       final response = await _apiService.dio.get("http://localhost:8080/compradores/nombre/$nombre");
       if (response.statusCode == 200) {
         return Comprador.fromJson(response.data);
       } else {
-        throw Exception("Error al obtener el comprador por nombre: ${response.statusCode}");
+        return null;
       }
     } catch (e) {
       throw Exception("Error al obtener el comprador por nombre: $e");

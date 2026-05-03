@@ -14,7 +14,7 @@ class Pantallainiciocomprador extends StatefulWidget {
 }
 
 class _PantallainiciocompradorState extends State<Pantallainiciocomprador> {
-  late final List <Widget> _views = [categorias_view(), Container(),Container(),perfil_view(comprador: widget.comprador)];
+  List<Widget> get _views => [categorias_view(), Container(),Container(),perfil_view(comprador: widget.comprador)];
   int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {

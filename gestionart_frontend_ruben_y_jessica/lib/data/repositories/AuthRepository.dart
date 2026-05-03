@@ -21,10 +21,11 @@ class Authrepository {
     }
   }
 
-  Future<bool> registerComprador(String correoElectronico, String nombre, String direccion, String imagen) async {
+  Future<bool> registerComprador(String correoElectronico, String contrasena, String nombre, String direccion, String imagen) async {
     try {
       final response = await _apiService.dio.post("http://localhost:8080/auth/registerComprador", data: {
         "correoElectronico": correoElectronico,
+        "contrasena": contrasena,
         "nombre": nombre,
         "direccion": direccion,
         "imagen": imagen

@@ -13,7 +13,7 @@ class Compradorprovider with ChangeNotifier {
  
   Future<void> fetchCompradores() async {
     try {
-      compradores = await _repository.getCompradores();
+      compradores = (await _repository.getCompradores())!;
     } catch (e) {
       print("Error al obtener los compradores: $e");
     }
@@ -55,7 +55,7 @@ class Compradorprovider with ChangeNotifier {
     }
   }
 
-  Future<List<Comprador>> fetchListaCompradores() async {
+  Future<List<Comprador>?> fetchListaCompradores() async {
     try {
       return await _repository.getCompradores();
     } catch (e) {
@@ -64,18 +64,17 @@ class Compradorprovider with ChangeNotifier {
     }
   }
 
-  Future<Comprador> obtenerCompradorPorCorreo(String correoElectronico) async {
+  Future<Comprador?> obtenerCompradorPorCorreo(String correoElectronico) async {
     try {
-      return await _repository.getCompradores().then((compradores) => compradores.firstWhere((c) => c.correoElectronico == correoElectronico));
+      return await _repository.getCompradores().then((compradores) => compradores?.firstWhere((c) => c.correoElectronico == correoElectronico));
     } catch (e) {
-      print("Error al obtener el comprador por correo electrónico: $e");
-      throw e;
+      return null;
     }
   }
 
-  Future<Comprador> obtenerCompradorPorNombre(String nombre) async {
+  Future<Comprador?> obtenerCompradorPorNombre(String nombre) async {
     try {
-      return await _repository.getCompradores().then((compradores) => compradores.firstWhere((c) => c.nombre == nombre));
+      return await _repository.getCompradores().then((compradores) => compradores?.firstWhere((c) => c.nombre == nombre));
     } catch (e) {
       print("Error al obtener el comprador por nombre: $e");
       throw e;

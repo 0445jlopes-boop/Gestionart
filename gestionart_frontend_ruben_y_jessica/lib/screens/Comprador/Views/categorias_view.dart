@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/data/Categorias_data.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/IconosCategoria.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/enums/Categoria.dart';
 
 class categorias_view extends StatefulWidget {
   const categorias_view({super.key});
@@ -22,13 +23,11 @@ class _categorias_viewState extends State<categorias_view> {
           mainAxisSpacing: 16,
           childAspectRatio: 1, //Para que se vea como un cuadrado
         ),
-        itemCount: CategoriasData
-            .categorias
-            .length, // Definimos la cantidad de Contenedores que vamos a crear según y para las categorías
+        itemCount: Categoria.values.length,
         itemBuilder: (context, index) {
           // Similar a un For each para crear los contenedores
           final categoria =
-              CategoriasData.categorias[index]; //Recogemos la categoria
+              Categoria.values[index]; //Recogemos la categoria
           return GestureDetector(
             //Widget que hace que el widget de su interior detecte interacción por parte del usuario mediante el raton, en este caso se usa onTap()
             onTap: () {
@@ -50,13 +49,13 @@ class _categorias_viewState extends State<categorias_view> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    CategoriasData.obtenerIcono(categoria.nombre),
+                    CategoriaIcono.obtenerIcono(categoria),
                     color: AppColores.colorSecundario,
                     size: 30,
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    categoria.nombre,
+                    categoria.toString(),
                     textAlign: TextAlign.center,
                     style: AppEstiloTexto.textoPrincipal,
                   ),

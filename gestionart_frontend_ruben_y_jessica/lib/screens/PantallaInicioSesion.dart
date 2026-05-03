@@ -3,9 +3,12 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/validators/Validators.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/controllers/ControllerComprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/AuthProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Comprador/PantallaInicioComprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoRegistro.dart';
+import 'package:provider/provider.dart';
 
 class Pantallainiciosesion extends StatefulWidget {
   const Pantallainiciosesion({super.key});
@@ -16,29 +19,29 @@ class Pantallainiciosesion extends StatefulWidget {
 
 class _PantallainiciosesionState extends State<Pantallainiciosesion> {
   //DECLARACIÓN DE VARIABLES PARA EL FORMULARIO DE INICIO DE SESIÓN
-  String _nombre = "";
+  String _correo = "";
   String _contrasena = "";
-  final TextEditingController _nombreController = TextEditingController(); // Variables para editar el texto en TextFormField
+  final TextEditingController _correoController = TextEditingController(); // Variables para editar el texto en TextFormField
   final TextEditingController _contrasenaController = TextEditingController();
   bool _obscurePassword = true;
   final _formKey = GlobalKey<FormState>();
 
-  void _validarUsuario() { // Validación del usuario a ver si existe para poder iniciar sesión
+  Future<void> _validarUsuario() async { // Validación del usuario a ver si existe para poder iniciar sesión
     final isFormValid = _formKey.currentState!.validate();
+    final authProvider = Provider.of<Authprovider>(context,listen:false);
+    final compradorProvider = Provider.of<Compradorprovider>(context,listen:false);
     if (isFormValid) {
-      if (Controllercomprador.compradorExiste(_nombre, _contrasena)) {
+      if (await authProvider.login(_correo, _contrasena) ) {
+        Comprador? compradorLogeado = await compradorProvider.obtenerCompradorPorCorreo(_correo)!;
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => Pantallainiciocomprador(
-              comprador: Controllercomprador.extraerComprador(
-                _nombre,
-                _contrasena,
-              )!,
+              comprador:compradorLogeado
             ),
           ),
         );
-        _nombreController.clear();
+        _correoController.clear();
         _contrasenaController.clear();
       } else {
         const snackBar = SnackBar(
@@ -75,14 +78,14 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                       SizedBox(
                         width: 400,
                         child: TextFormField(
-                          controller: _nombreController,
+                          controller: _correoController,
                           decoration: const InputDecoration(
-                            labelText: "Nombre",
+                            labelText: "Correo",
                             labelStyle: AppEstiloTexto.textoPrincipal,
                             border: OutlineInputBorder(),
                           ),
                           validator: (value) => Validators.validateEmpty(value),
-                          onChanged: (value) => _nombre = value,
+                          onChanged: (value) => _correo = value,
                         ),
                       ),
                       SizedBox(height: 20),

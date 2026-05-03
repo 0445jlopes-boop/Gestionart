@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/AuthProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/UsuarioProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/VendedorProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaInicioSesion.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Authprovider()),
+        ChangeNotifierProvider(create: (_) => Compradorprovider()),
+        ChangeNotifierProvider(create: (_) => Usuarioprovider()),
+        ChangeNotifierProvider(create: (_) => Vendedorprovider())
+
+
+
+      ],
+    child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

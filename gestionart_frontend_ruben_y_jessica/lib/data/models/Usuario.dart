@@ -4,12 +4,12 @@ import 'package:gestionart_frontend_ruben_y_jessica/data/enums/Rol.dart';
 
 class Usuario {
   final Long id;
-  final String correoElectronico;
-  final String nombre;
-  final String imagen;
-  final String contrasena;
-  final String contrasena2;
-  final Rol rol;
+  String correoElectronico;
+ String nombre;
+ String imagen;
+ String contrasena;
+ String contrasena2;
+ Rol rol;
 
   Usuario({
     required this.id, 

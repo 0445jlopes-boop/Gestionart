@@ -8,5 +8,5 @@ enum Categoria{
   MADERA,
   CERAMICA,
   ILUSTRACION,
-  CONCEPTUAL, categoria,
+  CONCEPTUAL
 }

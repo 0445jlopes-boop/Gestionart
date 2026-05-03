@@ -6,9 +6,9 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/CameraGalleryService.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/validators/Validators.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/controllers/ControllerGeneral.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/services/LogicaComprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/AuthProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
+import 'package:provider/provider.dart';
 
 class PantallaregistroComprador extends StatefulWidget {
   const PantallaregistroComprador({super.key});
@@ -32,24 +32,19 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
   
   void _validarComprador(){ // Proedimiento que permite comprobar que los campos del formulario sean correctos a través de validaciones
     final isFormValid = _formKey.currentState!.validate();
+    final authProvider = Provider.of<Authprovider>(context,listen:false);
+    final compradorProvider = Provider.of<Compradorprovider>(context,listen:false);
     if(isFormValid){
-      if(ControllerGeneral.nombreEnUso(_nombre)){  // Comprueba que el nombre que desea el comprador no está en uso en caso afirmativo lo notifica al usuario
+      if(compradorProvider.obtenerCompradorPorNombre(_nombre)!= null){  // Comprueba que el nombre que desea el comprador no está en uso en caso afirmativo lo notifica al usuario
         const snackBar = SnackBar(content: Text('El nombre introducido ya existe'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
-      }
-      if(ControllerGeneral.emailEnUso(_correoElectronico)){ // Comprueba que el correo tampoco esté en uso en caso afirmativo lo notifica al usuario
+      }else if(compradorProvider.obtenerCompradorPorCorreo(_correoElectronico)!= null){ // Comprueba que el correo tampoco esté en uso en caso afirmativo lo notifica al usuario
         const snackBar = SnackBar(content: Text('El correo electrónico introducido ya existe'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }
-      LogicaComprador.anadirComprador(Comprador( // Si todo es correcto lo añade a la lista de compradores
-       correoElectronico: _correoElectronico!, 
-        nombre: _nombre!, 
-        contrasena: _contrasena!, 
-        direccion: _direccion!,
-        imagen: photoPath
-      ));
+      authProvider.registerComprador(_correoElectronico,_contrasena,_nombre,_direccion,photoPath!);
       Navigator.pop(context);
     }
   }
