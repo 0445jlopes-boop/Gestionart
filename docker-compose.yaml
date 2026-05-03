@@ -31,12 +31,12 @@ services:
       mysql:
         condition: service_healthy
 
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     - api
+  #frontend:
+    #build: ./gestionart_frontend_ruben_y_jessica
+    #ports:
+      #- "80:80"
+    #depends_on:
+      #- api
 
 volumes:
   datos_mysql:
