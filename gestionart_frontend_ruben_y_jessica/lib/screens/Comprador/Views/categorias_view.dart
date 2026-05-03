@@ -26,12 +26,11 @@ class _categorias_viewState extends State<categorias_view> {
         itemCount: Categoria.values.length,
         itemBuilder: (context, index) {
           // Similar a un For each para crear los contenedores
-          final categoria =
-              Categoria.values[index]; //Recogemos la categoria
+          final categoria =Categoria.values[index]; //Recogemos la categoria
           return GestureDetector(
             //Widget que hace que el widget de su interior detecte interacción por parte del usuario mediante el raton, en este caso se usa onTap()
             onTap: () {
-              
+              //Switch categoria llamo a diversos viws dnd muestro el list de articulos
             },
             child: Container(
               decoration: BoxDecoration(

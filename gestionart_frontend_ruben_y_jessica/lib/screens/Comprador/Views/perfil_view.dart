@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/CameraGalleryService.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoCuentaComprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaInicioSesion.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoActivarPremium.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoCambiarContrasena.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/widgets/dialogs/dialogoEliminarComprador.dart';
+import 'package:provider/provider.dart';
 
 class perfil_view extends StatefulWidget {
   const perfil_view({super.key, required this.comprador});
@@ -22,6 +26,7 @@ class _perfil_viewState extends State<perfil_view> {
   String? photoPath = "";
   @override
   Widget build(BuildContext context) {
+    final compradorProvider = Provider.of<Compradorprovider>(context);
     return SingleChildScrollView(
       child: SizedBox(
         width: 400,
@@ -92,6 +97,23 @@ class _perfil_viewState extends State<perfil_view> {
               },
               child: Text("¿Quieres cambiar tu contraseña?"),
             ),
+            SizedBox(height: 20,),
+            ElevatedButton(
+              style:  widget.comprador.tipoCuenta == Tipocuentacomprador.NORMAL
+              ? AppEstiloBotones.botonPrincipal
+              : AppEstiloBotones.botonSecundario,
+              onPressed: (){ //Simulador de pago por activar premium
+              if(widget.comprador.tipoCuenta == Tipocuentacomprador.NORMAL){
+                dialogoActivarPremium(context, widget.comprador);
+              }else if(widget.comprador.tipoCuenta == Tipocuentacomprador.PREMIUM){
+                compradorProvider.desactivarPremium(widget.comprador.id);
+              }
+            }
+            , child: Text(
+              widget.comprador.tipoCuenta == Tipocuentacomprador.NORMAL
+              ? "Activar premium"
+              : "Desactivar premium"
+            )),
             SizedBox(height: 20,),
             ElevatedButton(
               style: AppEstiloBotones.botonPrincipal,
