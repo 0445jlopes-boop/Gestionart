@@ -18,6 +18,7 @@ import com.gestionart.api.domain.models.Usuario;
 import com.gestionart.api.domain.models.Vendedor;
 
 @RestController
+@CrossOrigin(origins="*")
 @RequestMapping("/auth")
 public class AutenticacionController {
 

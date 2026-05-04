@@ -4,6 +4,7 @@ import com.stripe.model.PaymentIntent;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/stripe")
 public class StripeController {
 
