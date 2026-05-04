@@ -11,7 +11,7 @@ class Lineapedidoprovider with ChangeNotifier{
   List<Lineapedido> get lineasPedido => _lineasPedido;
 
 
-  Future<void> crearLineaPedido(Long idLineaPedido, Long idArticulo, Long cantidad, double precioUnitario) async {
+  Future<void> crearLineaPedido(Long idLineaPedido, Long idArticulo, int cantidad, double precioUnitario) async {
     try {
       await _lineaPedidoRepository.crearLineaPedido(idLineaPedido, idArticulo, cantidad, precioUnitario);
     } catch (e) {

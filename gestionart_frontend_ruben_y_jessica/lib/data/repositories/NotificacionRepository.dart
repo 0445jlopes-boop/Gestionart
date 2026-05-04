@@ -10,7 +10,7 @@ class Notificacionrepository {
 
   Future<void> crearNotificacion(Long idVendedor, Tiponotificacion tipo) async {
     try {
-      final response = await _apiService.dio.post("http://localhost:8080/notificaciones", data: {
+      final response = await _apiService.dio.post("/notificaciones", data: {
         "idVendedor": idVendedor,
         "tipo": tipo
       });
@@ -24,7 +24,7 @@ class Notificacionrepository {
 
   Future<List<Notificacion>> obtenerNotificacionesPorVendedor(Long idVendedor) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/notificaciones/vendedor/$idVendedor");
+      final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor");
       if (response.statusCode == 200) {
         List<Notificacion> notificaciones = [];
         for (var item in response.data) {
@@ -41,7 +41,7 @@ class Notificacionrepository {
 
   Future<List<Notificacion>> obtenerPorVendedor(Long idVendedor) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/notificaciones/vendedor/$idVendedor");
+      final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor");
       if (response.statusCode == 200) {
         List<Notificacion> notificaciones = [];
         for (var item in response.data) {
@@ -58,7 +58,7 @@ class Notificacionrepository {
 
   Future<List<Notificacion>> obtenerNoLeidas(Long idVendedor) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/notificaciones/vendedor/$idVendedor/no-leidas");
+      final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/no-leidas");
       if (response.statusCode == 200) {
         List<Notificacion> notificaciones = [];
         for (var item in response.data) {
@@ -75,7 +75,7 @@ class Notificacionrepository {
 
   Future<List<Notificacion>> obtenerLeidas(Long idVendedor) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/notificaciones/vendedor/$idVendedor/leidas");
+      final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/leidas");
       if (response.statusCode == 200) {
         List<Notificacion> notificaciones = [];
         for (var item in response.data) {
@@ -92,7 +92,7 @@ class Notificacionrepository {
 
   Future<List<Notificacion>> obtenerPorTipo(Long idVendedor, Tiponotificacion tipo) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/notificaciones/vendedor/$idVendedor/tipo/$tipo");
+      final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/tipo/$tipo");
       if (response.statusCode == 200) {
         List<Notificacion> notificaciones = [];
         for (var item in response.data) {
@@ -109,7 +109,7 @@ class Notificacionrepository {
 
   Future<void> marcarComoLeida(Long idNotificacion, Long idVendedor) async {
     try {
-      final response = await _apiService.dio.post("http://localhost:8080/notificaciones/$idNotificacion/leida/$idVendedor");
+      final response = await _apiService.dio.post("/notificaciones/$idNotificacion/leida/$idVendedor");
       if (response.statusCode != 200) {
         throw Exception("Error al marcar la notificación como leída: ${response.statusCode}");
       }
@@ -120,7 +120,7 @@ class Notificacionrepository {
 
   Future<void> marcarTodasComoLeidas(Long idVendedor) async {
     try {
-      final response = await _apiService.dio.post("http://localhost:8080/notificaciones/vendedor/$idVendedor/leidas");
+      final response = await _apiService.dio.post("/notificaciones/vendedor/$idVendedor/leidas");
       if (response.statusCode != 200) {
         throw Exception("Error al marcar todas las notificaciones como leídas: ${response.statusCode}");
       } else {
@@ -134,7 +134,7 @@ class Notificacionrepository {
 
   Future<void> eliminarNotificacion(Long idNotificacion) async {
     try {
-      final response = await _apiService.dio.delete("http://localhost:8080/notificaciones/$idNotificacion");
+      final response = await _apiService.dio.delete("/notificaciones/$idNotificacion");
       if (response.statusCode != 200) {
         throw Exception("Error al eliminar la notificación: ${response.statusCode}");
       }else {

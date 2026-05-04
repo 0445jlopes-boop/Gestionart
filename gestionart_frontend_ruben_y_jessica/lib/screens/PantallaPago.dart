@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoPago.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Pedido.dart';
@@ -43,7 +44,14 @@ class _pago_viewState extends State<pago_view> {
     final publicidadProvider = Provider.of<AnuncioProvider>(context);
     final importe = obtenerImporte(pedidoProvider);
 
-    return SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar( // Appbar con estilo predefinido 
+        backgroundColor: AppColores.colorPrimario,
+        flexibleSpace: Center(
+          child: Text("PROCESE SU PAGO", style: AppEstiloTexto.encabezado),
+        ),
+      ),
+      body:SingleChildScrollView(
       child: SizedBox(
         width: 400,
         child: Form(
@@ -137,6 +145,7 @@ class _pago_viewState extends State<pago_view> {
           ),
         ),
       ),
+    )
     );
   }
 
@@ -214,4 +223,5 @@ class _pago_viewState extends State<pago_view> {
 
     return null;
   }
+  
 }

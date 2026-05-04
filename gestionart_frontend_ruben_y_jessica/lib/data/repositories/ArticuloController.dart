@@ -10,7 +10,7 @@ class Articulocontroller {
 
   Future<void> actualizarArticulo(Long id, String titulo, String descripcion, double precio, String imagen, String categoria, int stock  ) async {
     try {
-      final response = await _apiService.dio.put("http://localhost:8080/articulos/$id", data: {
+      final response = await _apiService.dio.put("/articulos/$id", data: {
         "titulo": titulo,
         "descripcion": descripcion,
         "precio": precio,
@@ -29,7 +29,7 @@ class Articulocontroller {
 
   Future<void> crearArticulo(String titulo, String descripcion, double precio, String imagen, String categoria, int stock) async {
     try {
-      final response = await _apiService.dio.post("http://localhost:8080/articulos", data: {
+      final response = await _apiService.dio.post("/articulos", data: {
         "titulo": titulo,
         "descripcion": descripcion,
         "precio": precio,
@@ -47,7 +47,7 @@ class Articulocontroller {
 
   Future<Articulo> obtenerArticulo(Long id) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/articulos/$id");
+      final response = await _apiService.dio.get("/articulos/$id");
       if (response.statusCode == 200) {
         return Articulo.fromJson(response.data);
       } else {
@@ -60,7 +60,7 @@ class Articulocontroller {
 
   Future<List<Articulo>> obtenerArticulos() async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/articulos");
+      final response = await _apiService.dio.get("/articulos");
       if (response.statusCode == 200) {
         return (response.data as List).map((json) => Articulo.fromJson(json)).toList();
       } else {
@@ -73,7 +73,7 @@ class Articulocontroller {
 
   Future<List<Articulo>> articulosPorCategoria(String categoria) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/articulos/categoria/$categoria");
+      final response = await _apiService.dio.get("/articulos/categoria/$categoria");
       if (response.statusCode == 200) {
         return (response.data as List).map((json) => Articulo.fromJson(json)).toList();
       } else {
@@ -86,7 +86,7 @@ class Articulocontroller {
 
   Future<List<Articulo>> articulosPorVendedor(Long vendedorId) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/articulos/vendedor/$vendedorId");
+      final response = await _apiService.dio.get("/articulos/vendedor/$vendedorId");
       if (response.statusCode == 200) {
         return (response.data as List).map((json) => Articulo.fromJson(json)).toList();
       } else {
@@ -100,7 +100,7 @@ class Articulocontroller {
 
   Future<void> eliminarArticulo(Long id) async {
     try {
-      final response = await _apiService.dio.delete("http://localhost:8080/articulos/$id");
+      final response = await _apiService.dio.delete("/articulos/$id");
       if (response.statusCode != 200) {
         throw Exception("Error al eliminar el artículo: ${response.statusCode}");
       }

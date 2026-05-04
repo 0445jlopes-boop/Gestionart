@@ -12,7 +12,7 @@ class UsuarioRepository {
   Future<Usuario> getUsuarioPorId(Long id) async {
 
     try{
-      final response = await _apiService.dio.get("http://localhost:8080/users/$id");
+      final response = await _apiService.dio.get("/users/$id");
       if (response.statusCode == 200) {
         return Usuario.fromJson(response.data);
       } else {

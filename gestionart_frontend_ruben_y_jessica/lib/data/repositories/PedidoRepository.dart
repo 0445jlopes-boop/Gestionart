@@ -9,7 +9,7 @@ class PedidoRepository {
 
   Future<Pedido> crearPedido(Long idComprador) async {
     try {
-      final response = await _apiService.dio.post("http://localhost:8080/pedidos", data: {
+      final response = await _apiService.dio.post("/pedidos", data: {
         "idComprador": idComprador
       });
       if (response.statusCode == 200) {
@@ -24,7 +24,7 @@ class PedidoRepository {
 
   Future<void> confirmarPedido(Long idPedido) async {
     try {
-      final response = await _apiService.dio.put("http://localhost:8080/pedidos/$idPedido/confirmar");
+      final response = await _apiService.dio.put("/pedidos/$idPedido/confirmar");
       if (response.statusCode != 200) {
         throw Exception("Error al confirmar el pedido: ${response.statusCode}");
       }
@@ -35,7 +35,7 @@ class PedidoRepository {
 
   Future<Pedido> obtenerPedidoPorId(Long idPedido) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/pedidos/$idPedido");
+      final response = await _apiService.dio.get("/pedidos/$idPedido");
       if (response.statusCode == 200) {
         return Pedido.fromJson(response.data);
       } else {
@@ -48,7 +48,7 @@ class PedidoRepository {
 
   Future<List<Pedido>> obtenerPedidosPorComprador(Long idComprador) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/pedidos/comprador/$idComprador");
+      final response = await _apiService.dio.get("/pedidos/comprador/$idComprador");
       if (response.statusCode == 200) {
         List<Pedido> pedidos = [];
         for (var item in response.data) {
@@ -65,7 +65,7 @@ class PedidoRepository {
 
   Future<List<Pedido>> obtenerPedidosPorVendedor(Long idVendedor) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/pedidos/vendedor/$idVendedor");
+      final response = await _apiService.dio.get("/pedidos/vendedor/$idVendedor");
       if (response.statusCode == 200) {
         List<Pedido> pedidos = [];
         for (var item in response.data) {
@@ -82,7 +82,7 @@ class PedidoRepository {
 
   Future<List<Pedido>> obtenerTodosPedidos() async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/pedidos");
+      final response = await _apiService.dio.get("/pedidos");
       if (response.statusCode == 200) {
         List<Pedido> pedidos = [];
         for (var item in response.data) {

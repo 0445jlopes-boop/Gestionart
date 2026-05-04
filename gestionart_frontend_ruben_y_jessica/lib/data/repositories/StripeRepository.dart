@@ -6,7 +6,7 @@ class Striperepository {
 
   Future<bool> crearPago() async {
     try {
-      final response = await _apiService.dio.post("http://localhost:8080/api/stripe/crear-pago");
+      final response = await _apiService.dio.post("/api/stripe/crear-pago");
       if (response.statusCode == 200) {
         return true;
       } else {

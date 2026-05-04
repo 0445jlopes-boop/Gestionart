@@ -10,7 +10,7 @@ class Solicitudexclusivarepository {
 
   Future<void> crearSolicitudExclusiva(Long idComprador, Long idArticulo, String mensaje, Long idVendedor) async {
     try {
-      final response = await _apiService.dio.post("http://localhost:8080/solicitudes-exclusivas", data: {
+      final response = await _apiService.dio.post("/solicitudes-exclusivas", data: {
         "idComprador": idComprador,
         "idArticulo": idArticulo,
         "mensaje": mensaje,
@@ -26,7 +26,7 @@ class Solicitudexclusivarepository {
 
   Future<void> obtenerPorId(Long id) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/solicitudes-exclusivas/$id");
+      final response = await _apiService.dio.get("/solicitudes-exclusivas/$id");
       if (response.statusCode != 200) {
         throw Exception("Error al obtener la solicitud exclusiva por ID: ${response.statusCode}");
       }
@@ -37,7 +37,7 @@ class Solicitudexclusivarepository {
 
   Future<List<Solicitudexclusiva>> obtenerPorVendedor(Long idVendedor) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/solicitudes-exclusivas/vendedor/$idVendedor");
+      final response = await _apiService.dio.get("/solicitudes-exclusivas/vendedor/$idVendedor");
       if (response.statusCode == 200) {
         List<Solicitudexclusiva> solicitudes = [];
         for (var item in response.data) {
@@ -54,7 +54,7 @@ class Solicitudexclusivarepository {
 
   Future<List<Solicitudexclusiva>> obtenerPorVendedorYEstado(Long idVendedor, Estadosolicitud estado) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/solicitudes-exclusivas/vendedor/$idVendedor/estado/$estado");
+      final response = await _apiService.dio.get("/solicitudes-exclusivas/vendedor/$idVendedor/estado/$estado");
       if (response.statusCode == 200) {
         List<Solicitudexclusiva> solicitudes = [];
         for (var item in response.data) {
@@ -71,7 +71,7 @@ class Solicitudexclusivarepository {
 
   Future<List<Solicitudexclusiva>> obtenerPorComprador(Long idComprador) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/solicitudes-exclusivas/comprador/$idComprador");
+      final response = await _apiService.dio.get("/solicitudes-exclusivas/comprador/$idComprador");
       if (response.statusCode == 200) {
         List<Solicitudexclusiva> solicitudes = [];
         for (var item in response.data) {
@@ -88,7 +88,7 @@ class Solicitudexclusivarepository {
   
   Future<List<Solicitudexclusiva>> obtenerPorCompradorYEstado(Long idComprador, Estadosolicitud estado) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/solicitudes-exclusivas/comprador/$idComprador/estado/$estado");
+      final response = await _apiService.dio.get("/solicitudes-exclusivas/comprador/$idComprador/estado/$estado");
       if (response.statusCode == 200) {
         List<Solicitudexclusiva> solicitudes = [];
         for (var item in response.data) {
@@ -105,7 +105,7 @@ class Solicitudexclusivarepository {
 
   Future<List<Solicitudexclusiva>> obtenerTodas() async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/solicitudes-exclusivas");
+      final response = await _apiService.dio.get("/solicitudes-exclusivas");
       if (response.statusCode == 200) {
         List<Solicitudexclusiva> solicitudes = [];
         for (var item in response.data) {
@@ -122,7 +122,7 @@ class Solicitudexclusivarepository {
 
   Future<void> actualizarEstado(Long id, Estadosolicitud nuevoEstado) async {
     try {
-      final response = await _apiService.dio.put("http://localhost:8080/solicitudes-exclusivas/$id/estado/$nuevoEstado");
+      final response = await _apiService.dio.put("/solicitudes-exclusivas/$id/estado/$nuevoEstado");
       if (response.statusCode != 200) {
         throw Exception("Error al actualizar el estado de la solicitud exclusiva: ${response.statusCode}"); 
       }

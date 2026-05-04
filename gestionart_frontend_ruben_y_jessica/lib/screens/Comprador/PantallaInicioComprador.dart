@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/screens/Comprador/Views/categorias_view.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/screens/Comprador/Views/categorias_inicio_view.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Comprador/Views/perfil_view.dart';
 
 class Pantallainiciocomprador extends StatefulWidget {
@@ -14,7 +14,7 @@ class Pantallainiciocomprador extends StatefulWidget {
 }
 
 class _PantallainiciocompradorState extends State<Pantallainiciocomprador> {
-  List<Widget> get _views => [categorias_view(), Container(),Container(),perfil_view(comprador: widget.comprador)];
+  List<Widget> get _views => [categorias_inicio_view(comprador: widget.comprador,), Container(),Container(),perfil_view(comprador: widget.comprador)];
   int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {

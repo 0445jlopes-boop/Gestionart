@@ -11,7 +11,7 @@ class Anunciorepository {
 
   Future<bool> crearAnuncio(Long idVendedor, String titulo, String categoria, double precio, String imagen) async {
     try {
-      final response = await _apiService.dio.post("http://localhost:8080/anuncios", data: {
+      final response = await _apiService.dio.post("/anuncios", data: {
         "idVendedor": idVendedor,
         "titulo": titulo,
         "categoria": categoria,
@@ -31,7 +31,7 @@ class Anunciorepository {
   
   Future<Anuncio> getAnuncioPorVendedor(Long idVendedor) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/anuncios/vendedor/$idVendedor");
+      final response = await _apiService.dio.get("/anuncios/vendedor/$idVendedor");
       if (response.statusCode == 200) {
         return Anuncio.fromJson(response.data);
       } else {
@@ -44,7 +44,7 @@ class Anunciorepository {
 
   Future<List<Anuncio>> getAnuncios() async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/anuncios");
+      final response = await _apiService.dio.get("/anuncios");
       if (response.statusCode == 200) {
         List<Anuncio> anuncios = [];
         for (var item in response.data) {
@@ -61,7 +61,7 @@ class Anunciorepository {
 
   Future<Anuncio> getAnuncioPorId(Long id) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/anuncios/$id");
+      final response = await _apiService.dio.get("/anuncios/$id");
       if (response.statusCode == 200) {
         return Anuncio.fromJson(response.data);
       } else {
@@ -74,7 +74,7 @@ class Anunciorepository {
 
   Future<Anuncio> getAnuncioPorCategoria(String categoria) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/anuncios/categoria/$categoria");
+      final response = await _apiService.dio.get("/anuncios/categoria/$categoria");
       if (response.statusCode == 200) {
         return Anuncio.fromJson(response.data);
       } else {
@@ -87,7 +87,7 @@ class Anunciorepository {
 
   Future<void> eliminarAnuncio(Long id) async {
     try {
-      final response = await _apiService.dio.delete("http://localhost:8080/anuncios/$id");
+      final response = await _apiService.dio.delete("/anuncios/$id");
       if (response.statusCode != 200) {
         throw Exception("Error al eliminar el anuncio: ${response.statusCode}");
       }

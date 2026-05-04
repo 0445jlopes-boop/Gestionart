@@ -10,7 +10,7 @@ class Vendedorrepository {
 
   Future<void> actualizarVendedor(Long id, String correoElectronico, String nombre, String descripcionPerfil, String imagen, String contrasena) async {
     try {
-      final response = await apiService.dio.put("http://localhost:8080/vendedores/$id", data: {
+      final response = await apiService.dio.put("/vendedores/$id", data: {
         "correoElectronico": correoElectronico,
         "nombre": nombre,
         "descripcionPerfil": descripcionPerfil,
@@ -27,7 +27,7 @@ class Vendedorrepository {
 
   Future<List<Vendedor>> getVendedores() async {
     try {
-      final response = await apiService.dio.get("http://localhost:8080/vendedores");
+      final response = await apiService.dio.get("/vendedores");
       if (response.statusCode == 200) {
         List<Vendedor> vendedores = [];
         for (var item in response.data) {
@@ -43,7 +43,7 @@ class Vendedorrepository {
   }
   Future<Vendedor> getVendedorPorId(Long id) async {
     try {
-      final response = await apiService.dio.get("http://localhost:8080/vendedores/$id");
+      final response = await apiService.dio.get("/vendedores/$id");
       if (response.statusCode == 200) {
         return Vendedor.fromJson(response.data);
       } else {
@@ -56,7 +56,7 @@ class Vendedorrepository {
 
   Future<Vendedor> getVendedorPorCorreoElectronico(String correoElectronico) async {
     try {
-      final response = await apiService.dio.get("http://localhost:8080/vendedores/correo/$correoElectronico");
+      final response = await apiService.dio.get("/vendedores/correo/$correoElectronico");
       if (response.statusCode == 200) {
         return Vendedor.fromJson(response.data);
       } else {
@@ -69,7 +69,7 @@ class Vendedorrepository {
 
   Future<Vendedor> getVendedorPorNombre(String nombre) async {
     try {
-      final response = await apiService.dio.get("http://localhost:8080/vendedores/nombre/$nombre");
+      final response = await apiService.dio.get("/vendedores/nombre/$nombre");
       if (response.statusCode == 200) {
         return Vendedor.fromJson(response.data);
       } else {
@@ -82,7 +82,7 @@ class Vendedorrepository {
 
   Future<void> eliminarVendedor(Long id) async {
     try {
-      final response = await apiService.dio.delete("http://localhost:8080/vendedores/$id");
+      final response = await apiService.dio.delete("/vendedores/$id");
       if (response.statusCode != 200) {
         throw Exception("Error al eliminar el vendedor: ${response.statusCode}");
       }

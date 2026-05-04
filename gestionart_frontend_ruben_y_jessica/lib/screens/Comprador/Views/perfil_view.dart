@@ -130,7 +130,7 @@ class _perfil_viewState extends State<perfil_view> {
             ElevatedButton(
               style: AppEstiloBotones.botonPrincipal,
               onPressed: () {
-                dialogoEliminarCuenta(context, widget.comprador);
+                dialogoEliminarCuenta(context, widget.comprador, compradorProvider);
               } , 
               child: Text("Eliminar cuenta", style: AppEstiloTexto.textoSecundario,)
             )

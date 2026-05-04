@@ -7,9 +7,9 @@ class LineaPedidoRepository {
   final ApiService _apiService;
   LineaPedidoRepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
-  Future<void> crearLineaPedido(Long idPedido, Long idArticulo, Long cantidad, double precioUnitario) async {
+  Future<void> crearLineaPedido(Long idPedido, Long idArticulo, int cantidad, double precioUnitario) async {
     try {
-      final response = await _apiService.dio.post("http://localhost:8080/lineas-pedido", data: {
+      final response = await _apiService.dio.post("/lineas-pedido", data: {
         "idPedido": idPedido,
         "idArticulo": idArticulo,
         "cantidad": cantidad,
@@ -25,7 +25,7 @@ class LineaPedidoRepository {
 
   Future<void> actualizarLineaPedido(Long idLineaPedido, int cantidad, double precioUnitario) async {
     try {
-      final response = await _apiService.dio.put("http://localhost:8080/lineas-pedido/$idLineaPedido", data: {
+      final response = await _apiService.dio.put("/lineas-pedido/$idLineaPedido", data: {
         "cantidad": cantidad,
         "precioUnitario": precioUnitario
       });
@@ -39,7 +39,7 @@ class LineaPedidoRepository {
 
   Future<List<Lineapedido>> obtenerLineasPedidoPorPedido(Long idPedido) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/lineas-pedido/pedido/$idPedido");
+      final response = await _apiService.dio.get("/lineas-pedido/pedido/$idPedido");
       if (response.statusCode == 200) {
         List<Lineapedido> lineasPedido = [];
         for (var item in response.data) {
@@ -56,7 +56,7 @@ class LineaPedidoRepository {
 
   Future <Lineapedido> obtenerLineaPedidoPorId(Long idLineaPedido) async {
     try {
-      final response = await _apiService.dio.get("http://localhost:8080/lineas-pedido/$idLineaPedido");
+      final response = await _apiService.dio.get("/lineas-pedido/$idLineaPedido");
       if (response.statusCode == 200) {
         return Lineapedido.fromJson(response.data);
       } else {
@@ -69,7 +69,7 @@ class LineaPedidoRepository {
 
   Future<void> eliminarLineaPedido(Long idLineaPedido) async {
     try {
-      final response = await _apiService.dio.delete("http://localhost:8080/lineas-pedido/$idLineaPedido");
+      final response = await _apiService.dio.delete("/lineas-pedido/$idLineaPedido");
       if (response.statusCode != 204) {
         throw Exception("Error al eliminar la línea de pedido: ${response.statusCode}");
       }
