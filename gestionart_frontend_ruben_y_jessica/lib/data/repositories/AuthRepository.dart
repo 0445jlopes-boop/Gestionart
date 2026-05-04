@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
 
 class Authrepository {
@@ -5,19 +6,30 @@ class Authrepository {
   final ApiService _apiService;
   Authrepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
-  Future<bool> login(String correoElectronico, String contrasena) async {
+  Future<String?> login(String correoElectronico, String contrasena) async {
     try {
-      final response = await _apiService.dio.post("http://localhost:8080/auth/login", data: {
-        "correoElectronico": correoElectronico,
-        "contrasena": contrasena
-      });
+      final response = await _apiService.dio.post("http://localhost:8080/auth/login", data: {"correoElectronico": correoElectronico,"contrasena": contrasena
+      }, 
+      options: Options(
+        headers: {
+          "Content-Type": "application/json",
+        },
+      ),
+      );
       if (response.statusCode == 200) {
-        return true;
+        return response.data;
       } else {
-        return false;
+        return null;
       }
     } catch (e) {
-      throw Exception("Error al iniciar sesión: $e");
+      if (e is DioException){
+        print("STATUS: ${e.response?.statusCode}");
+    print("DATA: ${e.response?.data}");
+    print("URL: ${e.requestOptions.uri}");
+    print("HEADERS: ${e.requestOptions.headers}");
+    print(e.requestOptions.uri);
+      } else {print ("Error : $e");}
+      throw Exception("Error");
     }
   }
 

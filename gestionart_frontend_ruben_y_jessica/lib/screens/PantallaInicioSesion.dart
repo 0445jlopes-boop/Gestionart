@@ -31,7 +31,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
     final authProvider = Provider.of<Authprovider>(context,listen:false);
     final compradorProvider = Provider.of<Compradorprovider>(context,listen:false);
     if (isFormValid) {
-      if (await authProvider.login(_correo, _contrasena) ) {
+      if (await authProvider.login(_correo, _contrasena) != null) {
         Comprador? compradorLogeado = await compradorProvider.obtenerCompradorPorCorreo(_correo)!;
         Navigator.push(
           context,

@@ -2,7 +2,10 @@ import 'package:dio/dio.dart';
 
 class ApiService {
   final Dio _dio = Dio(BaseOptions(
-    baseUrl: "http://localhost:8080/api/v1",
+    baseUrl: "http://localhost:8080",
+    headers: {
+    "Content-Type": "application/json",
+  } ,
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 10),
   ));
@@ -10,7 +13,7 @@ class ApiService {
   ApiService() {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
-        //options.headers["Authorization"] = "Bearer TOKEN"; // Autenticación si es necesario
+        options.headers["Authorization"] = "Bearer TOKEN"; // Autenticación si es necesario
         return handler.next(options);
       },
       onResponse: (response, handler) {

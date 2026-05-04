@@ -6,7 +6,7 @@ class Authprovider extends ChangeNotifier{
   final Authrepository _authrepository;
   Authprovider({Authrepository? repository})
       : _authrepository = repository ?? Authrepository(null);
-  Future<bool> login(String correoElectronico, String contrasena) async {
+  Future<String?> login(String correoElectronico, String contrasena) async {
     return await _authrepository.login(correoElectronico, contrasena);
   }
 
