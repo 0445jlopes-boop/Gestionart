@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoNotificacion.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Notificacion.dart';
@@ -8,7 +8,7 @@ class Notificacionrepository {
   final ApiService _apiService;
   Notificacionrepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
-  Future<void> crearNotificacion(Long idVendedor, Tiponotificacion tipo) async {
+  Future<void> crearNotificacion(int idVendedor, Tiponotificacion tipo) async {
     try {
       final response = await _apiService.dio.post("/notificaciones", data: {
         "idVendedor": idVendedor,
@@ -22,7 +22,7 @@ class Notificacionrepository {
     }
   }  
 
-  Future<List<Notificacion>> obtenerNotificacionesPorVendedor(Long idVendedor) async {
+  Future<List<Notificacion>> obtenerNotificacionesPorVendedor(int idVendedor) async {
     try {
       final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor");
       if (response.statusCode == 200) {
@@ -39,7 +39,7 @@ class Notificacionrepository {
     }
   }
 
-  Future<List<Notificacion>> obtenerPorVendedor(Long idVendedor) async {
+  Future<List<Notificacion>> obtenerPorVendedor(int idVendedor) async {
     try {
       final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor");
       if (response.statusCode == 200) {
@@ -56,7 +56,7 @@ class Notificacionrepository {
     }
   }
 
-  Future<List<Notificacion>> obtenerNoLeidas(Long idVendedor) async {
+  Future<List<Notificacion>> obtenerNoLeidas(int idVendedor) async {
     try {
       final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/no-leidas");
       if (response.statusCode == 200) {
@@ -73,7 +73,7 @@ class Notificacionrepository {
     }
   }
 
-  Future<List<Notificacion>> obtenerLeidas(Long idVendedor) async {
+  Future<List<Notificacion>> obtenerLeidas(int idVendedor) async {
     try {
       final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/leidas");
       if (response.statusCode == 200) {
@@ -90,7 +90,7 @@ class Notificacionrepository {
     }
   }
 
-  Future<List<Notificacion>> obtenerPorTipo(Long idVendedor, Tiponotificacion tipo) async {
+  Future<List<Notificacion>> obtenerPorTipo(int idVendedor, Tiponotificacion tipo) async {
     try {
       final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/tipo/$tipo");
       if (response.statusCode == 200) {
@@ -107,7 +107,7 @@ class Notificacionrepository {
     }
   }
 
-  Future<void> marcarComoLeida(Long idNotificacion, Long idVendedor) async {
+  Future<void> marcarComoLeida(int idNotificacion, int idVendedor) async {
     try {
       final response = await _apiService.dio.post("/notificaciones/$idNotificacion/leida/$idVendedor");
       if (response.statusCode != 200) {
@@ -118,7 +118,7 @@ class Notificacionrepository {
     }
   }
 
-  Future<void> marcarTodasComoLeidas(Long idVendedor) async {
+  Future<void> marcarTodasComoLeidas(int idVendedor) async {
     try {
       final response = await _apiService.dio.post("/notificaciones/vendedor/$idVendedor/leidas");
       if (response.statusCode != 200) {
@@ -132,7 +132,7 @@ class Notificacionrepository {
   }
 
 
-  Future<void> eliminarNotificacion(Long idNotificacion) async {
+  Future<void> eliminarNotificacion(int idNotificacion) async {
     try {
       final response = await _apiService.dio.delete("/notificaciones/$idNotificacion");
       if (response.statusCode != 200) {

@@ -1,9 +1,9 @@
-import 'dart:ffi';
+
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/Rol.dart';
 
 class Usuario {
-  final Long id;
+  final int id;
   String correoElectronico;
  String nombre;
  String imagen;
@@ -21,7 +21,7 @@ class Usuario {
     required this.rol
   });
 
-  Long getId() {
+  int getId() {
     return id;
   }
 
@@ -52,25 +52,28 @@ class Usuario {
 
   factory Usuario.fromJson(Map<String, dynamic> json) {
     return Usuario(
-      id: json['id'],
-      correoElectronico: json['correoElectronico'],
-      nombre: json['nombre'],
-      imagen: json['imagen'],
-      contrasena: json['contrasena'],
-      contrasena2: json['contrasena2'],
-      rol: Rol.values.firstWhere((e) => e.toString() == 'Rol.' + json['rol']),
+      id: json['id'] ?? 0,
+      correoElectronico: json['correoElectronico'] ?? '',
+      nombre: json['nombre'] ?? '',
+      imagen: json['imagen'] ?? '',
+      contrasena: json['contrasena'] ?? '',
+      contrasena2: json['contrasena2'] ?? '',
+     rol: Rol.values.firstWhere(
+        (e) => e.toString().split('.').last == (json['rol'] ?? 'COMPRADOR'),
+        orElse: () => Rol.COMPRADOR,
+      ),
     );
   } 
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'correoElectronico': correoElectronico,
-      'nombre': nombre,
-      'imagen': imagen,
-      'contrasena': contrasena,
-      'contrasena2': contrasena2,
-      'rol': rol.toString().split('.').last, // Convertir el enum a string
+      'id': id ?? 0,
+      'correoElectronico': correoElectronico ?? '',
+      'nombre': nombre ?? '',
+      'imagen': imagen ?? '',
+      'contrasena': contrasena ?? '',
+      'contrasena2': contrasena2 ?? '',
+      'rol': rol.toString().split('.').last ?? Rol.COMPRADOR.toString(),
     };
   }
 

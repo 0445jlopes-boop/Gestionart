@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Aticulo.dart';
@@ -28,7 +28,7 @@ class Articuloprovider with ChangeNotifier {
     }
   }
 
-  Future<void> actualizarArticulo(Long id, String titulo, String descripcion, double precio, String imagen, String categoria, int stock) async {
+  Future<void> actualizarArticulo(int id, String titulo, String descripcion, double precio, String imagen, String categoria, int stock) async {
     try {
       await articulocontroller.actualizarArticulo(id, titulo, descripcion, precio, imagen, categoria, stock);
       await fetchArticulos();
@@ -37,7 +37,7 @@ class Articuloprovider with ChangeNotifier {
     }
   }
 
-  Future<Articulo?> obtenerArticulo(Long id) async {
+  Future<Articulo?> obtenerArticulo(int id) async {
     try {
       return await articulocontroller.obtenerArticulo(id);
     } catch (e) {
@@ -55,7 +55,7 @@ class Articuloprovider with ChangeNotifier {
     }
   }
 
-  Future<List<Articulo>> obtenerPorVendedor(Long idVendedor) async {
+  Future<List<Articulo>> obtenerPorVendedor(int idVendedor) async {
     try {
       return await articulocontroller.articulosPorVendedor(idVendedor);
     } catch (e) {
@@ -64,7 +64,7 @@ class Articuloprovider with ChangeNotifier {
     }
   }
 
-  Future<void> eliminarArticulo(Long id) async {
+  Future<void> eliminarArticulo(int id) async {
     try {
       await articulocontroller.eliminarArticulo(id);
       await fetchArticulos();

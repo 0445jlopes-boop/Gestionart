@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/LineaPedido.dart';
@@ -11,7 +11,7 @@ class Lineapedidoprovider with ChangeNotifier{
   List<Lineapedido> get lineasPedido => _lineasPedido;
 
 
-  Future<void> crearLineaPedido(Long idLineaPedido, Long idArticulo, int cantidad, double precioUnitario) async {
+  Future<void> crearLineaPedido(int idLineaPedido, int idArticulo, int cantidad, double precioUnitario) async {
     try {
       await _lineaPedidoRepository.crearLineaPedido(idLineaPedido, idArticulo, cantidad, precioUnitario);
     } catch (e) {
@@ -19,7 +19,7 @@ class Lineapedidoprovider with ChangeNotifier{
     }
   }
 
-  Future<void> actualizarLineaPedido (Long id, int cantidad, double precioUnitario) async {
+  Future<void> actualizarLineaPedido (int id, int cantidad, double precioUnitario) async {
     try{
       await _lineaPedidoRepository.actualizarLineaPedido(id, cantidad, precioUnitario);
     }catch(e){
@@ -27,7 +27,7 @@ class Lineapedidoprovider with ChangeNotifier{
     }
   }
 
-  Future<List<Lineapedido>> fetchLineasPedidoPorPedido(Long idPedido) async {
+  Future<List<Lineapedido>> fetchLineasPedidoPorPedido(int idPedido) async {
     try {
       return _lineasPedido = await _lineaPedidoRepository.obtenerLineasPedidoPorPedido(idPedido);
     } catch (e) {
@@ -35,7 +35,7 @@ class Lineapedidoprovider with ChangeNotifier{
     }
   }
 
-  Future<Lineapedido?> fetchLineasPedidoPorId(Long id) async {
+  Future<Lineapedido?> fetchLineasPedidoPorId(int id) async {
     try{
       return await _lineaPedidoRepository.obtenerLineaPedidoPorId(id);
     }catch (e){
@@ -43,7 +43,7 @@ class Lineapedidoprovider with ChangeNotifier{
     }
   }
 
-  Future<void> eliminarLineaPedido(Long id) async{
+  Future<void> eliminarLineaPedido(int id) async{
     try{
       await _lineaPedidoRepository.eliminarLineaPedido(id);
       _lineasPedido.removeWhere((linea)=> linea.id == id);

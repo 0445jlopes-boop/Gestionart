@@ -14,21 +14,13 @@ class Authrepository {
           "contrasena": contrasena,
         },
       );
-      if (response.statusCode == 200) {
-        // Guardar el token en el servicio
+      if (response.statusCode != 200) {
+        return null;
+      } else {
         ApiService.setAuthToken(response.data);
         return response.data;
-      } else {
-        return null;
       }
     } catch (e) {
-      if (e is DioException) {
-        print("STATUS: ${e.response?.statusCode}");
-        print("DATA: ${e.response?.data}");
-        print("URL: ${e.requestOptions.uri}");
-      } else {
-        print("Error : $e");
-      }
       throw Exception("Error al iniciar sesión: $e");
     }
   }
@@ -36,6 +28,12 @@ class Authrepository {
   Future<bool> registerComprador(String correoElectronico, String contrasena,
       String nombre, String direccion, String imagen) async {
     try {
+      print("Enviando datos de registro:");
+      print("  correoElectronico: $correoElectronico");
+      print("  nombre: $nombre");
+      print("  direccion: $direccion");
+      print("  imagen: $imagen");
+      
       final response = await _apiService.dio.post("/auth/registerComprador",
           data: {
             "correoElectronico": correoElectronico,
@@ -44,11 +42,11 @@ class Authrepository {
             "direccion": direccion,
             "imagen": imagen,
           });
-      if (response.statusCode == 200) {
+      if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300) {
         return true;
-      } else {
-        return false;
-      }
+      } 
+      print("Error en registro: ${response.statusCode} - ${response.data}");
+      return false;
     } catch (e) {
       throw Exception("Error al registrar usuario: $e");
     }

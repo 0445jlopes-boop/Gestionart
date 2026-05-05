@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
@@ -8,7 +8,7 @@ class Compradorrepository {
   final ApiService _apiService;
   Compradorrepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
-  Future<void> actualizarComprador(Long id, String correoElectronico, String nombre, String direccion, String imagen, String contrasena) async {
+  Future<bool> actualizarComprador(int id, String correoElectronico, String nombre, String direccion, String imagen, String contrasena) async {
     try {
       final response = await _apiService.dio.put("/compradores/$id", data: {
         "correoElectronico": correoElectronico,
@@ -18,30 +18,33 @@ class Compradorrepository {
         "contrasena": contrasena
       });
       if (response.statusCode != 200) {
-        throw Exception("Error al actualizar el comprador: ${response.statusCode}");
+        return false;
       }
+      return true;
     } catch (e) {
       throw Exception("Error al actualizar el comprador: $e");
     }
   }
 
-  Future<void> activarPremium(Long id) async {
+  Future<bool> activarPremium(int id) async {
     try {
       final response = await _apiService.dio.post("/compradores/$id/activar-premium");
       if (response.statusCode != 200) {
-        throw Exception("Error al activar el premium: ${response.statusCode}");
+        return false;
       }
+      return true;
     } catch (e) {
       throw Exception("Error al activar el premium: $e");
     }
   }
 
-  Future<void> desactivarPremium(Long id) async {
+  Future<bool> desactivarPremium(int id) async {
     try {
       final response = await _apiService.dio.post("/compradores/$id/desactivar-premium");
       if (response.statusCode != 200) {
-        throw Exception("Error al desactivar el premium: ${response.statusCode}");
+        return false;
       }
+      return true;
     } catch (e) {
       throw Exception("Error al desactivar el premium: $e");
     }
@@ -50,28 +53,20 @@ class Compradorrepository {
   Future<List<Comprador>?> getCompradores() async {
     try {
       final response = await _apiService.dio.get("/compradores");
-      if (response.statusCode == 200) {
-        List<Comprador> compradores = [];
-        for (var item in response.data) {
-          compradores.add(Comprador.fromJson(item));
-        }
-        return compradores;
-      } else {
-        return null;
-      }
+          return (response.data as List)
+          .map((json) => Comprador.fromJson(json))
+          .toList();
+      
     } catch (e) {
       throw Exception("Error al obtener los compradores: $e");
     }
   }
 
-  Future<Comprador?> getCompradorPorId(Long id) async {
+  Future<Comprador?> getCompradorPorId(int id) async {
     try {
       final response = await _apiService.dio.get("/compradores/$id");
-      if (response.statusCode == 200) {
-        return Comprador.fromJson(response.data);
-      } else {
-        return null;
-      }
+      return Comprador.fromJson(response.data);
+
     } catch (e) {
       throw Exception("Error al obtener el comprador por ID: $e");
     }
@@ -103,12 +98,13 @@ class Compradorrepository {
     }
   }
 
-  Future<void> eliminarComprador(Long id) async {
+  Future<bool> eliminarComprador(int id) async {
     try {
       final response = await _apiService.dio.delete("/compradores/$id");
       if (response.statusCode != 200) {
-        throw Exception("Error al eliminar el comprador: ${response.statusCode}");
+       return false;
       }
+      return true;
     } catch (e) {
       throw Exception("Error al eliminar el comprador: $e");
     }

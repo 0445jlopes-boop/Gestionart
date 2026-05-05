@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Pedido.dart';
@@ -17,7 +17,7 @@ class Pedidoprovider with ChangeNotifier {
   Pedido? get pedidoActual => _pedidoActual;
   bool get isLoading => _isLoading;
 
-  Future<Pedido> crearPedido(Long idComprador) async {
+  Future<Pedido> crearPedido(int idComprador) async {
     try {
       _isLoading = true;
       notifyListeners();
@@ -36,7 +36,7 @@ class Pedidoprovider with ChangeNotifier {
     }
   }
 
-  Future<void> confirmarPedido(Long idPedido) async {
+  Future<void> confirmarPedido(int idPedido) async {
     try {
       _isLoading = true;
       notifyListeners();
@@ -58,7 +58,7 @@ class Pedidoprovider with ChangeNotifier {
     }
   }
 
-  Future<Pedido> fetchPedidoPorId(Long idPedido) async {
+  Future<Pedido> fetchPedidoPorId(int idPedido) async {
     try {
       _isLoading = true;
       notifyListeners();
@@ -75,7 +75,7 @@ class Pedidoprovider with ChangeNotifier {
     }
   }
 
-  Future<List<Pedido>> fetchPedidosPorComprador(Long idComprador) async {
+  Future<List<Pedido>> fetchPedidosPorComprador(int idComprador) async {
     try {
       _isLoading = true;
       notifyListeners();
@@ -92,7 +92,7 @@ class Pedidoprovider with ChangeNotifier {
     }
   }
 
-  Future<List<Pedido>> fetchPedidosPorVendedor(Long idVendedor) async {
+  Future<List<Pedido>> fetchPedidosPorVendedor(int idVendedor) async {
     try {
       _isLoading = true;
       notifyListeners();

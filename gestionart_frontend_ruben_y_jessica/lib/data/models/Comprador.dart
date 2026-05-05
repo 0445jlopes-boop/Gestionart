@@ -9,64 +9,83 @@ class Comprador extends Usuario{ //Clase comprador
   DateTime fechafinPremium;
 
   Comprador({
-    required super.id, 
-    required super.correoElectronico, 
-    required super.nombre, 
-    required super.imagen, 
-    required super.contrasena, 
-    required super.contrasena2, 
-    required super.rol, 
-    required this.direccion, 
-    required this.tipoCuenta, 
-    required this.fechaInicioPremium, 
-    required this.fechafinPremium
+    required super.id,
+    required super.correoElectronico,
+    required super.nombre,
+    required super.imagen,
+    required super.contrasena,
+    required super.contrasena2,
+    required super.rol,
+    required this.direccion,
+    required this.tipoCuenta,
+    required this.fechaInicioPremium,
+    required this.fechafinPremium,
   });
 
   String getDireccion() {
     return direccion;
   }
+
   Tipocuentacomprador getTipoCuenta() {
     return tipoCuenta;
   }
+
   DateTime getFechaInicioPremium() {
     return fechaInicioPremium;
   }
+
   DateTime getFechafinPremium() {
     return fechafinPremium;
   }
 
-
   factory Comprador.fromJson(Map<String, dynamic> json) {
+    // Función auxiliar para fechas
+    DateTime parseFecha(String? fechaStr) {
+      if (fechaStr == null || fechaStr.isEmpty) return DateTime.now();
+      try {
+        return DateTime.parse(fechaStr);
+      } catch (e) {
+        return DateTime.now(); // Fallback seguro
+      }
+    }
+
     return Comprador(
-      id: json['id'],
-      correoElectronico: json['correoElectronico'],
-      nombre: json['nombre'],
-      imagen: json['imagen'],
-      contrasena: json['contrasena'],
-      contrasena2: json['contrasena2'],
-      rol: Rol.values.firstWhere((e) => e.toString() == 'Rol.' + json['rol']),
-      direccion: json['direccion'],
-      tipoCuenta: Tipocuentacomprador.values.firstWhere((e) => e.toString() == 'Tipocuentacomprador.' + json['tipoCuenta']),
-      fechaInicioPremium: DateTime.parse(json['fechaInicioPremium']),
-      fechafinPremium: DateTime.parse(json['fechafinPremium'])
+      id: json['id'] ?? 0,
+      correoElectronico: json['correoElectronico'] ?? '',
+      nombre: json['nombre'] ?? '',
+      imagen: json['imagen'] ?? '',
+      contrasena: json['contrasena'] ?? '',
+      rol: Rol.COMPRADOR,
+      direccion: json['direccion'] ?? '',
+      tipoCuenta: Tipocuentacomprador.values.firstWhere(
+        (e) => e.toString().split('.').last == (json['tipoCuenta'] ?? 'NORMAL'),
+        orElse: () => Tipocuentacomprador.NORMAL,
+      ),
+      fechaInicioPremium: parseFecha(json['fechaInicioPremium']),
+      fechafinPremium: parseFecha(json['fechafinPremium']),
+      contrasena2: '', // Considerar si realmente necesario
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'correoElectronico': correoElectronico,
-      'nombre': nombre,
-      'imagen': imagen,
-      'contrasena': contrasena,
-      'contrasena2': contrasena2,
-      'rol': rol.toString().split('.').last,
-      'direccion': direccion,
-      'tipoCuenta': tipoCuenta.toString().split('.').last,
-      'fechaInicioPremium': fechaInicioPremium.toIso8601String(),
-      'fechafinPremium': fechafinPremium.toIso8601String()
+      'id': id ?? 0,
+      'correoElectronico': correoElectronico ?? '',
+      'nombre': nombre ?? '',
+      'imagen': imagen ?? '',
+      'contrasena': contrasena ?? '',
+      'contrasena2': contrasena2 ?? '',
+      'rol': rol != null ? rol.toString() : 'COMPRADOR',
+      'direccion': direccion ?? '',
+      'tipoCuenta': tipoCuenta != null
+          ? tipoCuenta.toString().split('.').last 
+          : 'NORMAL',
+      'fechaInicioPremium': fechaInicioPremium != null
+          ? fechaInicioPremium!.toIso8601String()
+          : DateTime.now().toIso8601String(),
+      'fechafinPremium': fechafinPremium != null
+          ? fechafinPremium!.toIso8601String()
+          : DateTime.now().toIso8601String(),
     };
   }
-  
- 
 }

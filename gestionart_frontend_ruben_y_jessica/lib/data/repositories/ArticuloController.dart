@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Aticulo.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
@@ -8,7 +8,7 @@ class Articulocontroller {
   final ApiService _apiService;
   Articulocontroller(ApiService? apiService) : _apiService = apiService ?? ApiService();  
 
-  Future<void> actualizarArticulo(Long id, String titulo, String descripcion, double precio, String imagen, String categoria, int stock  ) async {
+  Future<void> actualizarArticulo(int id, String titulo, String descripcion, double precio, String imagen, String categoria, int stock  ) async {
     try {
       final response = await _apiService.dio.put("/articulos/$id", data: {
         "titulo": titulo,
@@ -45,7 +45,7 @@ class Articulocontroller {
     }
   }
 
-  Future<Articulo> obtenerArticulo(Long id) async {
+  Future<Articulo> obtenerArticulo(int id) async {
     try {
       final response = await _apiService.dio.get("/articulos/$id");
       if (response.statusCode == 200) {
@@ -84,7 +84,7 @@ class Articulocontroller {
     }
   }
 
-  Future<List<Articulo>> articulosPorVendedor(Long vendedorId) async {
+  Future<List<Articulo>> articulosPorVendedor(int vendedorId) async {
     try {
       final response = await _apiService.dio.get("/articulos/vendedor/$vendedorId");
       if (response.statusCode == 200) {
@@ -98,7 +98,7 @@ class Articulocontroller {
   }
 
 
-  Future<void> eliminarArticulo(Long id) async {
+  Future<void> eliminarArticulo(int id) async {
     try {
       final response = await _apiService.dio.delete("/articulos/$id");
       if (response.statusCode != 200) {

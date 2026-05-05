@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/foundation.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/SolicitudExclusiva.dart';
@@ -14,7 +14,7 @@ class SolicitudExclusivaProvider with ChangeNotifier {
   
   List<Solicitudexclusiva> get solicitudes => _solicitudes;
 
-  Future<void> fetchSolicitudesPorVendedor(Long idVendedor) async {
+  Future<void> fetchSolicitudesPorVendedor(int idVendedor) async {
     try {
       _solicitudes = await _solicitudRepository.obtenerPorVendedor(idVendedor);
       notifyListeners();
@@ -23,7 +23,7 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     }
   }
 
-  Future<List<Solicitudexclusiva>> fetchListaSolicitudesPorVendedor(Long idVendedor) async {
+  Future<List<Solicitudexclusiva>> fetchListaSolicitudesPorVendedor(int idVendedor) async {
     try {
       return await _solicitudRepository.obtenerPorVendedor(idVendedor);
     } catch (e) {
@@ -32,7 +32,7 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchSolicitudesPorComprador(Long idComprador) async {
+  Future<void> fetchSolicitudesPorComprador(int idComprador) async {
     try {
       _solicitudes = await _solicitudRepository.obtenerPorComprador(idComprador);
       notifyListeners();
@@ -41,7 +41,7 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     }
   }
 
-  Future<List<Solicitudexclusiva>> fetchListaSolicitudesPorComprador(Long idComprador) async {
+  Future<List<Solicitudexclusiva>> fetchListaSolicitudesPorComprador(int idComprador) async {
     try {
       return await _solicitudRepository.obtenerPorComprador(idComprador);
     } catch (e) {
@@ -50,7 +50,7 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchSolicitudesPorVendedorYEstado(Long idVendedor, Estadosolicitud estado) async {
+  Future<void> fetchSolicitudesPorVendedorYEstado(int idVendedor, Estadosolicitud estado) async {
     try {
       _solicitudes = await _solicitudRepository.obtenerPorVendedorYEstado(idVendedor, estado);
       notifyListeners();
@@ -59,7 +59,7 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchSolicitudesPorCompradorYEstado(Long idComprador, Estadosolicitud estado) async {
+  Future<void> fetchSolicitudesPorCompradorYEstado(int idComprador, Estadosolicitud estado) async {
     try {
       _solicitudes = await _solicitudRepository.obtenerPorCompradorYEstado(idComprador, estado);
       notifyListeners();
@@ -86,7 +86,7 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     }
   }
 
-  Future<void> crearSolicitudExclusiva(Long idComprador, Long idArticulo, String mensaje, Long idVendedor) async {
+  Future<void> crearSolicitudExclusiva(int idComprador, int idArticulo, String mensaje, int idVendedor) async {
     try {
       await _solicitudRepository.crearSolicitudExclusiva(idComprador, idArticulo, mensaje, idVendedor);
       await fetchSolicitudesPorComprador(idComprador);
@@ -95,7 +95,7 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     }
   }
 
-  Future<void> actualizarEstadoSolicitud(Long id, Estadosolicitud nuevoEstado, {Long? idVendedor, Long? idComprador}) async {
+  Future<void> actualizarEstadoSolicitud(int id, Estadosolicitud nuevoEstado, {int? idVendedor, int? idComprador}) async {
     try {
       await _solicitudRepository.actualizarEstado(id, nuevoEstado);
       if (idVendedor != null) {
@@ -109,7 +109,7 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     }
   }
 
-  Future<Solicitudexclusiva?> obtenerSolicitudPorId(Long id) async {
+  Future<Solicitudexclusiva?> obtenerSolicitudPorId(int id) async {
     try {
       await _solicitudRepository.obtenerPorId(id);
       return _solicitudes.firstWhere(

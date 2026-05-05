@@ -30,22 +30,35 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
   String _contrasena2 = "";
   String? photoPath = "";
   
-  void _validarComprador(){ // Proedimiento que permite comprobar que los campos del formulario sean correctos a través de validaciones
+  void _validarComprador() async { // Proedimiento que permite comprobar que los campos del formulario sean correctos a través de validaciones
     final isFormValid = _formKey.currentState!.validate();
     final authProvider = Provider.of<Authprovider>(context,listen:false);
     final compradorProvider = Provider.of<Compradorprovider>(context,listen:false);
     if(isFormValid){
-      if(compradorProvider.obtenerCompradorPorNombre(_nombre)!= null){  // Comprueba que el nombre que desea el comprador no está en uso en caso afirmativo lo notifica al usuario
+      if(await compradorProvider.obtenerCompradorPorNombre(_nombre) != null){  // Comprueba que el nombre que desea el comprador no está en uso en caso afirmativo lo notifica al usuario
         const snackBar = SnackBar(content: Text('El nombre introducido ya existe'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
-      }else if(compradorProvider.obtenerCompradorPorCorreo(_correoElectronico)!= null){ // Comprueba que el correo tampoco esté en uso en caso afirmativo lo notifica al usuario
+      }else if(await compradorProvider.obtenerCompradorPorCorreo(_correoElectronico)!= null){ // Comprueba que el correo tampoco esté en uso en caso afirmativo lo notifica al usuario
         const snackBar = SnackBar(content: Text('El correo electrónico introducido ya existe'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }
-      authProvider.registerComprador(_correoElectronico,_contrasena,_nombre,_direccion,photoPath!);
-      Navigator.pop(context);
+      bool registrado = await authProvider.registerComprador(
+        _correoElectronico,
+        _contrasena,
+        _nombre,
+        _direccion,
+        photoPath ?? "",
+      );
+      if (registrado){
+        const snackBar = SnackBar(content: Text('Perfil de comprador creado'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.pop(context);
+      } else {
+        const snackBar = SnackBar(content: Text('Perfil de comprador no creado'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
   }
 

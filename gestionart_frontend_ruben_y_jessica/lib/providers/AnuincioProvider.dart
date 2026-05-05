@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/foundation.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Anuncio.dart';
@@ -32,7 +32,7 @@ class AnuncioProvider with ChangeNotifier {
     }
   }
 
-  Future<void> crearAnuncio(Long idVendedor, String titulo, String categoria, double precio, String imagen) async {
+  Future<void> crearAnuncio(int idVendedor, String titulo, String categoria, double precio, String imagen) async {
     try {
       bool success = await _anuncioRepository.crearAnuncio(idVendedor, titulo, categoria, precio, imagen);
       if (success) {
@@ -45,7 +45,7 @@ class AnuncioProvider with ChangeNotifier {
     }
   }
 
-  Future<Anuncio> getAnuncioPorVendedor(Long idVendedor) async {
+  Future<Anuncio> getAnuncioPorVendedor(int idVendedor) async {
     try {
       return await _anuncioRepository.getAnuncioPorVendedor(idVendedor);
     } catch (e) {
@@ -54,7 +54,7 @@ class AnuncioProvider with ChangeNotifier {
     }
   }
 
-  Future<Anuncio?> getAnuncioPorId(Long id) async {
+  Future<Anuncio?> getAnuncioPorId(int id) async {
     try {
       return await _anuncioRepository.getAnuncioPorId(id);
     } catch (e) {
@@ -72,7 +72,7 @@ class AnuncioProvider with ChangeNotifier {
     }
   }
 
-  Future<void> eliminarAnuncio(Long id) async {
+  Future<void> eliminarAnuncio(int id) async {
     try {
       await _anuncioRepository.eliminarAnuncio(id);
       await fetchAnuncios();

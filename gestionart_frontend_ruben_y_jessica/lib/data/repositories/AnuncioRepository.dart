@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Anuncio.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
@@ -9,7 +9,7 @@ class Anunciorepository {
   Anunciorepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
 
-  Future<bool> crearAnuncio(Long idVendedor, String titulo, String categoria, double precio, String imagen) async {
+  Future<bool> crearAnuncio(int idVendedor, String titulo, String categoria, double precio, String imagen) async {
     try {
       final response = await _apiService.dio.post("/anuncios", data: {
         "idVendedor": idVendedor,
@@ -29,7 +29,7 @@ class Anunciorepository {
   
   }
   
-  Future<Anuncio> getAnuncioPorVendedor(Long idVendedor) async {
+  Future<Anuncio> getAnuncioPorVendedor(int idVendedor) async {
     try {
       final response = await _apiService.dio.get("/anuncios/vendedor/$idVendedor");
       if (response.statusCode == 200) {
@@ -59,7 +59,7 @@ class Anunciorepository {
     }
   }
 
-  Future<Anuncio> getAnuncioPorId(Long id) async {
+  Future<Anuncio> getAnuncioPorId(int id) async {
     try {
       final response = await _apiService.dio.get("/anuncios/$id");
       if (response.statusCode == 200) {
@@ -85,7 +85,7 @@ class Anunciorepository {
     }
   }
 
-  Future<void> eliminarAnuncio(Long id) async {
+  Future<void> eliminarAnuncio(int id) async {
     try {
       final response = await _apiService.dio.delete("/anuncios/$id");
       if (response.statusCode != 200) {

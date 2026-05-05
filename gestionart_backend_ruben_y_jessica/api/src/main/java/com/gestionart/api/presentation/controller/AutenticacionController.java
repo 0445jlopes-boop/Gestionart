@@ -17,8 +17,9 @@ import com.gestionart.api.domain.models.Comprador;
 import com.gestionart.api.domain.models.Usuario;
 import com.gestionart.api.domain.models.Vendedor;
 
-@RestController
+
 @CrossOrigin(origins="*")
+@RestController
 @RequestMapping("/auth")
 public class AutenticacionController {
 
@@ -55,7 +56,7 @@ public class AutenticacionController {
         comprador.setDireccion(request.direccion());
         comprador.setImagen(request.imagen());
         comprador.setRol(Rol.COMPRADOR);
-        comprador.setTipoCuenta(request.tipoCuenta());
+        comprador.setTipoCuenta(TipoCuentaComprador.NORMAL);
         comprador.setFechaInicioPremium(null);
         comprador.setFechaFinPremium(null);
         autenticacionService.registrarComprador(comprador);

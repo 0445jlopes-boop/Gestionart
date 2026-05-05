@@ -1,14 +1,14 @@
-import 'dart:ffi';
+
 
 class Articulo { //Calse de articulos
-  final Long id;
+  final int id;
   final String titulo;
   final String categoria;
   final double precio;
   final String imagen;
   final String descripcion;
   final int stock;
-  final Long idVendedor;
+  final int idVendedor;
 
   Articulo({
     required this.id,
@@ -21,7 +21,7 @@ class Articulo { //Calse de articulos
     required this.idVendedor,
   });
 
-  Long getId() {
+  int getId() {
     return id;
   }
   String getTitulo() {
@@ -42,33 +42,33 @@ class Articulo { //Calse de articulos
   int getStock() {
     return stock;
   }
-  Long getIdVendedor() {
+  int getIdVendedor() {
     return idVendedor;
   }
 
   factory Articulo.fromJson(Map<String, dynamic> json) {
     return Articulo(
-      id: json['id'],
-      titulo: json['titulo'],
-      categoria: json['categoria'],
-      precio: json['precio'],
-      imagen: json['imagen'],
-      descripcion: json['descripcion'],
-      stock: json['stock'],
-      idVendedor: json['idVendedor']
+      id: json['id'] ?? 0,
+      titulo: json['titulo'] ?? '',
+      categoria: json['categoria'] ?? '',
+      precio: (double.tryParse(json['precio'])) ?? 0.0,
+      imagen: json['imagen'] ?? '',
+      descripcion: json['descripcion'] ?? '',
+      stock: json['stock'] ?? 0,
+      idVendedor: json['idVendedor'] ?? 0
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'titulo': titulo,
-      'categoria': categoria,
-      'precio': precio,
-      'imagen': imagen,
-      'descripcion': descripcion,
-      'stock': stock,
-      'idVendedor': idVendedor
+      'id': id ?? 0,
+      'titulo': titulo ?? '',
+      'categoria': categoria ?? '',
+      'precio': precio ?? 0.0,
+      'imagen': imagen ?? '',
+      'descripcion': descripcion ?? '',
+      'stock': stock ?? 0,
+      'idVendedor': idVendedor ?? 0
     };
   }
   

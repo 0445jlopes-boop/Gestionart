@@ -1,21 +1,21 @@
-import 'dart:ffi';
+
 
 class Lineapedido {
-  final Long id;
-  final Long idPedido;
-  final Long idArticulo;
+  final int id;
+  final int idPedido;
+  final int idArticulo;
   final int cantidad;
   final double precioUnitario;
 
   Lineapedido({required this.id, required this.idPedido, required this.idArticulo, required this.cantidad, required this.precioUnitario});
 
-  Long getId() {
+  int getId() {
     return id;
   }
-  Long getIdPedido() {
+  int getIdPedido() {
     return idPedido;
   }
-  Long getIdArticulo() {
+  int getIdArticulo() {
     return idArticulo;
   }
   int getCantidad() {
@@ -27,21 +27,21 @@ class Lineapedido {
 
   factory Lineapedido.fromJson(Map<String, dynamic> json) {
     return Lineapedido(
-      id: json['id'],
-      idPedido: json['idPedido'],
-      idArticulo: json['idArticulo'],
-      cantidad: json['cantidad'],
-      precioUnitario: json['precioUnitario']
+      id: json['id'] ?? 0,
+      idPedido: json['idPedido'] ?? 0,
+      idArticulo: json['idArticulo'] ?? 0,
+      cantidad: json['cantidad'] ?? 0,
+      precioUnitario: (double.tryParse(json['precioUnitario'])) ?? 0.0
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'idPedido': idPedido,
-      'idArticulo': idArticulo,
-      'cantidad': cantidad,
-      'precioUnitario': precioUnitario
+      'id': id ?? 0,
+      'idPedido': idPedido ?? 0,
+      'idArticulo': idArticulo ?? 0,
+      'cantidad': cantidad ?? 0,
+      'precioUnitario': precioUnitario ?? 0.0
     };
   }
   

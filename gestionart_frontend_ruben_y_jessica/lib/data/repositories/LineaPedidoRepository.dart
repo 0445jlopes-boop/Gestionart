@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/LineaPedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
@@ -7,7 +7,7 @@ class LineaPedidoRepository {
   final ApiService _apiService;
   LineaPedidoRepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
-  Future<void> crearLineaPedido(Long idPedido, Long idArticulo, int cantidad, double precioUnitario) async {
+  Future<void> crearLineaPedido(int idPedido, int idArticulo, int cantidad, double precioUnitario) async {
     try {
       final response = await _apiService.dio.post("/lineas-pedido", data: {
         "idPedido": idPedido,
@@ -23,7 +23,7 @@ class LineaPedidoRepository {
     }
   }
 
-  Future<void> actualizarLineaPedido(Long idLineaPedido, int cantidad, double precioUnitario) async {
+  Future<void> actualizarLineaPedido(int idLineaPedido, int cantidad, double precioUnitario) async {
     try {
       final response = await _apiService.dio.put("/lineas-pedido/$idLineaPedido", data: {
         "cantidad": cantidad,
@@ -37,7 +37,7 @@ class LineaPedidoRepository {
     }
   }
 
-  Future<List<Lineapedido>> obtenerLineasPedidoPorPedido(Long idPedido) async {
+  Future<List<Lineapedido>> obtenerLineasPedidoPorPedido(int idPedido) async {
     try {
       final response = await _apiService.dio.get("/lineas-pedido/pedido/$idPedido");
       if (response.statusCode == 200) {
@@ -54,7 +54,7 @@ class LineaPedidoRepository {
     }
   }
 
-  Future <Lineapedido> obtenerLineaPedidoPorId(Long idLineaPedido) async {
+  Future <Lineapedido> obtenerLineaPedidoPorId(int idLineaPedido) async {
     try {
       final response = await _apiService.dio.get("/lineas-pedido/$idLineaPedido");
       if (response.statusCode == 200) {
@@ -67,7 +67,7 @@ class LineaPedidoRepository {
     }
   }
 
-  Future<void> eliminarLineaPedido(Long idLineaPedido) async {
+  Future<void> eliminarLineaPedido(int idLineaPedido) async {
     try {
       final response = await _apiService.dio.delete("/lineas-pedido/$idLineaPedido");
       if (response.statusCode != 204) {

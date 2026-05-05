@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Usuario.dart';
@@ -10,7 +10,7 @@ class Usuarioprovider extends ChangeNotifier{
   Usuarioprovider ({UsuarioRepository? repository}): _repository = repository ?? UsuarioRepository(null);
   List<Usuario> get usuarios => _usuarios;
 
-  Future<Usuario> getUsuarioPorId(Long id) async{
+  Future<Usuario> getUsuarioPorId(int id) async{
     try{
       return await _repository.getUsuarioPorId(id);
     }catch (e) {

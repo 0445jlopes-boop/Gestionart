@@ -13,27 +13,27 @@ class Vendedor extends Usuario { // Clase vendedor
 
   factory Vendedor.fromJson(Map<String, dynamic> json) {
     return Vendedor(
-      id: json['id'],
-      correoElectronico: json['correoElectronico'],
-      nombre: json['nombre'],
-      imagen: json['imagen'],
-      contrasena: json['contrasena'],
-      contrasena2: json['contrasena2'],
-      rol: Rol.values.firstWhere((e) => e.toString() == 'Rol.' + json['rol']),
-      descripcionPerfil: json['descripcionPerfil']
+      id: json['id'] ?? 0,
+      correoElectronico: json['correoElectronico'] ?? '',
+      nombre: json['nombre'] ?? '',
+      imagen: json['imagen'] ?? '',
+      contrasena: json['contrasena'] ?? '',
+      contrasena2: json['contrasena2'] ?? '',
+      rol: Rol.VENDEDOR,
+      descripcionPerfil: json['descripcionPerfil'] ?? ''
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'correoElectronico': correoElectronico,
-      'nombre': nombre,
-      'imagen': imagen,
-      'contrasena': contrasena,
-      'contrasena2': contrasena2,
-      'rol': rol.toString().split('.').last,
-      'descripcionPerfil': descripcionPerfil
+      'id': id ?? 0,
+      'correoElectronico': correoElectronico ?? '',
+      'nombre': nombre ?? '',
+      'imagen': imagen ?? '',
+      'contrasena': contrasena ?? '',
+      'contrasena2': contrasena2 ?? '',
+      'rol': Rol.VENDEDOR.toString(),
+      'descripcionPerfil': descripcionPerfil ?? ''
     };
   }
 }

@@ -1,28 +1,28 @@
-import 'dart:ffi';
+
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/EstadoSolicitud.dart';
 
 class Solicitudexclusiva {
-  final Long id;
-  final Long idComprador;
-  final Long idArticulo;
-  final Long idVendedor;
+  final int id;
+  final int idComprador;
+  final int idArticulo;
+  final int idVendedor;
   final String mensage;
   final Estadosolicitud estado;
   final DateTime fecha;
 
   Solicitudexclusiva({required this.id, required this.idComprador, required this.idArticulo, required this.idVendedor, required this.mensage, required this.estado, required this.fecha});
   
-  Long getId() {
+  int getId() {
     return id;
   } 
-  Long getIdComprador() {
+  int getIdComprador() {
     return idComprador;
   }
-  Long getIdArticulo() {
+  int getIdArticulo() {
     return idArticulo;
   }
-  Long getIdVendedor() {
+  int getIdVendedor() {
     return idVendedor;
   }
   String getMensage() {
@@ -39,25 +39,25 @@ class Solicitudexclusiva {
 
   factory Solicitudexclusiva.fromJson(Map<String, dynamic> json) {
     return Solicitudexclusiva(
-      id: json['id'],
-      idComprador: json['idComprador'],
-      idArticulo: json['idArticulo'],
-      idVendedor: json['idVendedor'],
-      mensage: json['mensage'],
-      estado: Estadosolicitud.values.firstWhere((e) => e.toString() == 'Estadosolicitud.' + json['estado']),
-      fecha: DateTime.parse(json['fecha'])
+      id: json['id'] ?? 0,
+      idComprador: json['idComprador'] ?? 0,
+      idArticulo: json['idArticulo'] ?? 0,
+      idVendedor: json['idVendedor'] ?? 0,
+      mensage: json['mensage'] ?? '',
+      estado: Estadosolicitud.values.firstWhere((e) => e.toString().split('.').last == 'Estadosolicitud.' + (json['estado'] ?? ''), orElse: () => Estadosolicitud.values.first),
+      fecha: DateTime.parse(json['fecha'] ?? DateTime.now().toIso8601String())
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'idComprador': idComprador,
-      'idArticulo': idArticulo,
-      'idVendedor': idVendedor,
-      'mensage': mensage,
-      'estado': estado.toString().split('.').last,
-      'fecha': fecha.toIso8601String()
+      'id': id ?? 0,
+      'idComprador': idComprador ?? 0,
+      'idArticulo': idArticulo ?? 0,
+      'idVendedor': idVendedor ?? 0,
+      'mensage': mensage ?? '',
+      'estado': estado.toString().split('.').last ?? Estadosolicitud.values.first.toString().split('.').last,
+      'fecha': fecha.toIso8601String() ?? DateTime.now().toIso8601String()
     };
   }
 }

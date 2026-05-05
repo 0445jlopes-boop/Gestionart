@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/foundation.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Notificacion.dart';
@@ -14,7 +14,7 @@ class NotificacionProvider with ChangeNotifier {
   
   List<Notificacion> get notificaciones => _notificaciones;
 
-  Future<void> fetchNotificacionesPorVendedor(Long idVendedor) async {
+  Future<void> fetchNotificacionesPorVendedor(int idVendedor) async {
     try {
       _notificaciones = await _notificacionRepository.obtenerNotificacionesPorVendedor(idVendedor);
       notifyListeners();
@@ -23,7 +23,7 @@ class NotificacionProvider with ChangeNotifier {
     }
   }
 
-  Future<List<Notificacion>> fetchListaNotificacionesPorVendedor(Long idVendedor) async {
+  Future<List<Notificacion>> fetchListaNotificacionesPorVendedor(int idVendedor) async {
     try {
       return await _notificacionRepository.obtenerNotificacionesPorVendedor(idVendedor);
     } catch (e) {
@@ -32,7 +32,7 @@ class NotificacionProvider with ChangeNotifier {
     }
   }
 
-  Future<void> crearNotificacion(Long idVendedor, Tiponotificacion tipo) async {
+  Future<void> crearNotificacion(int idVendedor, Tiponotificacion tipo) async {
     try {
       await _notificacionRepository.crearNotificacion(idVendedor, tipo);
       await fetchNotificacionesPorVendedor(idVendedor);
@@ -41,7 +41,7 @@ class NotificacionProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchNotificacionesNoLeidas(Long idVendedor) async {
+  Future<void> fetchNotificacionesNoLeidas(int idVendedor) async {
     try {
       _notificaciones = await _notificacionRepository.obtenerNoLeidas(idVendedor);
       notifyListeners();
@@ -50,7 +50,7 @@ class NotificacionProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchNotificacionesLeidas(Long idVendedor) async {
+  Future<void> fetchNotificacionesLeidas(int idVendedor) async {
     try {
       _notificaciones = await _notificacionRepository.obtenerLeidas(idVendedor);
       notifyListeners();
@@ -59,7 +59,7 @@ class NotificacionProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchNotificacionesPorTipo(Long idVendedor, Tiponotificacion tipo) async {
+  Future<void> fetchNotificacionesPorTipo(int idVendedor, Tiponotificacion tipo) async {
     try {
       _notificaciones = await _notificacionRepository.obtenerPorTipo(idVendedor, tipo);
       notifyListeners();
@@ -68,7 +68,7 @@ class NotificacionProvider with ChangeNotifier {
     }
   }
 
-  Future<void> marcarComoLeida(Long idNotificacion, Long idVendedor) async {
+  Future<void> marcarComoLeida(int idNotificacion, int idVendedor) async {
     try {
       await _notificacionRepository.marcarComoLeida(idNotificacion, idVendedor);
       await fetchNotificacionesPorVendedor(idVendedor);
@@ -77,7 +77,7 @@ class NotificacionProvider with ChangeNotifier {
     }
   }
 
-  Future<void> marcarTodasComoLeidas(Long idVendedor) async {
+  Future<void> marcarTodasComoLeidas(int idVendedor) async {
     try {
       await _notificacionRepository.marcarTodasComoLeidas(idVendedor);
       await fetchNotificacionesPorVendedor(idVendedor);
@@ -86,7 +86,7 @@ class NotificacionProvider with ChangeNotifier {
     }
   }
 
-  Future<void> eliminarNotificacion(Long idNotificacion, Long idVendedor) async {
+  Future<void> eliminarNotificacion(int idNotificacion, int idVendedor) async {
     try {
       await _notificacionRepository.eliminarNotificacion(idNotificacion);
       await fetchNotificacionesPorVendedor(idVendedor);

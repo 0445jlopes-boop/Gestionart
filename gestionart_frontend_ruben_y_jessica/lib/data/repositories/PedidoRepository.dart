@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Pedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
@@ -7,7 +7,7 @@ class PedidoRepository {
   final ApiService _apiService;
   PedidoRepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
-  Future<Pedido> crearPedido(Long idComprador) async {
+  Future<Pedido> crearPedido(int idComprador) async {
     try {
       final response = await _apiService.dio.post("/pedidos", data: {
         "idComprador": idComprador
@@ -22,7 +22,7 @@ class PedidoRepository {
     }
   }
 
-  Future<void> confirmarPedido(Long idPedido) async {
+  Future<void> confirmarPedido(int idPedido) async {
     try {
       final response = await _apiService.dio.put("/pedidos/$idPedido/confirmar");
       if (response.statusCode != 200) {
@@ -33,7 +33,7 @@ class PedidoRepository {
     }
   }
 
-  Future<Pedido> obtenerPedidoPorId(Long idPedido) async {
+  Future<Pedido> obtenerPedidoPorId(int idPedido) async {
     try {
       final response = await _apiService.dio.get("/pedidos/$idPedido");
       if (response.statusCode == 200) {
@@ -46,7 +46,7 @@ class PedidoRepository {
     }
   }
 
-  Future<List<Pedido>> obtenerPedidosPorComprador(Long idComprador) async {
+  Future<List<Pedido>> obtenerPedidosPorComprador(int idComprador) async {
     try {
       final response = await _apiService.dio.get("/pedidos/comprador/$idComprador");
       if (response.statusCode == 200) {
@@ -63,7 +63,7 @@ class PedidoRepository {
     }
   }
 
-  Future<List<Pedido>> obtenerPedidosPorVendedor(Long idVendedor) async {
+  Future<List<Pedido>> obtenerPedidosPorVendedor(int idVendedor) async {
     try {
       final response = await _apiService.dio.get("/pedidos/vendedor/$idVendedor");
       if (response.statusCode == 200) {

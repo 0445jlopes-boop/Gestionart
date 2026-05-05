@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
@@ -19,7 +19,7 @@ class Compradorprovider with ChangeNotifier {
     }
   }
 
-  Future<void> actualizarComprador(Long id, String correoElectronico, String nombre, String direccion, String imagen, String contrasena) async {
+  Future<void> actualizarComprador(int id, String correoElectronico, String nombre, String direccion, String imagen, String contrasena) async {
     try {
       await _repository.actualizarComprador(id, correoElectronico, nombre, direccion, imagen, contrasena);
       await fetchCompradores();
@@ -28,7 +28,7 @@ class Compradorprovider with ChangeNotifier {
     }
   }
 
-  Future<void> activarPremium(Long id) async {
+  Future<void> activarPremium(int id) async {
     try {
       await _repository.activarPremium(id);
       await fetchCompradores();
@@ -37,7 +37,7 @@ class Compradorprovider with ChangeNotifier {
     }
   }
 
-  Future<void> desactivarPremium(Long id) async {
+  Future<void> desactivarPremium(int id) async {
     try {
       await _repository.desactivarPremium(id);
       await fetchCompradores();
@@ -46,9 +46,9 @@ class Compradorprovider with ChangeNotifier {
     }
   }
 
-  Future<Comprador?> obtenerComprador(Long id) async {
+  Future<Comprador?> obtenerComprador(int id) async {
     try {
-      return await _repository.getCompradorPorId(id);
+      final response = await _repository.getCompradorPorId(id);
     } catch (e) {
       print("Error al obtener el comprador: $e");
       throw e;
@@ -76,12 +76,11 @@ class Compradorprovider with ChangeNotifier {
     try {
       return await _repository.getCompradores().then((compradores) => compradores?.firstWhere((c) => c.nombre == nombre));
     } catch (e) {
-      print("Error al obtener el comprador por nombre: $e");
-      throw e;
+      return null;
     }
   }
 
-  Future<void> eliminarComprador(Long id) async {
+  Future<void> eliminarComprador(int id) async {
     try {
       await _repository.eliminarComprador(id);
       await fetchCompradores();

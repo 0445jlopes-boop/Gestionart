@@ -12,7 +12,6 @@ public record VendedorRequest(
     @NotBlank(message = "El nombre es obligatorio")
     String nombre,
 
-    @NotBlank(message = "La imagen es obligatoria")
     String imagen,
     
     @NotBlank(message = "La contraseña es obligatoria")

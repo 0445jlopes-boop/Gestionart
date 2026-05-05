@@ -1,24 +1,24 @@
-import 'dart:ffi';
+
 
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/EstadoPedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/LineaPedido.dart';
 
 class Pedido { //Clase pedido
-  final Long id;
-  final Long idComprador;
-  final Long idVendeodr;
+  final int id;
+  final int idComprador;
+  final int idVendeodr;
   final Estadopedido estado;
   final List<Lineapedido> lineas;
 
   Pedido({required this.id, required this.idComprador, required this.idVendeodr, required this.estado, required this.lineas});
 
-  Long getId() {
+  int getId() {
     return id;
   }
-  Long getIdComprador() {
+  int getIdComprador() {
     return idComprador;
   }
-  Long getIdVendedor() {
+  int getIdVendedor() {
     return idVendeodr;
   }
   Estadopedido getEstado() {
@@ -30,21 +30,21 @@ class Pedido { //Clase pedido
 
   factory Pedido.fromJson(Map<String, dynamic> json) {
     return Pedido(
-      id: json['id'],
-      idComprador: json['idComprador'],
-      idVendeodr: json['idVendedor'],
-      estado: Estadopedido.values.firstWhere((e) => e.toString() == 'Estadopedido.' + json['estado']),
-      lineas: (json['lineas'] as List).map((json) => Lineapedido.fromJson(json)).toList()
+      id: json['id'] ?? 0,
+      idComprador: json['idComprador'] ?? 0,
+      idVendeodr: json['idVendedor'] ?? 0,
+      estado: Estadopedido.values.firstWhere((e) => e.toString().split('.').last == 'Estadopedido.' + (json['estado'] ?? ''), orElse: () => Estadopedido.values.first),
+      lineas: ((json['lineas'] as List?) ?? []).map((json) => Lineapedido.fromJson(json)).toList()
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'idComprador': idComprador,
-      'idVendedor': idVendeodr,
-      'estado': estado.toString().split('.').last,
-      'lineas': lineas.map((linea) => linea.toJson()).toList()
+      'id': id ?? 0,
+      'idComprador': idComprador ?? 0,
+      'idVendedor': idVendeodr ?? 0,
+      'estado': estado.toString().split('.').last ?? Estadopedido.CANCELADO,
+      'lineas': (lineas ?? []).map((linea) => linea.toJson()).toList()
     };
   }
 
