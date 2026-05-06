@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/AnuincioProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/ArticuloProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/AuthProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/LineaPedidoProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/PedidoProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/StripeProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/UsuarioProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/VendedorProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaInicioSesion.dart';
@@ -13,12 +18,16 @@ void main() {
         ChangeNotifierProvider(create: (_) => Authprovider()),
         ChangeNotifierProvider(create: (_) => Compradorprovider()),
         ChangeNotifierProvider(create: (_) => Usuarioprovider()),
-        ChangeNotifierProvider(create: (_) => Vendedorprovider())
-
-
-
+        ChangeNotifierProvider(create: (_) => Vendedorprovider()),
+        ChangeNotifierProvider(create: (_) => Articuloprovider()),
+        ChangeNotifierProvider(create: (_) => AnuncioProvider()),
+        ChangeNotifierProvider(create: (_) => Pedidoprovider()),
+        ChangeNotifierProvider(create: (_) => Lineapedidoprovider()),
+        ChangeNotifierProvider(create: (_) => Stripeprovider()),
       ],
-    child: const MyApp()));
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

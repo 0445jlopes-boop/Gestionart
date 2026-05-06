@@ -5,8 +5,8 @@ import 'package:gestionart_frontend_ruben_y_jessica/data/models/Usuario.dart';
 class Comprador extends Usuario{ //Clase comprador
   String direccion;
   Tipocuentacomprador tipoCuenta;
-  DateTime fechaInicioPremium;
-  DateTime fechafinPremium;
+  DateTime? fechaInicioPremium;
+  DateTime? fechafinPremium;
 
   Comprador({
     required super.id,
@@ -18,8 +18,8 @@ class Comprador extends Usuario{ //Clase comprador
     required super.rol,
     required this.direccion,
     required this.tipoCuenta,
-    required this.fechaInicioPremium,
-    required this.fechafinPremium,
+    this.fechaInicioPremium,
+    this.fechafinPremium,
   });
 
   String getDireccion() {
@@ -31,11 +31,11 @@ class Comprador extends Usuario{ //Clase comprador
   }
 
   DateTime getFechaInicioPremium() {
-    return fechaInicioPremium;
+    return fechaInicioPremium!;
   }
 
   DateTime getFechafinPremium() {
-    return fechafinPremium;
+    return fechafinPremium!;
   }
 
   factory Comprador.fromJson(Map<String, dynamic> json) {

@@ -58,7 +58,7 @@ class _categorias_inicio_viewState extends State<categorias_inicio_view> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    categoria.toString(),
+                    categoria.toString().split('.').last,
                     textAlign: TextAlign.center,
                     style: AppEstiloTexto.textoPrincipal,
                   ),

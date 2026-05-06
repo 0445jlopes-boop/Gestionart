@@ -41,37 +41,34 @@ class _categorias_viewState extends State<categorias_view> {
 
   Future<void> _cargarDatos() async {
     try {
-      final articuloProvider =
-          Provider.of<Articuloprovider>(context, listen: false);
-      final compradorProvider =
-          Provider.of<Compradorprovider>(context, listen: false);
-      final anuncioProvider =
-          Provider.of<AnuncioProvider>(context, listen: false);
+      final articuloProvider = context.read<Articuloprovider>();
+      final compradorProvider = context.read<Compradorprovider>();
+      final anuncioProvider = context.read<AnuncioProvider>();
 
-      // Cargar todos los artículos
-      await articuloProvider.fetchArticulos();
-
-      // Obtener el comprador actual (usando el ID guardado, ejemplo: 1)
+      // Obtener el comprador actual
       _compradorActual = await compradorProvider.obtenerComprador(widget.comprador.id);
+
+      // Obtener artículos por categoría
+      String categoriaNombre = widget.categoria.toString().split('.').last;
+      print("DEBUG: Buscando artículos de categoría: $categoriaNombre");
+      
+      _articulosFiltrados =
+          await articuloProvider.obtenerPorCategoria(categoriaNombre);
+      
+      print("DEBUG: Artículos encontrados: ${_articulosFiltrados.length}");
+      for (var articulo in _articulosFiltrados) {
+        print("DEBUG: Artículo - ${articulo.titulo}, Stock: ${articulo.stock}, Categoría: ${articulo.categoria}");
+      }
+
+      // Filtrar por stock según tipo de cuenta
+      if (_compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL) {
+        _articulosFiltrados =
+            _articulosFiltrados.where((articulo) => articulo.stock > 0).toList();
+      }
 
       // Obtener todos los anuncios
       List<Anuncio> todosAnuncios =
           await anuncioProvider.fetchListaAnuncios();
-
-      // Filtrar artículos según categoría y tipo de cuenta
-      String categoriaNombre = widget.categoria.toString().split('.').last;
-      _articulosFiltrados =
-          articuloProvider.articulos.where((articulo) {
-        bool mismaCategoria = articulo.categoria == categoriaNombre;
-        bool cumplenStock = true;
-
-        if (_compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL) {
-          cumplenStock = articulo.stock > 0;
-        }
-        // Si es premium, se muestran todos
-
-        return mismaCategoria && cumplenStock;
-      }).toList();
 
       // Filtrar anuncios de la categoría y obtener aleatorios
       List<Anuncio> anunciosCategoria = todosAnuncios
@@ -96,10 +93,8 @@ class _categorias_viewState extends State<categorias_view> {
 
   Future<void> _anadirALineaPedido(Articulo articulo) async {
     try {
-      final pedidoProvider =
-          Provider.of<Pedidoprovider>(context, listen: false);
-      final lineaPedidoProvider =
-          Provider.of<Lineapedidoprovider>(context, listen: false);
+      final pedidoProvider = context.read<Pedidoprovider>();
+      final lineaPedidoProvider = context.read<Lineapedidoprovider>();
 
       if (_compradorActual == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -124,8 +119,10 @@ class _categorias_viewState extends State<categorias_view> {
         idPedido = pedidoExistente.id;
       } else {
         // Crear nuevo pedido
-        final nuevoPedido =
-            await pedidoProvider.crearPedido(_compradorActual!.id);
+        final nuevoPedido = await pedidoProvider.crearPedido({
+          'idComprador': _compradorActual!.id,
+          'estado': 'PENDIENTE'
+        });
         idPedido = nuevoPedido.id;
       }
 
@@ -160,105 +157,131 @@ class _categorias_viewState extends State<categorias_view> {
 
   @override
   Widget build(BuildContext context) {
+    // Verificar si no hay artículos disponibles
+    if (!_isLoading && _articulosFiltrados.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.inbox_outlined,
+              size: 64,
+              color: AppColores.colorPrimario.withOpacity(0.5),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL
+                  ? "No hay artículos disponibles en esta categoría"
+                  : "No hay artículos en esta categoría",
+              style: AppEstiloTexto.textoSecundario.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "Vuelve más tarde para ver nuevos productos",
+              style: AppEstiloTexto.textoSecundario.copyWith(
+                fontSize: 14,
+                color: AppColores.colorPrimario.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
     return Expanded(
       child: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _articulosFiltrados.isEmpty
-              ? Center(
-                  child: Text(
-                    _compradorActual?.tipoCuenta ==
-                            Tipocuentacomprador.NORMAL
-                        ? "No hay artículos disponibles en esta categoría"
-                        : "No hay artículos en esta categoría",
-                    style: AppEstiloTexto.textoSecundario
+          : Column(
+              children: [
+                // Carrusel de Artículos
+                Expanded(
+                  flex: 2,
+                  child: Stack(
+                    children: [
+                      PageView.builder(
+                        controller: _pageController,
+                        onPageChanged: (index) {
+                          setState(() {
+                            _currentIndex = index;
+                          });
+                        },
+                        itemCount: _articulosFiltrados.length,
+                        itemBuilder: (context, index) {
+                          final articulo = _articulosFiltrados[index];
+                          return _construirCardArticulo(articulo);
+                        },
+                      ),
+                      // Indicador de posición
+                      Positioned(
+                        bottom: 16,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: Text(
+                            "${_currentIndex + 1} / ${_articulosFiltrados.length}",
+                            style: AppEstiloTexto.textoPrincipal
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                )
-              : Column(
-                  children: [
-                    // Carrusel de Artículos
-                    Expanded(
-                      flex: 2,
-                      child: Stack(
-                        children: [
-                          PageView.builder(
-                            controller: _pageController,
-                            onPageChanged: (index) {
-                              setState(() {
-                                _currentIndex = index;
-                              });
-                            },
-                            itemCount: _articulosFiltrados.length,
-                            itemBuilder: (context, index) {
-                              final articulo = _articulosFiltrados[index];
-                              return _construirCardArticulo(articulo);
-                            },
-                          ),
-                          // Indicador de posición
-                          Positioned(
-                            bottom: 16,
-                            left: 0,
-                            right: 0,
-                            child: Center(
-                              child: Text(
-                                "${_currentIndex + 1} / ${_articulosFiltrados.length}",
-                                style:AppEstiloTexto.textoPrincipal
-                              ),
-                            ),
-                          ),
-                        ],
+                ),
+                const SizedBox(height: 16),
+                // Botón de carrito
+                if (_articulosFiltrados.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ElevatedButton.icon(
+                      onPressed: () =>
+                          _anadirALineaPedido(_articulosFiltrados[_currentIndex]),
+                      icon: const Icon(Icons.shopping_cart),
+                      label: const Text("Agregar al carrito", style: AppEstiloTexto.textoSecundario,),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    // Botón de carrito
-                    if (_articulosFiltrados.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: ElevatedButton.icon(
-                          onPressed: () =>
-                              _anadirALineaPedido(_articulosFiltrados[_currentIndex]),
-                          icon: const Icon(Icons.shopping_cart),
-                          label: const Text("Agregar al carrito", style: AppEstiloTexto.textoSecundario,),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
-                            ),
+                  ),
+                const SizedBox(height: 16),
+                // Anuncios aleatorios
+                if (_anunciosAleatorios.isNotEmpty)
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      children: [
+                        const Text(
+                          "Anuncios Destacados",
+                          style: AppEstiloTexto.textoPrincipal
+                        ),
+                        const SizedBox(height: 8),
+                        Expanded(
+                          child: PageView.builder(
+                            controller: _anunciosController,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentAnuncioIndex = index;
+                              });
+                            },
+                            itemCount: _anunciosAleatorios.length,
+                            itemBuilder: (context, index) {
+                              final anuncio = _anunciosAleatorios[index];
+                              return _construirCardAnuncio(anuncio);
+                            },
                           ),
                         ),
-                      ),
-                    const SizedBox(height: 16),
-                    // Anuncios aleatorios
-                    if (_anunciosAleatorios.isNotEmpty)
-                      Expanded(
-                        flex: 1,
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Anuncios Destacados",
-                              style: AppEstiloTexto.textoPrincipal
-                            ),
-                            const SizedBox(height: 8),
-                            Expanded(
-                              child: PageView.builder(
-                                controller: _anunciosController,
-                                onPageChanged: (index) {
-                                  setState(() {
-                                    _currentAnuncioIndex = index;
-                                  });
-                                },
-                                itemCount: _anunciosAleatorios.length,
-                                itemBuilder: (context, index) {
-                                  final anuncio = _anunciosAleatorios[index];
-                                  return _construirCardAnuncio(anuncio);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
     );
   }
 

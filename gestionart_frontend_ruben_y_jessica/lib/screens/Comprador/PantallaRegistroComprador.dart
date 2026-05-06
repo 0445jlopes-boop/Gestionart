@@ -30,10 +30,10 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
   String _contrasena2 = "";
   String? photoPath = "";
   
-  void _validarComprador() async { // Proedimiento que permite comprobar que los campos del formulario sean correctos a través de validaciones
+  void _validarComprador() async {
     final isFormValid = _formKey.currentState!.validate();
-    final authProvider = Provider.of<Authprovider>(context,listen:false);
-    final compradorProvider = Provider.of<Compradorprovider>(context,listen:false);
+    final authProvider = context.read<Authprovider>();
+    final compradorProvider = context.read<Compradorprovider>();
     if(isFormValid){
       if(await compradorProvider.obtenerCompradorPorNombre(_nombre) != null){  // Comprueba que el nombre que desea el comprador no está en uso en caso afirmativo lo notifica al usuario
         const snackBar = SnackBar(content: Text('El nombre introducido ya existe'));

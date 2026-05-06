@@ -6,7 +6,7 @@ import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/ArticuloCo
 
 class Articuloprovider with ChangeNotifier {
   final Articulocontroller articulocontroller;
-  Articuloprovider(Articulocontroller? articulocontroller) : articulocontroller = articulocontroller ?? Articulocontroller(null);
+  Articuloprovider({Articulocontroller? articulocontroller}) : articulocontroller = articulocontroller ?? Articulocontroller(null);
   List<Articulo> _articulos = [];
   List<Articulo> get articulos => _articulos;
 

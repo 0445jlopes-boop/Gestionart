@@ -28,10 +28,15 @@ class Compradorprovider with ChangeNotifier {
     }
   }
 
-  Future<void> activarPremium(int id) async {
+  Future<bool?> activarPremium(int id) async {
     try {
-      await _repository.activarPremium(id);
-      await fetchCompradores();
+      if( await _repository.activarPremium(id)){
+        await fetchCompradores();
+        return true;
+      }
+      return false;
+      
+      
     } catch (e) {
       print("Error al activar el premium: $e");
     }

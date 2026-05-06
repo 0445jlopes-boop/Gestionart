@@ -4,6 +4,8 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/validators/Validators.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
+import 'package:provider/provider.dart';
 
 void dialogoCambiarContrasena(BuildContext context, Comprador comprador) {
   final _formKey = GlobalKey<FormState>();
@@ -66,8 +68,7 @@ void dialogoCambiarContrasena(BuildContext context, Comprador comprador) {
                           color: AppColores.colorSecundario,
                         ),
                       ),
-                      validator: (value) =>
-                          Validators.validatePasswordExists(comprador, value!),
+                      validator: (value) => Validators.validateEmpty(value),
                       onChanged: (value) => _contrasenaActual = value,
                     ),
                   ),
@@ -136,11 +137,14 @@ void dialogoCambiarContrasena(BuildContext context, Comprador comprador) {
                 onPressed: () {
                   final isFormValid = _formKey.currentState!.validate();
                   if (isFormValid) {
-                    comprador.contrasena = _contrasenaNueva;
-                    Navigator.pop(context);
+                    // Pasar las contraseñas al provider para cambiarlas en el backend
+                    Navigator.pop(context, {
+                      'contrasenaActual': _contrasenaActual,
+                      'contrasenaNueva': _contrasenaNueva,
+                    });
                   }
                 },
-                child: Text("Cambiar"),
+                child: const Text("Cambiar"),
               ),
               SizedBox(height: 20),
               ElevatedButton(
@@ -148,7 +152,7 @@ void dialogoCambiarContrasena(BuildContext context, Comprador comprador) {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text("Canelar"),
+                child: const Text("Cancelar"),
               ),
             ],
           );

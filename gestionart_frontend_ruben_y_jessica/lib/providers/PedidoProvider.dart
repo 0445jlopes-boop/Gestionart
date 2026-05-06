@@ -6,7 +6,7 @@ import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/PedidoRepo
 
 class Pedidoprovider with ChangeNotifier {
   final PedidoRepository _pedidoRepository;
-  Pedidoprovider(PedidoRepository? pedidoRepository) 
+  Pedidoprovider({PedidoRepository? pedidoRepository}) 
       : _pedidoRepository = pedidoRepository ?? PedidoRepository(null);
 
   List<Pedido> _pedidos = [];
@@ -17,12 +17,12 @@ class Pedidoprovider with ChangeNotifier {
   Pedido? get pedidoActual => _pedidoActual;
   bool get isLoading => _isLoading;
 
-  Future<Pedido> crearPedido(int idComprador) async {
+  Future<Pedido> crearPedido(Map<String, dynamic> pedidoData) async {
     try {
       _isLoading = true;
       notifyListeners();
       
-      final pedido = await _pedidoRepository.crearPedido(idComprador);
+      final pedido = await _pedidoRepository.crearPedido(pedidoData);
       _pedidoActual = pedido;
       _pedidos.add(pedido);
       
@@ -36,17 +36,16 @@ class Pedidoprovider with ChangeNotifier {
     }
   }
 
-  Future<void> confirmarPedido(int idPedido) async {
+  Future<void> cancelarPedido(int idPedido) async {
     try {
       _isLoading = true;
       notifyListeners();
       
-      await _pedidoRepository.confirmarPedido(idPedido);
+      await _pedidoRepository.cancelarPedido(idPedido);
       
       final index = _pedidos.indexWhere((p) => p.id == idPedido);
       if (index != -1) {
-        // Aquí necesitarías recargar el pedido para obtener el estado actualizado
-        _pedidos[index] = await _pedidoRepository.obtenerPedidoPorId(idPedido);
+        _pedidos.removeAt(index);
       }
       
       _isLoading = false;
@@ -54,7 +53,39 @@ class Pedidoprovider with ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      throw Exception("Error al confirmar el pedido: $e");
+      throw Exception("Error al cancelar el pedido: $e");
+    }
+  }
+
+  Future<void> cambiarEstado(int idPedido) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      
+      await _pedidoRepository.cambiarEstado(idPedido);
+      
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      throw Exception("Error al cambiar estado: $e");
+    }
+  }
+
+  Future<void> anadirLinea(int idPedido, int idLinea) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      
+      await _pedidoRepository.anadirLinea(idPedido, idLinea);
+      
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      throw Exception("Error al añadir línea: $e");
     }
   }
 
@@ -71,7 +102,7 @@ class Pedidoprovider with ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      throw Exception("Error al obtener el pedido por ID: $e");
+      throw Exception("Error al obtener el pedido: $e");
     }
   }
 
@@ -92,12 +123,12 @@ class Pedidoprovider with ChangeNotifier {
     }
   }
 
-  Future<List<Pedido>> fetchPedidosPorVendedor(int idVendedor) async {
+  Future<List<Pedido>> fetchPedidosPorCompradorYEstado(int idComprador, String estado) async {
     try {
       _isLoading = true;
       notifyListeners();
       
-      _pedidos = await _pedidoRepository.obtenerPedidosPorVendedor(idVendedor);
+      _pedidos = await _pedidoRepository.obtenerPedidosPorCompradorYEstado(idComprador, estado);
       
       _isLoading = false;
       notifyListeners();
@@ -105,24 +136,28 @@ class Pedidoprovider with ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      throw Exception("Error al obtener los pedidos por vendedor: $e");
+      throw Exception("Error al obtener los pedidos por estado: $e");
     }
   }
 
-  Future<List<Pedido>> fetchTodosPedidos() async {
+  Future<void> eliminarPedido(int idPedido) async {
     try {
       _isLoading = true;
       notifyListeners();
       
-      _pedidos = await _pedidoRepository.obtenerTodosPedidos();
+      await _pedidoRepository.eliminarPedido(idPedido);
+      
+      final index = _pedidos.indexWhere((p) => p.id == idPedido);
+      if (index != -1) {
+        _pedidos.removeAt(index);
+      }
       
       _isLoading = false;
       notifyListeners();
-      return _pedidos;
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      throw Exception("Error al obtener los pedidos: $e");
+      throw Exception("Error al eliminar el pedido: $e");
     }
   }
 

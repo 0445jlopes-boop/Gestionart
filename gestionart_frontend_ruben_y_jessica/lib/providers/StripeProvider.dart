@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/StripeRepository.dart';
 
-class Stripeprovider {
+class Stripeprovider extends ChangeNotifier {
   final Striperepository _repository;
   Stripeprovider({Striperepository? repository}) : _repository = repository ?? Striperepository(null);
 

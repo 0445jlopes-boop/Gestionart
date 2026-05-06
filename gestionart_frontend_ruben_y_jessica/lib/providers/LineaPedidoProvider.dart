@@ -6,7 +6,7 @@ import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/LineaPedid
 
 class Lineapedidoprovider with ChangeNotifier{
   final LineaPedidoRepository _lineaPedidoRepository;
-  Lineapedidoprovider(LineaPedidoRepository? lineaPedidoRepository) : _lineaPedidoRepository = lineaPedidoRepository ?? LineaPedidoRepository(null);  
+  Lineapedidoprovider({LineaPedidoRepository? lineaPedidoRepository}) : _lineaPedidoRepository = lineaPedidoRepository ?? LineaPedidoRepository(null);  
   List<Lineapedido> _lineasPedido = [];
   List<Lineapedido> get lineasPedido => _lineasPedido;
 
