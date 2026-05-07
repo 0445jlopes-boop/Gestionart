@@ -334,6 +334,7 @@ class _perfil_viewState extends State<perfil_view> {
             TextButton(
               onPressed: () {
                 dialogoCambiarContrasenaComprador(context, widget.comprador);
+                
               },
               child: Text("¿Quieres cambiar tu contraseña?"),
             ),

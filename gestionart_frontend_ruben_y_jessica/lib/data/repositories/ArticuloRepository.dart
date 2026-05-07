@@ -1,14 +1,21 @@
-
-
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Aticulo.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
 
-class Articulocontroller {
-
+class ArticuloRepository {
   final ApiService _apiService;
-  Articulocontroller(ApiService? apiService) : _apiService = apiService ?? ApiService();  
+  
+  ArticuloRepository(ApiService? apiService) : _apiService = apiService ?? ApiService();  
 
-  Future<void> actualizarArticulo(int id, String titulo, String descripcion, double precio, String imagen, String categoria, int stock  ) async {
+  // ✅ CORREGIDO - Retornar bool
+  Future<bool> actualizarArticulo(
+    int id, 
+    String titulo, 
+    String descripcion, 
+    double precio, 
+    String imagen, 
+    String categoria, 
+    int stock
+  ) async {
     try {
       final response = await _apiService.dio.put("/articulos/$id", data: {
         "titulo": titulo,
@@ -17,17 +24,23 @@ class Articulocontroller {
         "imagen": imagen,
         "categoria": categoria, 
         "stock": stock
-
       });
-      if (response.statusCode != 200) {
-        throw Exception("Error al actualizar el artículo: ${response.statusCode}");
-      }
+      return response.statusCode == 200;
     } catch (e) {
-      throw Exception("Error al actualizar el artículo: $e");
+      print("Error al actualizar el artículo: $e");
+      return false;
     }
   }
 
-  Future<void> crearArticulo(String titulo, String descripcion, double precio, String imagen, String categoria, int stock) async {
+  // ✅ CORREGIDO - Retornar bool
+  Future<bool> crearArticulo(
+    String titulo, 
+    String descripcion, 
+    double precio, 
+    String imagen, 
+    String categoria, 
+    int stock
+  ) async {
     try {
       final response = await _apiService.dio.post("/articulos", data: {
         "titulo": titulo,
@@ -37,24 +50,23 @@ class Articulocontroller {
         "categoria": categoria, 
         "stock": stock
       });
-      if (response.statusCode != 201) {
-        throw Exception("Error al crear el artículo: ${response.statusCode}");
-      }
+      return response.statusCode == 201 || response.statusCode == 200;
     } catch (e) {
-      throw Exception("Error al crear el artículo: $e");
+      print("Error al crear el artículo: $e");
+      return false;
     }
   }
 
-  Future<Articulo> obtenerArticulo(int id) async {
+  Future<Articulo?> obtenerArticulo(int id) async {
     try {
       final response = await _apiService.dio.get("/articulos/$id");
       if (response.statusCode == 200) {
         return Articulo.fromJson(response.data);
-      } else {
-        throw Exception("Error al obtener el artículo: ${response.statusCode}");
       }
+      return null;
     } catch (e) {
-      throw Exception("Error al obtener el artículo: $e");
+      print("Error al obtener el artículo: $e");
+      return null;
     }
   }
 
@@ -63,11 +75,11 @@ class Articulocontroller {
       final response = await _apiService.dio.get("/articulos");
       if (response.statusCode == 200) {
         return (response.data as List).map((json) => Articulo.fromJson(json)).toList();
-      } else {
-        throw Exception("Error al obtener los artículos: ${response.statusCode}");
       }
+      return [];
     } catch (e) {
-      throw Exception("Error al obtener los artículos: $e");
+      print("Error al obtener los artículos: $e");
+      return [];
     }
   }
 
@@ -76,11 +88,11 @@ class Articulocontroller {
       final response = await _apiService.dio.get("/articulos/categoria/$categoria");
       if (response.statusCode == 200) {
         return (response.data as List).map((json) => Articulo.fromJson(json)).toList();
-      } else {
-        throw Exception("Error al obtener los artículos por categoría: ${response.statusCode}");
       }
+      return [];
     } catch (e) {
-      throw Exception("Error al obtener los artículos por categoría: $e");
+      print("Error al obtener los artículos por categoría: $e");
+      return [];
     }
   }
 
@@ -89,24 +101,22 @@ class Articulocontroller {
       final response = await _apiService.dio.get("/articulos/vendedor/$vendedorId");
       if (response.statusCode == 200) {
         return (response.data as List).map((json) => Articulo.fromJson(json)).toList();
-      } else {
-        throw Exception("Error al obtener los artículos por vendedor: ${response.statusCode}");
       }
+      return [];
     } catch (e) {
-      throw Exception("Error al obtener los artículos por vendedor: $e");
+      print("Error al obtener los artículos por vendedor: $e");
+      return [];
     }
   }
 
-
-  Future<void> eliminarArticulo(int id) async {
+  // ✅ CORREGIDO - Retornar bool
+  Future<bool> eliminarArticulo(int id) async {
     try {
       final response = await _apiService.dio.delete("/articulos/$id");
-      if (response.statusCode != 200) {
-        throw Exception("Error al eliminar el artículo: ${response.statusCode}");
-      }
+      return response.statusCode == 200;
     } catch (e) {
-      throw Exception("Error al eliminar el artículo: $e");
+      print("Error al eliminar el artículo: $e");
+      return false;
     }
   }
-  
 }

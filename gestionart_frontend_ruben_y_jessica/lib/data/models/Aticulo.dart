@@ -51,7 +51,7 @@ class Articulo { //Calse de articulos
       id: json['id'] ?? 0,
       titulo: json['titulo'] ?? '',
       categoria: json['categoria'] ?? '',
-      precio: (double.tryParse(json['precio'])) ?? 0.0,
+      precio: json['precio'] ?? 0.0,
       imagen: json['imagen'] ?? '',
       descripcion: json['descripcion'] ?? '',
       stock: json['stock'] ?? 0,

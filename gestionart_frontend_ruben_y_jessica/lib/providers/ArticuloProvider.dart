@@ -1,77 +1,129 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Aticulo.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/ArticuloController.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/ArticuloRepository.dart';
 
-class Articuloprovider with ChangeNotifier {
-  final Articulocontroller articulocontroller;
-  Articuloprovider({Articulocontroller? articulocontroller}) : articulocontroller = articulocontroller ?? Articulocontroller(null);
+class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extends"
+  final ArticuloRepository _repository;
+  
+  Articuloprovider({ArticuloRepository? repository}) 
+      : _repository = repository ?? ArticuloRepository(null);
+  
   List<Articulo> _articulos = [];
   List<Articulo> get articulos => _articulos;
 
   Future<void> fetchArticulos() async {
     try {
-      _articulos = await articulocontroller.obtenerArticulos();
+      final lista = await _repository.obtenerArticulos();
+      if (lista != null) {
+        _articulos = lista;
+      }
+      notifyListeners();
     } catch (e) {
       print("Error al obtener los artículos: $e");
     }
   }
 
-
-  Future<void> crearArticulo(String titulo, String descripcion, double precio, String imagen, String categoria, int stock) async {
+  Future<bool> crearArticulo(
+    String titulo, 
+    String descripcion, 
+    double precio, 
+    String imagen, 
+    String categoria, 
+    int stock
+  ) async {
     try {
-      await articulocontroller.crearArticulo(titulo, descripcion, precio, imagen, categoria, stock);
-      await fetchArticulos();
+      final exito = await _repository.crearArticulo(
+        titulo, 
+        descripcion, 
+        precio, 
+        imagen, 
+        categoria, 
+        stock
+      );
+      
+      if (exito) {
+        await fetchArticulos();  // Recargar lista
+        notifyListeners();       
+        return true;
+      }
+      return false;
     } catch (e) {
       print("Error al crear el artículo: $e");
+      return false;
     }
   }
 
-  Future<void> actualizarArticulo(int id, String titulo, String descripcion, double precio, String imagen, String categoria, int stock) async {
+  Future<bool> actualizarArticulo(
+    int id, 
+    String titulo, 
+    String descripcion, 
+    double precio, 
+    String imagen, 
+    String categoria, 
+    int stock
+  ) async {
     try {
-      await articulocontroller.actualizarArticulo(id, titulo, descripcion, precio, imagen, categoria, stock);
-      await fetchArticulos();
+      final exito = await _repository.actualizarArticulo(
+        id, 
+        titulo, 
+        descripcion, 
+        precio, 
+        imagen, 
+        categoria, 
+        stock
+      );
+      
+      if (exito) {
+        await fetchArticulos();
+        notifyListeners();
+        return true;
+      }
+      return false;
     } catch (e) {
       print("Error al actualizar el artículo: $e");
+      return false;
     }
   }
 
   Future<Articulo?> obtenerArticulo(int id) async {
     try {
-      return await articulocontroller.obtenerArticulo(id);
+      return await _repository.obtenerArticulo(id);
     } catch (e) {
       print("Error al obtener el artículo: $e");
-      throw e;
+      return null;
     }
   }
 
-  Future<List<Articulo>> obtenerPorCategoria(String categoria) async {
+  Future<List<Articulo>?> obtenerPorCategoria(String categoria) async {
     try {
-      return await articulocontroller.articulosPorCategoria(categoria);
+      return await _repository.articulosPorCategoria(categoria);
     } catch (e) {
       print("Error al obtener los artículos por categoría: $e");
-      throw e;
+      return [];
     }
   }
 
   Future<List<Articulo>> obtenerPorVendedor(int idVendedor) async {
     try {
-      return await articulocontroller.articulosPorVendedor(idVendedor);
+      return await _repository.articulosPorVendedor(idVendedor);
     } catch (e) {
       print("Error al obtener los artículos por vendedor: $e");
-      throw e;
+      return [];
     }
   }
 
-  Future<void> eliminarArticulo(int id) async {
+  Future<bool> eliminarArticulo(int id) async {
     try {
-      await articulocontroller.eliminarArticulo(id);
-      await fetchArticulos();
+      final exito = await _repository.eliminarArticulo(id);
+      if (exito) {
+        await fetchArticulos();
+        notifyListeners();
+        return true;
+      }
+      return false;
     } catch (e) {
       print("Error al eliminar el artículo: $e");
+      return false;
     }
   }
-
-  
 }

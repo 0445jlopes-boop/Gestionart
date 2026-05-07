@@ -17,6 +17,7 @@ class categorias_view extends StatefulWidget {
   const categorias_view({super.key, required this.categoria, required this.comprador});
   final Categoria categoria;
   final Comprador comprador;
+  
   @override
   State<categorias_view> createState() => _categorias_viewState();
 }
@@ -45,32 +46,17 @@ class _categorias_viewState extends State<categorias_view> {
       final compradorProvider = context.read<Compradorprovider>();
       final anuncioProvider = context.read<AnuncioProvider>();
 
-      // Obtener el comprador actual
       _compradorActual = await compradorProvider.obtenerComprador(widget.comprador.id);
 
-      // Obtener artículos por categoría
       String categoriaNombre = widget.categoria.toString().split('.').last;
-      print("DEBUG: Buscando artículos de categoría: $categoriaNombre");
       
-      _articulosFiltrados =
-          await articuloProvider.obtenerPorCategoria(categoriaNombre);
-      
-      print("DEBUG: Artículos encontrados: ${_articulosFiltrados.length}");
-      for (var articulo in _articulosFiltrados) {
-        print("DEBUG: Artículo - ${articulo.titulo}, Stock: ${articulo.stock}, Categoría: ${articulo.categoria}");
-      }
+      _articulosFiltrados = (await articuloProvider.obtenerPorCategoria(categoriaNombre)) ?? [];
 
-      // Filtrar por stock según tipo de cuenta
       if (_compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL) {
-        _articulosFiltrados =
-            _articulosFiltrados.where((articulo) => articulo.stock > 0).toList();
+        _articulosFiltrados = _articulosFiltrados.where((articulo) => articulo.stock > 0).toList();
       }
 
-      // Obtener todos los anuncios
-      List<Anuncio> todosAnuncios =
-          await anuncioProvider.fetchListaAnuncios();
-
-      // Filtrar anuncios de la categoría y obtener aleatorios
+      List<Anuncio> todosAnuncios = await anuncioProvider.fetchListaAnuncios();
       List<Anuncio> anunciosCategoria = todosAnuncios
           .where((anuncio) => anuncio.categoria == categoriaNombre)
           .toList();
@@ -103,51 +89,49 @@ class _categorias_viewState extends State<categorias_view> {
         return;
       }
 
-      // Crear o obtener pedido existente
-      // Obtener pedidos del comprador
       await pedidoProvider.fetchPedidosPorComprador(_compradorActual!.id);
+      
       var pedidoExistente = pedidoProvider.pedidos.isNotEmpty
           ? pedidoProvider.pedidos.firstWhere(
-              (p) =>
-                  p.idComprador == _compradorActual!.id &&
-                  p.idVendeodr == articulo.idVendedor,)
+              (p) => p.idComprador == _compradorActual!.id &&
+                     p.estado == 'PENDIENTE'
+            )
           : null;
 
-      late dynamic idPedido;
+      late int idPedido;
 
       if (pedidoExistente != null) {
         idPedido = pedidoExistente.id;
       } else {
-        // Crear nuevo pedido
         final nuevoPedido = await pedidoProvider.crearPedido({
           'idComprador': _compradorActual!.id,
+          'idVendedor': articulo.idVendedor,
           'estado': 'PENDIENTE'
         });
         idPedido = nuevoPedido.id;
       }
 
-      // Agregar línea de pedido
       await lineaPedidoProvider.crearLineaPedido(
         idPedido,
         articulo.id,
-        1, // cantidad
+        1,
         articulo.precio.toDouble(),
       );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${articulo.titulo} agregado al carrito"),
+            content: Text("${articulo.titulo} añadido al pedido"),
             backgroundColor: Colors.green,
           ),
         );
       }
     } catch (e) {
-      print("Error al agregar al carrito: $e");
+      print("Error al agregar al pedido: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Error al agregar al carrito: $e"),
+            content: Text("Error al agregar al pedido: $e"),
             backgroundColor: Colors.red,
           ),
         );
@@ -157,35 +141,31 @@ class _categorias_viewState extends State<categorias_view> {
 
   @override
   Widget build(BuildContext context) {
-    // Verificar si no hay artículos disponibles
     if (!_isLoading && _articulosFiltrados.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.inbox_outlined,
-              size: 64,
+              Icons.art_track_outlined,
+              size: 80,
               color: AppColores.colorPrimario.withOpacity(0.5),
             ),
             const SizedBox(height: 16),
             Text(
               _compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL
-                  ? "No hay artículos disponibles en esta categoría"
-                  : "No hay artículos en esta categoría",
-              style: AppEstiloTexto.textoSecundario.copyWith(
-                fontSize: 18,
+                  ? "No hay obras disponibles en esta categoría"
+                  : "No hay obras en esta categoría",
+              style: AppEstiloTexto.textoPrincipal.copyWith(
+                fontSize: 20,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
-              "Vuelve más tarde para ver nuevos productos",
-              style: AppEstiloTexto.textoSecundario.copyWith(
-                fontSize: 14,
-                color: AppColores.colorPrimario.withOpacity(0.7),
-              ),
+              "Pronto llegaran nuevas creaciones artísticas",
+              style: AppEstiloTexto.textoSecundario,
               textAlign: TextAlign.center,
             ),
           ],
@@ -200,7 +180,7 @@ class _categorias_viewState extends State<categorias_view> {
               children: [
                 // Carrusel de Artículos
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Stack(
                     children: [
                       PageView.builder(
@@ -216,53 +196,88 @@ class _categorias_viewState extends State<categorias_view> {
                           return _construirCardArticulo(articulo);
                         },
                       ),
-                      // Indicador de posición
                       Positioned(
-                        bottom: 16,
+                        bottom: 20,
                         left: 0,
                         right: 0,
                         child: Center(
-                          child: Text(
-                            "${_currentIndex + 1} / ${_articulosFiltrados.length}",
-                            style: AppEstiloTexto.textoPrincipal
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              "${_currentIndex + 1} / ${_articulosFiltrados.length}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
-                // Botón de carrito
+                const SizedBox(height: 12),
+                
                 if (_articulosFiltrados.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: ElevatedButton.icon(
-                      onPressed: () =>
-                          _anadirALineaPedido(_articulosFiltrados[_currentIndex]),
-                      icon: const Icon(Icons.shopping_cart),
-                      label: const Text("Agregar al carrito", style: AppEstiloTexto.textoSecundario,),
+                      onPressed: () => _anadirALineaPedido(_articulosFiltrados[_currentIndex]),
+                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                      label: Text(
+                        "Añadir al pedido",
+                        style: AppEstiloTexto.textoPrincipal.copyWith(color: Colors.white),
+                      ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
+                        backgroundColor: AppColores.colorSecundario,
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
                       ),
                     ),
                   ),
+                
                 const SizedBox(height: 16),
-                // Anuncios aleatorios
+                
+                // Anuncios destacados
                 if (_anunciosAleatorios.isNotEmpty)
-                  Expanded(
-                    flex: 1,
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppColores.colorPrimario.withOpacity(0.1),
+                          AppColores.colorSecundario.withOpacity(0.05),
+                        ],
+                      ),
+                    ),
                     child: Column(
                       children: [
-                        const Text(
-                          "Anuncios Destacados",
-                          style: AppEstiloTexto.textoPrincipal
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.campaign, size: 20, color: AppColores.colorPrimario),
+                              const SizedBox(width: 8),
+                              Text(
+                                "ANUNCIOS DESTACADOS",
+                                style: AppEstiloTexto.textoPrincipal.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 8),
-                        Expanded(
+                        SizedBox(
+                          height: 200,
                           child: PageView.builder(
                             controller: _anunciosController,
                             onPageChanged: (index) {
@@ -285,109 +300,168 @@ class _categorias_viewState extends State<categorias_view> {
     );
   }
 
+  Widget _buildImage(String? imageUrl, bool isArticulo) {
+    const String defaultArticulo = 'assets/images/defaultArticulo.jpg';
+    const String defaultAnuncio = 'assets/images/defaultAnuncio.jpg';
+    
+    final String defaultImage = isArticulo ? defaultArticulo : defaultAnuncio;
+    
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return Image.asset(
+        defaultImage,
+        fit: BoxFit.cover,
+      );
+    }
+    
+    return Image.network(
+      imageUrl,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Image.asset(
+          defaultImage,
+          fit: BoxFit.cover,
+        );
+      },
+    );
+  }
+
   Widget _construirCardArticulo(Articulo articulo) {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         child: Stack(
           children: [
-            // Imagen de fondo
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(articulo.imagen),
-                  fit: BoxFit.cover)
+            Positioned.fill(
+              child: _buildImage(articulo.imagen, true),
+            ),
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.7),
+                    ],
+                    stops: const [0.0, 0.4, 1.0],
+                  ),
+                ),
               ),
             ),
-            // Overlay oscuro
-            Container(
-              color: Colors.black.withOpacity(0.4),
-            ),
-            // Contenido
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColores.colorPrimario.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      articulo.categoria,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   Text(
                     articulo.titulo,
                     style: const TextStyle(
-                      fontSize: 28,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(0, 2),
+                          blurRadius: 4,
+                          color: Colors.black26,
+                        ),
+                      ],
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     articulo.descripcion,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.white70,
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "\$${articulo.precio.toStringAsFixed(2)}",
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: AppColores.colorSecundario,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Text(
+                          "\$${articulo.precio.toStringAsFixed(2)}",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                      if (_compradorActual?.tipoCuenta ==
-                          Tipocuentacomprador.NORMAL)
+                      if (_compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL)
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: articulo.stock > 0
-                                ? Colors.green
-                                : Colors.red,
+                            color: articulo.stock > 0 ? Colors.green : Colors.red,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            "Stock: ${articulo.stock}",
+                            articulo.stock > 0 ? "Stock: ${articulo.stock}" : "Agotado",
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
+                              fontSize: 12,
                             ),
                           ),
                         )
                       else
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.blue,
+                            color: Colors.amber,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Text(
-                            "Premium ⭐",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.star, size: 14, color: Colors.white),
+                              SizedBox(width: 4),
+                              Text(
+                                "Premium",
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ),
                         ),
                     ],
@@ -403,59 +477,59 @@ class _categorias_viewState extends State<categorias_view> {
 
   Widget _construirCardAnuncio(Anuncio anuncio) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: [
-            Image.network(
-              anuncio.imagen,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.image_not_supported),
-                );
-              },
+            // Imagen de fondo
+            Positioned.fill(
+              child: _buildImage(anuncio.imagen, false),
             ),
-            Container(
-              color: Colors.black.withOpacity(0.3),
+            // Overlay oscuro
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.4),
+                      Colors.black.withOpacity(0.7),
+                    ],
+                  ),
+                ),
+              ),
             ),
+            // Contenido: Título y Precio
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Título
                   Text(
                     anuncio.titulo,
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "\$${anuncio.precio.toStringAsFixed(2)}",
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.yellowAccent,
-                    ),
-                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
