@@ -179,10 +179,24 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
                 SizedBox(
                   child: photoPath != ""
                       ? kIsWeb
-                            ? Image.network(photoPath!, fit: BoxFit.fill)
-                            : Image.file(File(photoPath!), fit: BoxFit.fill)
-                      : Container(),
+                            ? Image.network(photoPath!, fit: BoxFit.fill, height: 150, width: 150)
+                            : Image.file(File(photoPath!), fit: BoxFit.fill, height: 150, width: 150)
+                      : Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            color: AppColores.colorFondo,
+                            borderRadius: BorderRadius.circular(75),
+                            border: Border.all(color: AppColores.colorPrimario, width: 2),
+                          ),
+                          child: Icon(
+                            Icons.person,
+                            size: 80,
+                            color: AppColores.colorDesactivado,
+                          ),
+                        ),
                 ),
+                SizedBox(height: 10),
                 SizedBox(
                   width: 400,
                   child: Row(

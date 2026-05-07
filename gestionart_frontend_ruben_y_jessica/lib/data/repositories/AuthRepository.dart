@@ -28,11 +28,6 @@ class Authrepository {
   Future<bool> registerComprador(String correoElectronico, String contrasena,
       String nombre, String direccion, String imagen) async {
     try {
-      print("Enviando datos de registro:");
-      print("  correoElectronico: $correoElectronico");
-      print("  nombre: $nombre");
-      print("  direccion: $direccion");
-      print("  imagen: $imagen");
       
       final response = await _apiService.dio.post("/auth/registerComprador",
           data: {
@@ -53,7 +48,7 @@ class Authrepository {
   }
 
   Future<bool> registerVendedor(String correoElectronico, String nombre,
-      String descripcionPerfil, String imagen) async {
+      String descripcionPerfil, String imagen, String contrasena) async {
     try {
       final response = await _apiService.dio.post("/auth/registerVendedor",
           data: {
@@ -61,8 +56,9 @@ class Authrepository {
             "nombre": nombre,
             "descripcionPerfil": descripcionPerfil,
             "imagen": imagen,
+            "contrasena": contrasena
           });
-      if (response.statusCode == 200) {
+      if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300 || response.statusCode == 409) {
         return true;
       } else {
         return false;

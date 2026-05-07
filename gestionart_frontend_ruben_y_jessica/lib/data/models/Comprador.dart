@@ -85,7 +85,7 @@ class Comprador extends Usuario{ //Clase comprador
           : DateTime.now().toIso8601String(),
       'fechafinPremium': fechafinPremium != null
           ? fechafinPremium!.toIso8601String()
-          : DateTime.now().toIso8601String(),
+          : DateTime.now().add(const Duration(days: 90)) .toIso8601String(),
     };
   }
 }

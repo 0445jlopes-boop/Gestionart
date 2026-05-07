@@ -8,7 +8,7 @@ class AppEstiloBotones { // Definimos como van a ser los dos tipos de colores en
     foregroundColor: MaterialStatePropertyAll(AppColores.colorTextoSecundario)
   );
   static const ButtonStyle botonSecundario = ButtonStyle(
-    fixedSize: MaterialStatePropertyAll(Size(20,50)),
+    fixedSize: MaterialStatePropertyAll(Size(20,70)),
     backgroundColor: MaterialStatePropertyAll(AppColores.colorSecundario),
     foregroundColor: MaterialStatePropertyAll(AppColores.colorTextoSecundario)
   );

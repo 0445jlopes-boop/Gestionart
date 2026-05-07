@@ -1,11 +1,9 @@
-
-
 import 'package:flutter/foundation.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Notificacion.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoNotificacion.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/NotificacionRepository.dart';
 
-class NotificacionProvider with ChangeNotifier {
+class NotificacionProvider extends ChangeNotifier {
   final Notificacionrepository _notificacionRepository;
   List<Notificacion> _notificaciones = [];
   

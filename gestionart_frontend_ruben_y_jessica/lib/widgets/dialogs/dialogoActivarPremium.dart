@@ -3,11 +3,10 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoPago.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/data/models/Pedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaPago.dart';
 
-void dialogoActivarPremium(BuildContext context, Comprador comprador) {
-  showDialog(
+Future<Comprador?> dialogoActivarPremium(BuildContext context, Comprador comprador) async {
+  return await showDialog<Comprador>(
     context: context,
     barrierDismissible: false,
     builder: (context) {
@@ -21,24 +20,28 @@ void dialogoActivarPremium(BuildContext context, Comprador comprador) {
           style: AppEstiloTexto.textoSecundario,
         ),
         actions: [
-          SizedBox(
-            width: 120, // Ancho fijo para el botón
+          Expanded(
             child: ElevatedButton(
               style: AppEstiloBotones.botonSecundario,
-              onPressed: () {
+              onPressed: () async {
                 Navigator.pop(context); // Cerrar diálogo
                 
-                // Navegar a la pantalla de pago con tipo SUSCRIPCION
-                Navigator.push(
+                // Navegar a la pantalla de pago y esperar resultado
+                final compradorActualizado = await Navigator.push<Comprador>(
                   context,
                   MaterialPageRoute(
                     builder: (context) => pago_view(
                       pago: Tipopago.SUSCRIPCION,
-                      importe: 5,  
-                      comprador: comprador,                    
+                      importe: 5,
+                      comprador: comprador,
                     ),
                   ),
                 );
+                
+                // Retornar el comprador actualizado a la pantalla anterior
+                if (context.mounted) {
+                  Navigator.pop(context, compradorActualizado);
+                }
               },
               child: const Text(
                 "Aceptar y pagar",
@@ -46,8 +49,8 @@ void dialogoActivarPremium(BuildContext context, Comprador comprador) {
               ),
             ),
           ),
-          SizedBox(
-            width: 100, // Ancho fijo para el botón
+          const SizedBox(width: 12),
+          Expanded(
             child: ElevatedButton(
               style: AppEstiloBotones.botonPrincipal,
               onPressed: () {
@@ -61,7 +64,6 @@ void dialogoActivarPremium(BuildContext context, Comprador comprador) {
           ),
         ],
         actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        buttonPadding: EdgeInsets.zero,
       );
     },
   );

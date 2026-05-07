@@ -17,7 +17,7 @@ class Compradorrepository {
         "imagen": imagen,
         "contrasena": contrasena
       });
-      if (response.statusCode != 200) {
+      if (response.statusCode != 204) {
         return false;
       }
       return true;
@@ -28,8 +28,8 @@ class Compradorrepository {
 
   Future<bool> activarPremium(int id) async {
     try {
-      final response = await _apiService.dio.post("/compradores/$id/activar-premium");
-      if (response.statusCode != 200) {
+      final response = await _apiService.dio.put("/compradores/$id/activar-premium");
+      if (response.statusCode != 204) {
         return false;
       }
       return true;
@@ -40,8 +40,8 @@ class Compradorrepository {
 
   Future<bool> desactivarPremium(int id) async {
     try {
-      final response = await _apiService.dio.post("/compradores/$id/desactivar-premium");
-      if (response.statusCode != 200) {
+      final response = await _apiService.dio.put("/compradores/$id/desactivar-premium");
+      if (response.statusCode != 204) {
         return false;
       }
       return true;

@@ -15,12 +15,12 @@ class pago_view extends StatefulWidget {
     super.key, 
     required this.pago,
     required this.importe,
-    required this.comprador
+    this.comprador
   });
   
   final Tipopago pago;
   final double importe;
-  final Comprador comprador;
+  final Comprador? comprador;
 
   @override
   State<pago_view> createState() => _pago_viewState();
@@ -96,47 +96,57 @@ class _pago_viewState extends State<pago_view> {
               Icons.shopping_bag,
               () {
                 _navegarAInicio(_compradorActualizado!);
-              }
+              },
             );
             break;
-            
-          case Tipopago.SUSCRIPCION:
-            try{
-              // Activar premium y obtener el comprador actualizado
-              final activado = await compradorProvider
-                  .activarPremium(widget.comprador.id);
 
-              if (activado!) {
-                _compradorActualizado = await compradorProvider.obtenerComprador(widget.comprador.id);
-                _mostrarDialogoExito(
-                  "¡Suscripción Premium Activada!",
-                  "Disfruta de todos los beneficios premium durante 3 meses.",
-                  Icons.star,
-                  () {
-                    _navegarAInicio(_compradorActualizado!);
-                  },
-                );
+          // En pago_view.dart, modificar _procesarPago para la suscripción:
+
+          case Tipopago.SUSCRIPCION:
+            try {
+              // Activar premium
+              final activado = await compradorProvider.activarPremium(
+                widget.comprador!.id,
+              );
+
+              if (activado) {
+                // Obtener el comprador actualizado
+                _compradorActualizado = await compradorProvider
+                    .obtenerComprador(widget.comprador!.id);
+
+                if (mounted) {
+                  _mostrarDialogoExito(
+                    "¡Suscripción Premium Activada!",
+                    "Disfruta de todos los beneficios premium durante 3 meses.\n\n"
+                        "Fecha de inicio: ${_formatearFecha(_compradorActualizado!.fechaInicioPremium!)}\n"
+                        "Fecha de fin: ${_formatearFecha(_compradorActualizado!.fechafinPremium!)}",
+                    Icons.star,
+                    () {
+                      // Retornar el comprador actualizado a la pantalla anterior
+                      Navigator.pop(context, _compradorActualizado);
+                    },
+                  );
+                }
               } else {
-                // Si no se pudo activar premium, igual navegamos
-                _compradorActualizado = widget.comprador;
-                _mostrarDialogoExito(
-                  "¡Suscripción Premium Activada!",
-                  "Disfruta de todos los beneficios premium durante 3 meses.",
-                  Icons.star,
-                  () {
-                    _navegarAInicio(widget.comprador);
-                  },
-                );
+                if (mounted) {
+                  _mostrarDialogoExito(
+                    "¡Pago completado!",
+                    "El pago fue exitoso, pero hubo un problema activando el premium. Contacta con soporte.",
+                    Icons.warning,
+                    () {
+                      Navigator.pop(context, widget.comprador);
+                    },
+                  );
+                }
               }
             } catch (e) {
-              // Error al activar premium, pero el pago fue exitoso
               if (mounted) {
                 _mostrarDialogoExito(
                   "¡Pago completado!",
-                  "El pago se ha procesado correctamente, pero hubo un error al activar el premium. Contacta con soporte.",
+                  "Error al activar premium: $e",
                   Icons.warning,
                   () {
-                    _navegarAInicio(widget.comprador);
+                    Navigator.pop(context, widget.comprador);
                   },
                 );
               }
@@ -151,7 +161,7 @@ class _pago_viewState extends State<pago_view> {
               "Tu anuncio se publicará en las próximas 24 horas.",
               Icons.campaign,
               () {
-                _navegarAInicio(widget.comprador);
+                _navegarAInicio(widget.comprador!);
               }
             );
             break;

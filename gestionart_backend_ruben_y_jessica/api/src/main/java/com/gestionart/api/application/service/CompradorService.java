@@ -2,6 +2,8 @@ package com.gestionart.api.application.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +19,12 @@ import com.gestionart.api.exception.NotFoundByNombreException;
 public class CompradorService {
 
     private final CompradorRepository compradorRepository;
+    
+    private final PasswordEncoder passwordEncoder;
 
     public CompradorService(CompradorRepository compradorRepository) {
         this.compradorRepository = compradorRepository;
+        this.passwordEncoder = null;
     }
 
     public Comprador obtenerPorId(Long id) {
@@ -48,7 +53,7 @@ public class CompradorService {
             comprador.setImagen(datos.getImagen());
         }
         if(datos.getContrasena() != null) {
-            comprador.setContrasena(datos.getContrasena());
+            comprador.setContrasena(passwordEncoder.encode(datos.getContrasena()));
         }
 
         return compradorRepository.save(comprador);

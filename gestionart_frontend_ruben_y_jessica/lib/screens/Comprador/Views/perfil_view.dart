@@ -25,7 +25,78 @@ class perfil_view extends StatefulWidget {
 
 class _perfil_viewState extends State<perfil_view> {
   String? photoPath = "";
-  
+  late Comprador _compradorActualizado;
+
+  @override
+  void initState() {
+    super.initState();
+    _compradorActualizado = widget.comprador;
+  }
+
+  @override
+  void didUpdateWidget(perfil_view oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Si el comprador del widget cambió, actualizar el estado
+    if (oldWidget.comprador.id != widget.comprador.id ||
+        oldWidget.comprador.tipoCuenta != widget.comprador.tipoCuenta) {
+      _compradorActualizado = widget.comprador;
+    }
+  }
+
+  // Método para cambiar el estado premium y refrescar los datos
+  // En perfil_view.dart, modificar _cambiarEstadoPremium:
+
+  Future<void> _cambiarEstadoPremium(
+    Compradorprovider compradorProvider,
+  ) async {
+    try {
+      if (_compradorActualizado.tipoCuenta == Tipocuentacomprador.NORMAL) {
+        // Activar premium - esperar resultado de la navegación
+        final result = await dialogoActivarPremium(
+          context,
+          _compradorActualizado,
+        );
+
+        // Si el resultado es un comprador actualizado, usarlo
+        if (result != null && result is Comprador) {
+          setState(() {
+            _compradorActualizado = result;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("¡Premium activado correctamente!"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else if (_compradorActualizado.tipoCuenta ==
+          Tipocuentacomprador.PREMIUM) {
+        // Desactivar premium
+        await compradorProvider.desactivarPremium(_compradorActualizado.id);
+
+        // Refrescar el comprador actualizado
+        final compradorActualizado = await compradorProvider.obtenerComprador(
+          _compradorActualizado.id,
+        );
+        if (compradorActualizado != null) {
+          setState(() {
+            _compradorActualizado = compradorActualizado;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Premium desactivado correctamente"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
+      );
+    }
+  }
+
   // Formatear fecha para mostrar
   String _formatearFecha(DateTime fecha) {
     return "${fecha.day}/${fecha.month}/${fecha.year}";
@@ -40,11 +111,36 @@ class _perfil_viewState extends State<perfil_view> {
         child: Column(
           children: [
             SizedBox(
-              child: photoPath != ""
-                  ? kIsWeb
-                        ? Image.network(photoPath!, fit: BoxFit.fill)
-                        : Image.file(File(photoPath!), fit: BoxFit.fill)
-                  : Image.asset('assets/images/defaultUser.jpg'),
+              width: 150,
+              height: 150,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColores.colorPrimario, width: 2),
+                ),
+                child: ClipOval(
+                  child: photoPath != ""
+                      ? kIsWeb
+                            ? Image.network(
+                                photoPath!,
+                                fit: BoxFit.cover,
+                                width: 150,
+                                height: 150,
+                              )
+                            : Image.file(
+                                File(photoPath!),
+                                fit: BoxFit.cover,
+                                width: 150,
+                                height: 150,
+                              )
+                      : Image.asset(
+                          'assets/images/defaultUser.jpg',
+                          fit: BoxFit.cover,
+                          width: 150,
+                          height: 150,
+                        ),
+                ),
+              ),
             ),
             SizedBox(
               width: 400,
@@ -86,15 +182,15 @@ class _perfil_viewState extends State<perfil_view> {
               ),
             ),
             SizedBox(height: 20),
-            Text(widget.comprador.nombre, style: AppEstiloTexto.textoPrincipal),
+            Text(_compradorActualizado.nombre, style: AppEstiloTexto.textoPrincipal),
             SizedBox(height: 20),
             Text(
-              widget.comprador.correoElectronico,
+              _compradorActualizado.correoElectronico,
               style: AppEstiloTexto.textoPrincipal,
             ),
             SizedBox(height: 20),
             Text(
-              widget.comprador.direccion,
+              _compradorActualizado.direccion,
               style: AppEstiloTexto.textoPrincipal,
             ),
             SizedBox(height: 20),
@@ -102,12 +198,12 @@ class _perfil_viewState extends State<perfil_view> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: widget.comprador.tipoCuenta == Tipocuentacomprador.PREMIUM
+                color: _compradorActualizado.tipoCuenta == Tipocuentacomprador.PREMIUM
                     ? Colors.amber.withOpacity(0.2)
                     : AppColores.colorDesactivado.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: widget.comprador.tipoCuenta == Tipocuentacomprador.PREMIUM
+                  color: _compradorActualizado.tipoCuenta == Tipocuentacomprador.PREMIUM
                       ? Colors.amber
                       : AppColores.colorDesactivado,
                   width: 1,
@@ -117,20 +213,20 @@ class _perfil_viewState extends State<perfil_view> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    widget.comprador.tipoCuenta == Tipocuentacomprador.PREMIUM
+                    _compradorActualizado.tipoCuenta == Tipocuentacomprador.PREMIUM
                         ? Icons.star
                         : Icons.person,
-                    color: widget.comprador.tipoCuenta == Tipocuentacomprador.PREMIUM
+                    color: _compradorActualizado.tipoCuenta == Tipocuentacomprador.PREMIUM
                         ? Colors.amber
                         : AppColores.colorDesactivado,
                     size: 20,
                   ),
                   SizedBox(width: 8),
                   Text(
-                    "Tipo de cuenta: ${widget.comprador.tipoCuenta.toString().split('.').last}",
+                    "Tipo de cuenta: ${_compradorActualizado.tipoCuenta.toString().split('.').last}",
                     style: AppEstiloTexto.textoPrincipal.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: widget.comprador.tipoCuenta == Tipocuentacomprador.PREMIUM
+                      color: _compradorActualizado.tipoCuenta == Tipocuentacomprador.PREMIUM
                           ? Colors.amber[700]
                           : AppColores.colorDesactivado,
                     ),
@@ -140,7 +236,7 @@ class _perfil_viewState extends State<perfil_view> {
             ),
             SizedBox(height: 20),
             // Mostrar fechas de premium si el comprador es premium
-            if (widget.comprador.tipoCuenta == Tipocuentacomprador.PREMIUM) ...[
+            if (_compradorActualizado.tipoCuenta == Tipocuentacomprador.PREMIUM) ...[
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -181,7 +277,7 @@ class _perfil_viewState extends State<perfil_view> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              _formatearFecha(widget.comprador.fechaInicioPremium!),
+                              _formatearFecha(_compradorActualizado.fechaInicioPremium!),
                               style: AppEstiloTexto.textoPrincipal.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -203,7 +299,7 @@ class _perfil_viewState extends State<perfil_view> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              _formatearFecha(widget.comprador.fechafinPremium!),
+                              _formatearFecha(_compradorActualizado.fechafinPremium!),
                               style: AppEstiloTexto.textoPrincipal.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red[400],
@@ -222,7 +318,7 @@ class _perfil_viewState extends State<perfil_view> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        _calcularDiasRestantes(widget.comprador.fechafinPremium!),
+                        _calcularDiasRestantes(_compradorActualizado.fechafinPremium!),
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -237,25 +333,20 @@ class _perfil_viewState extends State<perfil_view> {
             ],
             TextButton(
               onPressed: () {
-                dialogoCambiarContrasena(context, widget.comprador);
+                dialogoCambiarContrasenaComprador(context, widget.comprador);
               },
               child: Text("¿Quieres cambiar tu contraseña?"),
             ),
             SizedBox(height: 20,),
             ElevatedButton(
-              style: widget.comprador.tipoCuenta == Tipocuentacomprador.NORMAL
+              style: _compradorActualizado.tipoCuenta == Tipocuentacomprador.NORMAL
               ? AppEstiloBotones.botonPrincipal
               : AppEstiloBotones.botonSecundario,
-              onPressed: (){
-                //Simulador de pago por activar premium
-                if(widget.comprador.tipoCuenta == Tipocuentacomprador.NORMAL){
-                  dialogoActivarPremium(context, widget.comprador);
-                }else if(widget.comprador.tipoCuenta == Tipocuentacomprador.PREMIUM){
-                  compradorProvider.desactivarPremium(widget.comprador.id);
-                }
+              onPressed: () async {
+                await _cambiarEstadoPremium(compradorProvider);
               }, 
               child: Text(
-                widget.comprador.tipoCuenta == Tipocuentacomprador.NORMAL
+                _compradorActualizado.tipoCuenta == Tipocuentacomprador.NORMAL
                 ? "Activar premium"
                 : "Desactivar premium"
               )
@@ -276,7 +367,7 @@ class _perfil_viewState extends State<perfil_view> {
             ElevatedButton(
               style: AppEstiloBotones.botonPrincipal,
               onPressed: () {
-                dialogoEliminarCuenta(context, widget.comprador, compradorProvider);
+                dialogoEliminarCuenta(context, _compradorActualizado, compradorProvider);
               }, 
               child: Text("Eliminar cuenta", style: AppEstiloTexto.textoSecundario,)
             )

@@ -1,18 +1,17 @@
-
-
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoNotificacion.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Notificacion.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/services/ApiService.dart';
 
 class Notificacionrepository {
   final ApiService _apiService;
+  
   Notificacionrepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
   Future<void> crearNotificacion(int idVendedor, Tiponotificacion tipo) async {
     try {
       final response = await _apiService.dio.post("/notificaciones", data: {
         "idVendedor": idVendedor,
-        "tipo": tipo
+        "tipo": tipo.toString().split('.').last
       });
       if (response.statusCode != 201) {
         throw Exception("Error al crear la notificación: ${response.statusCode}");
@@ -22,6 +21,7 @@ class Notificacionrepository {
     }
   }  
 
+  // Obtener todas las notificaciones de un vendedor
   Future<List<Notificacion>> obtenerNotificacionesPorVendedor(int idVendedor) async {
     try {
       final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor");
@@ -39,23 +39,7 @@ class Notificacionrepository {
     }
   }
 
-  Future<List<Notificacion>> obtenerPorVendedor(int idVendedor) async {
-    try {
-      final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor");
-      if (response.statusCode == 200) {
-        List<Notificacion> notificaciones = [];
-        for (var item in response.data) {
-          notificaciones.add(Notificacion.fromJson(item));
-        }
-        return notificaciones;
-      } else {
-        throw Exception("Error al obtener las notificaciones por vendedor: ${response.statusCode}");
-      }
-    } catch (e) {
-      throw Exception("Error al obtener las notificaciones por vendedor: $e");
-    }
-  }
-
+  // Obtener notificaciones no leídas
   Future<List<Notificacion>> obtenerNoLeidas(int idVendedor) async {
     try {
       final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/no-leidas");
@@ -73,6 +57,7 @@ class Notificacionrepository {
     }
   }
 
+  // Obtener notificaciones leídas
   Future<List<Notificacion>> obtenerLeidas(int idVendedor) async {
     try {
       final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/leidas");
@@ -90,9 +75,11 @@ class Notificacionrepository {
     }
   }
 
+  // Obtener notificaciones por tipo
   Future<List<Notificacion>> obtenerPorTipo(int idVendedor, Tiponotificacion tipo) async {
     try {
-      final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/tipo/$tipo");
+      final tipoString = tipo.toString().split('.').last;
+      final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/tipo/$tipoString");
       if (response.statusCode == 200) {
         List<Notificacion> notificaciones = [];
         for (var item in response.data) {
@@ -107,6 +94,7 @@ class Notificacionrepository {
     }
   }
 
+  // Marcar una notificación como leída
   Future<void> marcarComoLeida(int idNotificacion, int idVendedor) async {
     try {
       final response = await _apiService.dio.post("/notificaciones/$idNotificacion/leida/$idVendedor");
@@ -118,6 +106,7 @@ class Notificacionrepository {
     }
   }
 
+  // Marcar todas las notificaciones como leídas
   Future<void> marcarTodasComoLeidas(int idVendedor) async {
     try {
       final response = await _apiService.dio.post("/notificaciones/vendedor/$idVendedor/leidas");
@@ -131,13 +120,13 @@ class Notificacionrepository {
     }
   }
 
-
+  // Eliminar una notificación
   Future<void> eliminarNotificacion(int idNotificacion) async {
     try {
       final response = await _apiService.dio.delete("/notificaciones/$idNotificacion");
       if (response.statusCode != 200) {
         throw Exception("Error al eliminar la notificación: ${response.statusCode}");
-      }else {
+      } else {
         print("Notificación eliminada correctamente.");
       } 
     } catch (e) {

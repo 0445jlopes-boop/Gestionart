@@ -14,7 +14,7 @@ class Authprovider extends ChangeNotifier{
     return await _authrepository.registerComprador(correoElectronico, contrasena, nombre, direccion, imagen);
   }
 
-  Future<bool> registerVendedor(String correoElectronico, String nombre, String descripcionPerfil, String imagen) async {
-    return await _authrepository.registerVendedor(correoElectronico, nombre, descripcionPerfil, imagen);
+  Future<bool> registerVendedor(String correoElectronico, String nombre, String descripcionPerfil, String imagen, String contrasena) async {
+    return await _authrepository.registerVendedor(correoElectronico, nombre, descripcionPerfil, imagen, contrasena);
   }
 }

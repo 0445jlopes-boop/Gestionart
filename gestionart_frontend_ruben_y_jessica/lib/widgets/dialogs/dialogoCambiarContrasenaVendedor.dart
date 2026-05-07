@@ -1,16 +1,14 @@
+
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/utils/validators/Validators.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Vendedor.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/VendedorProvider.dart';
 import 'package:provider/provider.dart';
 
-// Diálogo para Comprador
-void dialogoCambiarContrasenaComprador(BuildContext context, Comprador comprador) {
+void dialogoCambiarContrasenaVendedor(BuildContext context, Vendedor vendedor) {
   final _formKey = GlobalKey<FormState>();
   bool _obscurePasswordNueva = true;
   bool _obscurePasswordRepite = true;
@@ -134,27 +132,23 @@ void dialogoCambiarContrasenaComprador(BuildContext context, Comprador comprador
                 onPressed: () async {
                   final isFormValid = _formKey.currentState!.validate();
                   if (isFormValid) {
-                    // Mostrar indicador de carga
-                    setState(() {});
-                    
                     try {
-                      final compradorProvider = Provider.of<Compradorprovider>(
+                      final vendedorProvider = Provider.of<Vendedorprovider>(
                         context,
                         listen: false,
                       );
                       
-                      // Actualizar la contraseña
-                      await compradorProvider.actualizarComprador(
-                        comprador.id,
-                        comprador.correoElectronico,
-                        comprador.nombre,
-                        comprador.direccion,
-                        comprador.imagen,
+                      await vendedorProvider.actualizarVendedor(
+                        vendedor.id,
+                        vendedor.correoElectronico,
+                        vendedor.nombre,
+                        vendedor.descripcionPerfil,
+                        vendedor.imagen,
                         _contrasenaNueva, // Nueva contraseña
                       );
                       
                       if (context.mounted) {
-                        Navigator.pop(context); // Cerrar diálogo
+                        Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text("Contraseña cambiada correctamente"),

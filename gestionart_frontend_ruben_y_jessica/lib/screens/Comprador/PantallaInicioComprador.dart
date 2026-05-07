@@ -14,7 +14,7 @@ class Pantallainiciocomprador extends StatefulWidget {
 }
 
 class _PantallainiciocompradorState extends State<Pantallainiciocomprador> {
-  List<Widget> get _views => [categorias_inicio_view(comprador: widget.comprador,), Container(),Container(),perfil_view(comprador: widget.comprador)];
+  List<Widget> get _views => [categorias_inicio_view(comprador: widget.comprador,),Container(),perfil_view(comprador: widget.comprador)];
   int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,6 @@ class _PantallainiciocompradorState extends State<Pantallainiciocomprador> {
         unselectedLabelStyle: AppEstiloTexto.textoSecundario,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Ajustes'),
           BottomNavigationBarItem(icon: Icon(Icons.shopping_cart),label: 'Pedidos'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
