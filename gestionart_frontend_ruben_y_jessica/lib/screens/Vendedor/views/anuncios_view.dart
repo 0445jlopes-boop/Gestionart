@@ -397,23 +397,6 @@ class _anuncios_viewState extends State<anuncios_view> {
                       ),
                       const SizedBox(height: 12),
                       
-                      // Precio del producto
-                      TextFormField(
-                        controller: _precioController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: "Precio del producto (€)",
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.euro),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) return "Introduce un precio";
-                          if (double.tryParse(value) == null) return "Precio inválido";
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      
                       // Categoría
                       DropdownButtonFormField<Categoria>(
                         decoration: const InputDecoration(

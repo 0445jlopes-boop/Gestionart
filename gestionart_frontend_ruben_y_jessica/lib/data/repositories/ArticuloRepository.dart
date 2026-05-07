@@ -42,7 +42,7 @@ class ArticuloRepository {
     int stock
   ) async {
     try {
-      final response = await _apiService.dio.post("/articulos", data: {
+      final response = await _apiService.dio.post("/articulos/crear", data: {
         "titulo": titulo,
         "descripcion": descripcion,
         "precio": precio,

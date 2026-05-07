@@ -24,7 +24,6 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
   final _formKey = GlobalKey<FormState>();
   
   final tituloController = TextEditingController();
-  final precioController = TextEditingController();
   final descripcionController = TextEditingController();
   
   Categoria? _categoriaSeleccionada;
@@ -34,7 +33,6 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
   @override
   void dispose() {
     tituloController.dispose();
-    precioController.dispose();
     descripcionController.dispose();
     super.dispose();
   }
@@ -86,7 +84,7 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
           builder: (context) => pago_view(
             pago: Tipopago.PUBLICIDAD,
             importe: 2.0,
-            comprador: null, // No aplica para vendedor, pero el parámetro es requerido
+            comprador: null,
           ),
         ),
       ).then((_) async {
@@ -114,7 +112,7 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
         widget.vendedor.id,
         tituloController.text,
         _categoriaSeleccionada!.toString().split('.').last,
-        double.parse(precioController.text),
+        2,
         _imagenPath!, // Aquí deberías subir la imagen o usar una URL
       );
       
@@ -167,77 +165,7 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Precio del anuncio
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColores.colorPrimario.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.info_outline, color: AppColores.colorPrimario),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Costo del anuncio",
-                                    style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
-                                  ),
-                                  Text(
-                                    "2€ por 1 mes de publicación",
-                                    style: AppEstiloTexto.textoPrincipal.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColores.colorSecundario,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      
-                      const SizedBox(height: 20),
-                      
-                      // Título
-                      TextFormField(
-                        controller: tituloController,
-                        decoration: const InputDecoration(
-                          labelText: "Título del anuncio",
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.title),
-                        ),
-                        validator: (value) =>
-                            value == null || value.isEmpty ? "Introduce un título" : null,
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Precio del producto
-                      TextFormField(
-                        controller: precioController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: "Precio (€)",
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.euro),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Introduce un precio";
-                          }
-                          if (double.tryParse(value) == null) {
-                            return "Precio inválido";
-                          }
-                          return null;
-                        },
-                      ),
-                      
-                      const SizedBox(height: 16),
+                    children: [                    
                       
                       // Categoría
                       DropdownButtonFormField<Categoria>(

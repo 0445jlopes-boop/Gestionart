@@ -36,7 +36,7 @@ class Anuncio {
       id: json['id'] ?? 0,
       titulo: json['titulo'] ?? '',
       categoria: json['categoria'] ?? '',
-      precio: (json['precio'] as num?)?.toDouble() ?? 0.0,
+      precio: (json['precio']) ?? 0.0,
       imagen: json['imagen'] ?? '',
       fechaInicio: parseFecha(json['fechaInicio']),
       fechaFin: parseFecha(json['fechaFin']),

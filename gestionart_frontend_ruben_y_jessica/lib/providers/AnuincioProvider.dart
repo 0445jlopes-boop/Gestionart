@@ -32,16 +32,17 @@ class AnuncioProvider with ChangeNotifier {
     }
   }
 
-  Future<void> crearAnuncio(int idVendedor, String titulo, String categoria, double precio, String imagen) async {
+  Future<bool> crearAnuncio(int idVendedor, String titulo, String categoria, double precio, String imagen) async {
     try {
       bool success = await _anuncioRepository.crearAnuncio(idVendedor, titulo, categoria, precio, imagen);
       if (success) {
         await fetchAnuncios();
-      } else {
-        print("Error al crear el anuncio");
+        return true;
       }
+      return success;
     } catch (e) {
       print("Error al crear el anuncio: $e");
+      return false;
     }
   }
 

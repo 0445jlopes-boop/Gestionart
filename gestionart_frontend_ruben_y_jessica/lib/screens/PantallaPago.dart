@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoPago.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/Anuncio.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/Vendedor.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/AnuincioProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/PedidoProvider.dart';
@@ -15,7 +17,7 @@ class pago_view extends StatefulWidget {
     super.key, 
     required this.pago,
     required this.importe,
-    this.comprador
+    this.comprador,
   });
   
   final Tipopago pago;
@@ -37,7 +39,6 @@ class _pago_viewState extends State<pago_view> {
   bool _isProcessing = false;
   Comprador? _compradorActualizado;
 
-  // Método para obtener el texto descriptivo del tipo de pago
   String _getTipoPagoText() {
     switch (widget.pago) {
       case Tipopago.PEDIDO:
@@ -53,7 +54,6 @@ class _pago_viewState extends State<pago_view> {
     return "${fecha.day}/${fecha.month}/${fecha.year}";
   }
 
-  // Método para navegar a la pantalla de inicio
   void _navegarAInicio(Comprador comprador) {
     Navigator.pushAndRemoveUntil(
       context,
@@ -62,7 +62,7 @@ class _pago_viewState extends State<pago_view> {
           comprador: comprador,
         ),
       ),
-      (route) => false, // Elimina todas las rutas anteriores
+      (route) => false,
     );
   }
 
@@ -79,16 +79,13 @@ class _pago_viewState extends State<pago_view> {
       final stripeProvider = context.read<Stripeprovider>();
       final pedidoProvider = context.read<Pedidoprovider>();
       final compradorProvider = context.read<Compradorprovider>();
-      final publicidadProvider = context.read<AnuncioProvider>();
+      final anuncioProvider = context.read<AnuncioProvider>();
       
-      // Simular pago con Stripe
       final pagoExitoso = await stripeProvider.crearPago();
       
       if (pagoExitoso) {
-        // Realizar acciones según el tipo de pago y obtener el comprador actualizado
         switch (widget.pago) {
           case Tipopago.PEDIDO:
-            // Para pedido, solo mostramos mensaje y navegamos
             _compradorActualizado = widget.comprador;
             _mostrarDialogoExito(
               "¡Pedido completado!",
@@ -100,17 +97,13 @@ class _pago_viewState extends State<pago_view> {
             );
             break;
 
-          // En pago_view.dart, modificar _procesarPago para la suscripción:
-
           case Tipopago.SUSCRIPCION:
             try {
-              // Activar premium
               final activado = await compradorProvider.activarPremium(
                 widget.comprador!.id,
               );
 
               if (activado) {
-                // Obtener el comprador actualizado
                 _compradorActualizado = await compradorProvider
                     .obtenerComprador(widget.comprador!.id);
 
@@ -122,7 +115,6 @@ class _pago_viewState extends State<pago_view> {
                         "Fecha de fin: ${_formatearFecha(_compradorActualizado!.fechafinPremium!)}",
                     Icons.star,
                     () {
-                      // Retornar el comprador actualizado a la pantalla anterior
                       Navigator.pop(context, _compradorActualizado);
                     },
                   );
@@ -154,17 +146,38 @@ class _pago_viewState extends State<pago_view> {
             break;
 
           case Tipopago.PUBLICIDAD:
-            // Activar publicidad
-            _compradorActualizado = widget.comprador;
-            _mostrarDialogoExito(
-              "¡Publicidad Activada!",
-              "Tu anuncio se publicará en las próximas 24 horas.",
-              Icons.campaign,
-              () {
-                _navegarAInicio(widget.comprador!);
-              }
-            );
-            break;
+  try {
+    
+    
+    // ✅ Aquí solo validamos que el pago fue exitoso
+    // No creamos el anuncio aquí, solo retornamos éxito
+    
+    if (mounted) {
+      _mostrarDialogoExito(
+        "¡Pago completado!",
+        "El pago de 2€ se ha procesado correctamente.\n\nAhora puedes publicar tu anuncio.",
+        Icons.campaign,
+        () {
+          // Retornar true para indicar que el pago fue exitoso
+          Navigator.pop(context, true);
+        },
+      );
+    }
+  } catch (e) {
+    print("❌ Error en pago de publicidad: $e");
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      setState(() {
+        _isProcessing = false;
+      });
+    }
+  }
+  break;
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -178,6 +191,7 @@ class _pago_viewState extends State<pago_view> {
         });
       }
     } catch (e) {
+      print("❌ Error general: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Error al procesar el pago: $e"),
@@ -228,8 +242,8 @@ class _pago_viewState extends State<pago_view> {
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
               ),
               onPressed: () {
-                Navigator.pop(context); // Cerrar diálogo
-                onConfirm(); // Ejecutar la acción de navegación
+                Navigator.pop(context);
+                onConfirm();
               },
               child: const Text(
                 "Aceptar",
@@ -251,9 +265,9 @@ class _pago_viewState extends State<pago_view> {
           child: Text("PROCESE SU PAGO", style: AppEstiloTexto.encabezado),
         ),
       ),
-      body: SingleChildScrollView(  // ← Cambiado Expanded por SingleChildScrollView
+      body: SingleChildScrollView(
         child: SizedBox(
-          width: double.infinity,  // ← Ancho completo
+          width: double.infinity,
           child: Form(
             key: _formKey,
             child: Column(
@@ -267,7 +281,6 @@ class _pago_viewState extends State<pago_view> {
 
                 const SizedBox(height: 20),
 
-                // Texto informativo
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -291,6 +304,14 @@ class _pago_viewState extends State<pago_view> {
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      if (widget.pago == Tipopago.PUBLICIDAD)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            "Anuncio",
+                            style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -342,9 +363,7 @@ class _pago_viewState extends State<pago_view> {
                         ),
                         validator: validarNumeroTarjeta,
                       ),
-
                       const SizedBox(height: 12),
-
                       TextFormField(
                         controller: nombreController,
                         decoration: const InputDecoration(
@@ -355,9 +374,7 @@ class _pago_viewState extends State<pago_view> {
                         validator: (value) =>
                             value == null || value.isEmpty ? "Introduce el nombre" : null,
                       ),
-
                       const SizedBox(height: 12),
-
                       Row(
                         children: [
                           Expanded(
@@ -406,7 +423,14 @@ class _pago_viewState extends State<pago_view> {
                       ),
                     ),
                     child: _isProcessing
-                        ? const CircularProgressIndicator(color: Colors.white)
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
                         : const Text(
                             "Pagar ahora",
                             style: TextStyle(fontSize: 18, color: Colors.white),
@@ -433,77 +457,53 @@ class _pago_viewState extends State<pago_view> {
   }
 
   // VALIDACIONES
-
   String? validarNumeroTarjeta(String? value) {
     if (value == null || value.isEmpty) {
       return "Introduce el número de tarjeta";
     }
-
     String cleaned = value.replaceAll(' ', '');
-
     if (cleaned.length < 13 || cleaned.length > 19) {
       return "Número inválido (13-19 dígitos)";
     }
-
     if (!_luhnCheck(cleaned)) {
       return "Tarjeta no válida";
     }
-
     return null;
   }
 
   bool _luhnCheck(String number) {
     int sum = 0;
     bool alternate = false;
-
     for (int i = number.length - 1; i >= 0; i--) {
       int n = int.parse(number[i]);
-
       if (alternate) {
         n *= 2;
         if (n > 9) n -= 9;
       }
-
       sum += n;
       alternate = !alternate;
     }
-
     return (sum % 10 == 0);
   }
 
   String? validarFecha(String? value) {
-    if (value == null || value.isEmpty) {
-      return "Introduce la fecha";
-    }
-
+    if (value == null || value.isEmpty) return "Introduce la fecha";
     final regex = RegExp(r'^(0[1-9]|1[0-2])\/\d{2}$');
-    if (!regex.hasMatch(value)) {
-      return "Formato inválido (MM/AA)";
-    }
-
+    if (!regex.hasMatch(value)) return "Formato inválido (MM/AA)";
     final parts = value.split('/');
     int mes = int.parse(parts[0]);
     int anio = int.parse(parts[1]) + 2000;
-
     final now = DateTime.now();
     final fechaTarjeta = DateTime(anio, mes, 28);
-
     if (fechaTarjeta.isBefore(DateTime(now.year, now.month, 1))) {
       return "Tarjeta caducada";
     }
-
     return null;
   }
 
   String? validarCVV(String? value) {
-    if (value == null || value.isEmpty) {
-      return "Introduce el CVV";
-    }
-
-    if (value.length < 3 || value.length > 4) {
-      return "CVV inválido (3-4 dígitos)";
-    }
-
+    if (value == null || value.isEmpty) return "Introduce el CVV";
+    if (value.length < 3 || value.length > 4) return "CVV inválido (3-4 dígitos)";
     return null;
   }
 }

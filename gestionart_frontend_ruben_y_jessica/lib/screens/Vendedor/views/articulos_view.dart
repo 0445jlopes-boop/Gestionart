@@ -25,7 +25,6 @@ class _articulos_viewState extends State<articulos_view> {
   bool _isLoading = true;
   bool _isRefreshing = false;
 
-  // Controladores para el diálogo de crear/editar
   final _formKey = GlobalKey<FormState>();
   final _tituloController = TextEditingController();
   final _descripcionController = TextEditingController();
@@ -111,17 +110,17 @@ class _articulos_viewState extends State<articulos_view> {
   Future<void> _eliminarArticulo(Articulo articulo) async {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text("Eliminar obra"),
         content: Text("¿Seguro que quieres eliminar '${articulo.titulo}'?"),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text("Cancelar"),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
               setState(() {
                 _isLoading = true;
               });
@@ -185,7 +184,7 @@ class _articulos_viewState extends State<articulos_view> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => StatefulBuilder(
+      builder: (dialogContext) => StatefulBuilder(
         builder: (context, setStateDialog) {
           return AlertDialog(
             title: Text(
@@ -200,7 +199,6 @@ class _articulos_viewState extends State<articulos_view> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Imagen
                       Container(
                         height: 150,
                         width: double.infinity,
@@ -270,7 +268,6 @@ class _articulos_viewState extends State<articulos_view> {
                       ),
                       const SizedBox(height: 16),
                       
-                      // Título
                       TextFormField(
                         controller: _tituloController,
                         decoration: const InputDecoration(
@@ -282,7 +279,6 @@ class _articulos_viewState extends State<articulos_view> {
                       ),
                       const SizedBox(height: 12),
                       
-                      // Descripción
                       TextFormField(
                         controller: _descripcionController,
                         decoration: const InputDecoration(
@@ -295,7 +291,6 @@ class _articulos_viewState extends State<articulos_view> {
                       ),
                       const SizedBox(height: 12),
                       
-                      // Precio y Stock en Row
                       Row(
                         children: [
                           Expanded(
@@ -335,7 +330,6 @@ class _articulos_viewState extends State<articulos_view> {
                       ),
                       const SizedBox(height: 12),
                       
-                      // Categoría
                       DropdownButtonFormField<Categoria>(
                         decoration: const InputDecoration(
                           labelText: "Categoría",
@@ -364,14 +358,17 @@ class _articulos_viewState extends State<articulos_view> {
             actions: [
               ElevatedButton(
                 style: AppEstiloBotones.botonSecundario,
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(dialogContext),
                 child: const Text("Cancelar"),
               ),
               ElevatedButton(
                 style: AppEstiloBotones.botonPrincipal,
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pop(context);
+                    // ✅ Guardar referencia del messenger ANTES de cerrar el diálogo
+                    final messenger = ScaffoldMessenger.of(dialogContext);
+                    
+                    Navigator.pop(dialogContext);
                     setState(() {
                       _isLoading = true;
                     });
@@ -388,7 +385,6 @@ class _articulos_viewState extends State<articulos_view> {
                           .last;
                       
                       if (_articuloEditando == null) {
-                        // Crear nuevo
                         await articuloProvider.crearArticulo(
                           _tituloController.text,
                           _descripcionController.text,
@@ -397,16 +393,14 @@ class _articulos_viewState extends State<articulos_view> {
                           categoriaNombre,
                           int.parse(_stockController.text),
                         );
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Obra creada correctamente"),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        }
+                        // ✅ Usar la referencia guardada
+                        messenger.showSnackBar(
+                          const SnackBar(
+                            content: Text("Obra creada correctamente"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
                       } else {
-                        // Actualizar
                         await articuloProvider.actualizarArticulo(
                           _articuloEditando!.id,
                           _tituloController.text,
@@ -416,14 +410,13 @@ class _articulos_viewState extends State<articulos_view> {
                           categoriaNombre,
                           int.parse(_stockController.text),
                         );
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Obra actualizada correctamente"),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        }
+                        // ✅ Usar la referencia guardada
+                        messenger.showSnackBar(
+                          const SnackBar(
+                            content: Text("Obra actualizada correctamente"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
                       }
                       
                       await _cargarArticulos();
@@ -431,14 +424,13 @@ class _articulos_viewState extends State<articulos_view> {
                       setState(() {
                         _isLoading = false;
                       });
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Error: $e"),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
+                      // ✅ Usar la referencia guardada
+                      messenger.showSnackBar(
+                        SnackBar(
+                          content: Text("Error: $e"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
                     }
                   }
                 },
@@ -477,7 +469,6 @@ class _articulos_viewState extends State<articulos_view> {
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: [
-                  // Filtro por categorías
                   if (_articulosFiltrados.isNotEmpty)
                     Container(
                       height: 50,
@@ -508,7 +499,6 @@ class _articulos_viewState extends State<articulos_view> {
                       ),
                     ),
                   
-                  // Lista de artículos
                   Expanded(
                     child: _articulosFiltrados.isEmpty
                         ? Center(
@@ -558,7 +548,6 @@ class _articulos_viewState extends State<articulos_view> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Imagen
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             child: SizedBox(
@@ -591,7 +580,6 @@ class _articulos_viewState extends State<articulos_view> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Título y precio
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -624,7 +612,6 @@ class _articulos_viewState extends State<articulos_view> {
                 ),
                 const SizedBox(height: 8),
                 
-                // Categoría
                 Chip(
                   label: Text(
                     articulo.categoria,
@@ -635,7 +622,6 @@ class _articulos_viewState extends State<articulos_view> {
                 ),
                 const SizedBox(height: 8),
                 
-                // Stock
                 Row(
                   children: [
                     Icon(Icons.inventory, size: 16, color: Colors.grey[600]),
@@ -648,7 +634,6 @@ class _articulos_viewState extends State<articulos_view> {
                 ),
                 const SizedBox(height: 8),
                 
-                // Descripción
                 Text(
                   articulo.descripcion,
                   style: AppEstiloTexto.textoSecundario,
@@ -657,7 +642,6 @@ class _articulos_viewState extends State<articulos_view> {
                 ),
                 const SizedBox(height: 12),
                 
-                // Botones de acción
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
