@@ -154,7 +154,13 @@ class _perfil_viewState extends State<perfil_view> {
                       final path = await CameraGalleryService().selectPhoto();
                       if (path == null) return;
                       photoPath = path;
-                      setState(() {});
+                      final actualizado = await compradorProvider.actualizarComprador(widget.comprador.id,widget.comprador.correoElectronico,widget.comprador.nombre,widget.comprador.direccion,photoPath!,widget.comprador.contrasena);
+                      if(actualizado != null ){
+                        setState(() {
+                          _compradorActualizado = actualizado;
+                        });
+                      }
+                     
                     },
                   ),
                   ElevatedButton(
@@ -163,16 +169,24 @@ class _perfil_viewState extends State<perfil_view> {
                       final path = await CameraGalleryService().takePhoto();
                       if (path == null) return;
                       photoPath = path;
-                      setState(() {});
+                       final actualizado = await compradorProvider.actualizarComprador(widget.comprador.id,widget.comprador.correoElectronico,widget.comprador.nombre,widget.comprador.direccion,photoPath!,widget.comprador.contrasena);
+                      if(actualizado != null ){
+                        setState(() {
+                          _compradorActualizado = actualizado;
+                        });
+                      }
                     },
                   ),
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {
-                          setState(() {
-                            photoPath = "";
+                        onPressed: () async {
+                          final actualizado = await compradorProvider.actualizarComprador(widget.comprador.id,widget.comprador.correoElectronico,widget.comprador.nombre,widget.comprador.direccion,photoPath!,widget.comprador.contrasena);
+                          if(actualizado != null ){
+                            setState(() {
+                              _compradorActualizado = actualizado;
                           });
+                      }
                         },
                         icon: Icon(Icons.delete_outline),
                       ),

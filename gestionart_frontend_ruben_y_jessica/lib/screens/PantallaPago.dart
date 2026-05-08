@@ -18,11 +18,15 @@ class pago_view extends StatefulWidget {
     required this.pago,
     required this.importe,
     this.comprador,
+    this.vendedor,
+    this.anuncio
   });
   
   final Tipopago pago;
   final double importe;
   final Comprador? comprador;
+  final Vendedor? vendedor;
+  final Anuncio? anuncio;
 
   @override
   State<pago_view> createState() => _pago_viewState();
@@ -147,10 +151,6 @@ class _pago_viewState extends State<pago_view> {
 
           case Tipopago.PUBLICIDAD:
   try {
-    
-    
-    // ✅ Aquí solo validamos que el pago fue exitoso
-    // No creamos el anuncio aquí, solo retornamos éxito
     
     if (mounted) {
       _mostrarDialogoExito(

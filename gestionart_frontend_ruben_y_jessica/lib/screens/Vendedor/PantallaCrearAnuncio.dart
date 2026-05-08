@@ -241,7 +241,7 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
                               child: TextButton.icon(
                                 onPressed: () {
                                   setState(() {
-                                    _imagenPath = null;
+                                    _imagenPath = 'assets\images\defaultAnuncio.jpg';
                                   });
                                 },
                                 icon: const Icon(Icons.delete, size: 16),

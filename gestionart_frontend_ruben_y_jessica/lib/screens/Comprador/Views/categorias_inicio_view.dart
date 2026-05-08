@@ -18,8 +18,7 @@ class categorias_inicio_view extends StatefulWidget {
 class _categorias_inicio_viewState extends State<categorias_inicio_view> {
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GridView.builder(
+    return  GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3, //Número de columnas y espacio entre elementos
           mainAxisExtent: 100, //Tamaño fijo de las celdas
@@ -67,7 +66,6 @@ class _categorias_inicio_viewState extends State<categorias_inicio_view> {
             ),
           );
         },
-      ),
-    );
+      );
   }
 }

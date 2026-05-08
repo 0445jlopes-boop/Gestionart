@@ -31,9 +31,8 @@ class ArticuloRepository {
       return false;
     }
   }
-
-  // ✅ CORREGIDO - Retornar bool
   Future<bool> crearArticulo(
+    int vendedorId,
     String titulo, 
     String descripcion, 
     double precio, 
@@ -48,7 +47,8 @@ class ArticuloRepository {
         "precio": precio,
         "imagen": imagen,
         "categoria": categoria, 
-        "stock": stock
+        "stock": stock,
+        "idVendedor": vendedorId
       });
       return response.statusCode == 201 || response.statusCode == 200;
     } catch (e) {

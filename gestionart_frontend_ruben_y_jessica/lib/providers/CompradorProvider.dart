@@ -56,7 +56,7 @@ class Compradorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exte
     try {
       final exito = await _repository.activarPremium(id);
       if (exito) {
-        await fetchCompradores();  // ✅ fetchCompradores ya tiene notifyListeners()
+        await fetchCompradores();  
         return true;
       }
       return false;

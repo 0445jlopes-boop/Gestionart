@@ -24,6 +24,7 @@ class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extend
   }
 
   Future<bool> crearArticulo(
+    int vendedorId,
     String titulo, 
     String descripcion, 
     double precio, 
@@ -33,6 +34,7 @@ class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extend
   ) async {
     try {
       final exito = await _repository.crearArticulo(
+        vendedorId,
         titulo, 
         descripcion, 
         precio, 

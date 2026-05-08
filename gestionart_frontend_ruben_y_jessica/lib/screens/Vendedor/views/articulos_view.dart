@@ -215,20 +215,27 @@ class _articulos_viewState extends State<articulos_view> {
                               : null,
                         ),
                         child: _imagenPath == null || _imagenPath!.isEmpty
-                            ? Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.image, size: 40, color: Colors.grey),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      "Sin imagen",
-                                      style: AppEstiloTexto.textoSecundario,
-                                    ),
-                                  ],
-                                ),
+                            ? Image.asset(
+                                'assets/images/defaultArticulo.jpg',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: 150,
                               )
-                            : null,
+                            : Image.network(
+                                _imagenPath!,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: 150,
+                                errorBuilder: (context, error, stackTrace) {
+                                  // Si falla la carga de la red, usar imagen por defecto
+                                  return Image.asset(
+                                    'assets/images/defaultArticulo.jpg',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 150,
+                                  );
+                                },
+                              ),
                       ),
                       const SizedBox(height: 8),
                       Row(
@@ -236,7 +243,8 @@ class _articulos_viewState extends State<articulos_view> {
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                final path = await CameraGalleryService().selectPhoto();
+                                final path = await CameraGalleryService()
+                                    .selectPhoto();
                                 if (path != null) {
                                   setStateDialog(() {
                                     _imagenPath = path;
@@ -252,7 +260,8 @@ class _articulos_viewState extends State<articulos_view> {
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                final path = await CameraGalleryService().takePhoto();
+                                final path = await CameraGalleryService()
+                                    .takePhoto();
                                 if (path != null) {
                                   setStateDialog(() {
                                     _imagenPath = path;
@@ -267,18 +276,19 @@ class _articulos_viewState extends State<articulos_view> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      
+
                       TextFormField(
                         controller: _tituloController,
                         decoration: const InputDecoration(
                           labelText: "Título",
                           border: OutlineInputBorder(),
                         ),
-                        validator: (value) =>
-                            value == null || value.isEmpty ? "Introduce un título" : null,
+                        validator: (value) => value == null || value.isEmpty
+                            ? "Introduce un título"
+                            : null,
                       ),
                       const SizedBox(height: 12),
-                      
+
                       TextFormField(
                         controller: _descripcionController,
                         decoration: const InputDecoration(
@@ -286,8 +296,9 @@ class _articulos_viewState extends State<articulos_view> {
                           border: OutlineInputBorder(),
                         ),
                         maxLines: 3,
-                        validator: (value) =>
-                            value == null || value.isEmpty ? "Introduce una descripción" : null,
+                        validator: (value) => value == null || value.isEmpty
+                            ? "Introduce una descripción"
+                            : null,
                       ),
                       const SizedBox(height: 12),
                       
@@ -386,6 +397,7 @@ class _articulos_viewState extends State<articulos_view> {
                       
                       if (_articuloEditando == null) {
                         await articuloProvider.crearArticulo(
+                          widget.vendedor.id,
                           _tituloController.text,
                           _descripcionController.text,
                           double.parse(_precioController.text),
@@ -393,7 +405,6 @@ class _articulos_viewState extends State<articulos_view> {
                           categoriaNombre,
                           int.parse(_stockController.text),
                         );
-                        // ✅ Usar la referencia guardada
                         messenger.showSnackBar(
                           const SnackBar(
                             content: Text("Obra creada correctamente"),
@@ -541,9 +552,7 @@ class _articulos_viewState extends State<articulos_view> {
   Widget _buildArticuloCard(Articulo articulo) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -553,28 +562,30 @@ class _articulos_viewState extends State<articulos_view> {
             child: SizedBox(
               height: 180,
               width: double.infinity,
-              child: articulo.imagen.isNotEmpty
+              child: articulo.imagen.isNotEmpty && articulo.imagen != "null"
                   ? Image.network(
                       articulo.imagen,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[300],
-                          child: const Center(
-                            child: Icon(Icons.image_not_supported, size: 50),
-                          ),
+                        // ✅ Si falla la red, usar imagen por defecto
+                        return Image.asset(
+                          'assets/images/defaultArticulo.jpg',
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 180,
                         );
                       },
                     )
-                  : Container(
-                      color: Colors.grey[300],
-                      child: const Center(
-                        child: Icon(Icons.image, size: 50),
-                      ),
+                  : Image.asset(
+                      // ✅ Si no tiene imagen, usar imagen por defecto
+                      'assets/images/defaultArticulo.jpg',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 180,
                     ),
             ),
           ),
-          
+
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -595,7 +606,10 @@ class _articulos_viewState extends State<articulos_view> {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColores.colorSecundario,
                         borderRadius: BorderRadius.circular(20),
@@ -611,7 +625,7 @@ class _articulos_viewState extends State<articulos_view> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                
+
                 Chip(
                   label: Text(
                     articulo.categoria,
@@ -621,19 +635,21 @@ class _articulos_viewState extends State<articulos_view> {
                   avatar: const Icon(Icons.category, size: 16),
                 ),
                 const SizedBox(height: 8),
-                
+
                 Row(
                   children: [
                     Icon(Icons.inventory, size: 16, color: Colors.grey[600]),
                     const SizedBox(width: 4),
                     Text(
                       "Stock: ${articulo.stock} unidades",
-                      style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
+                      style: AppEstiloTexto.textoSecundario.copyWith(
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
-                
+
                 Text(
                   articulo.descripcion,
                   style: AppEstiloTexto.textoSecundario,
@@ -641,12 +657,13 @@ class _articulos_viewState extends State<articulos_view> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 12),
-                
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton.icon(
-                      onPressed: () => _mostrarDialogoArticulo(articulo: articulo),
+                      onPressed: () =>
+                          _mostrarDialogoArticulo(articulo: articulo),
                       icon: const Icon(Icons.edit, size: 20),
                       label: const Text("Editar"),
                       style: TextButton.styleFrom(
@@ -658,9 +675,7 @@ class _articulos_viewState extends State<articulos_view> {
                       onPressed: () => _eliminarArticulo(articulo),
                       icon: const Icon(Icons.delete, size: 20),
                       label: const Text("Eliminar"),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.red,
-                      ),
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
                     ),
                   ],
                 ),

@@ -129,7 +129,12 @@ class _perfil_vendedor_viewState extends State<perfil_vendedor_view> {
                       final path = await CameraGalleryService().selectPhoto();
                       if (path == null) return;
                       photoPath = path;
-                      setState(() {});
+                       final actualizado = await vendedorProvider.actualizarVendedor(widget.vendedor.id,widget.vendedor.correoElectronico,widget.vendedor.nombre,widget.vendedor.descripcionPerfil,photoPath!,widget.vendedor.contrasena);
+                      if(actualizado != null ){
+                        setState(() {
+                          _vendedorActualizado = actualizado;
+                        });
+                      }
                     },
                   ),
                   ElevatedButton(
@@ -138,15 +143,23 @@ class _perfil_vendedor_viewState extends State<perfil_vendedor_view> {
                       final path = await CameraGalleryService().takePhoto();
                       if (path == null) return;
                       photoPath = path;
-                      setState(() {});
+                       final actualizado = await vendedorProvider.actualizarVendedor(widget.vendedor.id,widget.vendedor.correoElectronico,widget.vendedor.nombre,widget.vendedor.descripcionPerfil,photoPath!,widget.vendedor.contrasena);
+                      if(actualizado != null ){
+                        setState(() {
+                          _vendedorActualizado = actualizado;
+                        });
+                      }
                     },
                   ),
                   if (photoPath != "")
                     IconButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        final actualizado = await vendedorProvider.actualizarVendedor(widget.vendedor.id,widget.vendedor.correoElectronico,widget.vendedor.nombre,widget.vendedor.descripcionPerfil,photoPath!,widget.vendedor.contrasena);
+                      if(actualizado != null ){
                         setState(() {
-                          photoPath = "";
+                          _vendedorActualizado = actualizado;
                         });
+                      }
                       },
                       icon: const Icon(Icons.delete_outline, color: Colors.red),
                     ),
@@ -339,7 +352,8 @@ class _perfil_vendedor_viewState extends State<perfil_vendedor_view> {
                       _vendedorActualizado.nombre,
                       descripcionController.text,
                       _vendedorActualizado.imagen,
-                      "",
+                      _vendedorActualizado.contrasena
+                      
                     );
                     
                     // Recargar datos
