@@ -31,7 +31,7 @@ class Lineapedido {
       idPedido: json['idPedido'] ?? 0,
       idArticulo: json['idArticulo'] ?? 0,
       cantidad: json['cantidad'] ?? 0,
-      precioUnitario: (double.tryParse(json['precioUnitario'])) ?? 0.0
+      precioUnitario: json['precioUnitario'] ?? 0.0
     );
   }
 

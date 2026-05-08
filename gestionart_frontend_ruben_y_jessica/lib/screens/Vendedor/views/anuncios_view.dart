@@ -29,7 +29,6 @@ class _anuncios_viewState extends State<anuncios_view> {
   // Controladores para el diálogo de crear anuncio
   final _formKey = GlobalKey<FormState>();
   final _tituloController = TextEditingController();
-  final _precioController = TextEditingController();
   Categoria? _categoriaSeleccionada;
   String? _imagenPath;
 
@@ -42,7 +41,6 @@ class _anuncios_viewState extends State<anuncios_view> {
   @override
   void dispose() {
     _tituloController.dispose();
-    _precioController.dispose();
     super.dispose();
   }
 
@@ -59,7 +57,6 @@ class _anuncios_viewState extends State<anuncios_view> {
       
       final todosAnuncios = await anuncioProvider.fetchListaAnuncios();
       
-      // Filtrar anuncios del vendedor actual
       setState(() {
         _anuncios = todosAnuncios.where((a) => a.idVendedor == widget.vendedor.id).toList();
         _isLoading = false;
@@ -196,19 +193,35 @@ class _anuncios_viewState extends State<anuncios_view> {
       // Cerrar el diálogo
       Navigator.pop(context);
       
+      // Crear objeto anuncio temporal (el precio es fijo 2€)
+      final nuevoAnuncio = Anuncio(
+        id: 0,
+        titulo: _tituloController.text,
+        categoria: _categoriaSeleccionada!.toString().split('.').last,
+        precio: 2.0,
+        imagen: _imagenPath!,
+        fechaInicio: DateTime.now(),
+        fechaFin: DateTime.now().add(const Duration(days: 30)),
+        idVendedor: widget.vendedor.id,
+        activo: true,
+      );
+      
       // Navegar a la pantalla de pago
-      final pagoExitoso = await Navigator.push(
+      final pagoExitoso = await Navigator.push<bool>(
         context,
         MaterialPageRoute(
           builder: (context) => pago_view(
             pago: Tipopago.PUBLICIDAD,
             importe: 2.0,
+            comprador: null,
+            vendedor: widget.vendedor,
+            anuncio: nuevoAnuncio,
           ),
         ),
       );
       
       // Si el pago fue exitoso, crear el anuncio
-      if (pagoExitoso == true) {
+      if (pagoExitoso == true && mounted) {
         setState(() {
           _isLoading = true;
         });
@@ -225,7 +238,7 @@ class _anuncios_viewState extends State<anuncios_view> {
             widget.vendedor.id,
             _tituloController.text,
             categoriaNombre,
-            double.parse(_precioController.text),
+            2.0,  // Precio fijo
             _imagenPath!,
           );
           
@@ -258,7 +271,6 @@ class _anuncios_viewState extends State<anuncios_view> {
 
   void _mostrarDialogoCrearAnuncio() {
     _tituloController.clear();
-    _precioController.clear();
     _categoriaSeleccionada = null;
     _imagenPath = null;
 
@@ -314,37 +326,38 @@ class _anuncios_viewState extends State<anuncios_view> {
                       ),
                       const SizedBox(height: 16),
                       
-                      // Imagen
+                      // Imagen - CON IMAGEN POR DEFECTO
                       Container(
                         height: 150,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(8),
-                          image: _imagenPath != null
-                              ? DecorationImage(
-                                  image: kIsWeb
-                                      ? NetworkImage(_imagenPath!)
-                                      : FileImage(File(_imagenPath!)) as ImageProvider,
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
                         ),
-                        child: _imagenPath == null
-                            ? Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.image, size: 40, color: Colors.grey[400]),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      "Selecciona una imagen",
-                                      style: AppEstiloTexto.textoSecundario,
-                                    ),
-                                  ],
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: _imagenPath == null || _imagenPath!.isEmpty
+                              ? Image.asset(
+                                  'assets/images/defaultAnuncio.jpg',
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: 150,
+                                )
+                              : Image.network(
+                                  _imagenPath!,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: 150,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/defaultAnuncio.jpg',
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: 150,
+                                    );
+                                  },
                                 ),
-                              )
-                            : null,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Row(
@@ -380,11 +393,16 @@ class _anuncios_viewState extends State<anuncios_view> {
                               style: AppEstiloBotones.botonSecundario,
                             ),
                           ),
+                          if (_imagenPath != null && _imagenPath!.isNotEmpty)
+                            IconButton(
+                              onPressed: () => setStateDialog(() => _imagenPath = null),
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                            ),
                         ],
                       ),
                       const SizedBox(height: 16),
                       
-                      // Título
+                      // Título (sin campo de precio)
                       TextFormField(
                         controller: _tituloController,
                         decoration: const InputDecoration(
@@ -514,30 +532,32 @@ class _anuncios_viewState extends State<anuncios_view> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Imagen
+          // Imagen - CON IMAGEN POR DEFECTO
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             child: SizedBox(
               height: 160,
               width: double.infinity,
-              child: anuncio.imagen.isNotEmpty
+              child: anuncio.imagen.isNotEmpty && anuncio.imagen.startsWith('http')
                   ? Image.network(
                       anuncio.imagen,
                       fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 160,
                       errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[300],
-                          child: const Center(
-                            child: Icon(Icons.image_not_supported, size: 50),
-                          ),
+                        return Image.asset(
+                          'assets/images/defaultAnuncio.jpg',
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 160,
                         );
                       },
                     )
-                  : Container(
-                      color: Colors.grey[300],
-                      child: const Center(
-                        child: Icon(Icons.image, size: 50),
-                      ),
+                  : Image.asset(
+                      'assets/images/defaultAnuncio.jpg',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 160,
                     ),
             ),
           ),
@@ -547,36 +567,15 @@ class _anuncios_viewState extends State<anuncios_view> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Título y precio
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        anuncio.titulo,
-                        style: AppEstiloTexto.textoPrincipal.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColores.colorSecundario,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        "${anuncio.precio.toStringAsFixed(2)} €",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
+                // SOLO TÍTULO - SIN PRECIO
+                Text(
+                  anuncio.titulo,
+                  style: AppEstiloTexto.textoPrincipal.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
                 

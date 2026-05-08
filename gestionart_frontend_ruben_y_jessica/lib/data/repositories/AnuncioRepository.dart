@@ -11,7 +11,7 @@ class Anunciorepository {
 
   Future<bool> crearAnuncio(int idVendedor, String titulo, String categoria, double precio, String imagen) async {
     try {
-      final response = await _apiService.dio.post("/anuncios", data: {
+      final response = await _apiService.dio.post("/anuncios/crear", data: {
         "idVendedor": idVendedor,
         "titulo": titulo,
         "categoria": categoria,

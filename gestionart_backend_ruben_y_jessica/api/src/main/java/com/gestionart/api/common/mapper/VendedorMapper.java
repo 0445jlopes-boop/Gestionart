@@ -59,8 +59,8 @@ public class VendedorMapper {
             vendedor.getCorreoElectronico(),
             vendedor.getNombre(),
             vendedor.getImagen(),
-            vendedor.getDescripcionPerfil(), 
-            vendedor.getContrasena()
+            vendedor.getContrasena(),
+            vendedor.getDescripcionPerfil()
         );
     }
 }
