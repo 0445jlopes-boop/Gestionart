@@ -29,8 +29,8 @@ public class LineaPedidoRepositoryAdapter implements LineaPedidoRepository {
         return repository.findById(id).map(this::toDomain);
     }
 
-    public Optional<LineaPedido> findByIdPedido(Long idPedido) {
-        return repository.findByPedido_Id(idPedido).stream().findFirst().map(this::toDomain);
+    public List<LineaPedido> findByIdPedido(Long idPedido) {
+        return repository.findByPedido_Id(idPedido).stream().map(this::toDomain).collect(Collectors.toList());
     }
 
     public List<LineaPedido> findAllByPedidoId(Long idPedido) {

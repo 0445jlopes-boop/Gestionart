@@ -41,12 +41,13 @@ class PedidoRepository {
     }
   }
 
-  Future<void> anadirLinea(int idPedido, int idLinea) async {
+  Future<bool> anadirLinea(int idPedido, int idLinea) async {
     try {
       final response = await _apiService.dio.put("/pedidos/$idPedido/anadirLinea/$idLinea");
       if (response.statusCode != 200) {
         throw Exception("Error al añadir línea: ${response.statusCode}");
       }
+      return true;
     } catch (e) {
       throw Exception("Error al añadir línea: $e");
     }

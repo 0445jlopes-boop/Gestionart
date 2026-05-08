@@ -73,18 +73,12 @@ class Pedidoprovider with ChangeNotifier {
     }
   }
 
-  Future<void> anadirLinea(int idPedido, int idLinea) async {
+  Future<bool> anadirLinea(int idPedido, int idLinea) async {
     try {
-      _isLoading = true;
-      notifyListeners();
       
-      await _pedidoRepository.anadirLinea(idPedido, idLinea);
-      
-      _isLoading = false;
-      notifyListeners();
+      return await _pedidoRepository.anadirLinea(idPedido, idLinea);
+  
     } catch (e) {
-      _isLoading = false;
-      notifyListeners();
       throw Exception("Error al añadir línea: $e");
     }
   }

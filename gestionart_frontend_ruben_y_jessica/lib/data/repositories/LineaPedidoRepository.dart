@@ -7,17 +7,18 @@ class LineaPedidoRepository {
   final ApiService _apiService;
   LineaPedidoRepository(ApiService? apiService) : _apiService = apiService ?? ApiService();
 
-  Future<void> crearLineaPedido(int idPedido, int idArticulo, int cantidad, double precioUnitario) async {
+  Future<Lineapedido?> crearLineaPedido(int idPedido, int idArticulo, int cantidad, double precioUnitario) async {
     try {
-      final response = await _apiService.dio.post("/lineas-pedido", data: {
+      final response = await _apiService.dio.post("/lineas-pedido/crear", data: {
         "idPedido": idPedido,
         "idArticulo": idArticulo,
         "cantidad": cantidad,
         "precioUnitario": precioUnitario
       });
-      if (response.statusCode != 201) {
-        throw Exception("Error al crear la línea de pedido: ${response.statusCode}");
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Lineapedido.fromJson(response.data);
       }
+      return null;
     } catch (e) {
       throw Exception("Error al crear la línea de pedido: $e");
     }
@@ -68,6 +69,7 @@ class LineaPedidoRepository {
   }
 
   Future<void> eliminarLineaPedido(int idLineaPedido) async {
+    print("ESTOY LLAMANDO A ELIMINAR PEDIDO");
     try {
       final response = await _apiService.dio.delete("/lineas-pedido/$idLineaPedido");
       if (response.statusCode != 204) {

@@ -21,9 +21,9 @@ public class LineaPedidoController {
     private final LineaPedidoService lineaPedidoService;
     private final LineaPedidoMapper lineaPedidoMapper;
 
-    public LineaPedidoController(LineaPedidoService lineaPedidoService) {
+    public LineaPedidoController(LineaPedidoService lineaPedidoService, LineaPedidoMapper lineaPedidoMapper) {
         this.lineaPedidoService = lineaPedidoService;
-        this.lineaPedidoMapper = new LineaPedidoMapper();
+        this.lineaPedidoMapper = lineaPedidoMapper;
     }
 
     @PostMapping("/crear")
@@ -53,11 +53,14 @@ public class LineaPedidoController {
         return ResponseEntity.ok(lineaPedidoMapper.toResponse(actualizado));
     }
 
-    @GetMapping("/pedido/{idPedido}")
-    public ResponseEntity<LineaPedidoResponse> obtenerPorPedido(@PathVariable Long idPedido){
-        return ResponseEntity.ok(
-                lineaPedidoMapper.toResponse(lineaPedidoService.obtenerPorPedido(idPedido)));
-    }   
+   @GetMapping("/pedido/{idPedido}")
+    public ResponseEntity<List<LineaPedidoResponse>> obtenerPorPedido(@PathVariable Long idPedido){
+        List<LineaPedido> lineas = lineaPedidoService.obtenerPorPedido(idPedido);
+        List<LineaPedidoResponse> responses = lineas.stream()
+            .map(lineaPedidoMapper::toResponse)
+            .toList();
+        return ResponseEntity.ok(responses);
+    }     
 
     @GetMapping("/{id}")
     public ResponseEntity<LineaPedidoResponse> obtenerPorId(@PathVariable Long id) {

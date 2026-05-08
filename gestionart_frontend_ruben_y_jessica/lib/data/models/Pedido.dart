@@ -48,5 +48,21 @@ class Pedido { //Clase pedido
     };
   }
 
+   Pedido copyWith({
+    int? id,
+    int? idComprador,
+    int? idVendeodr,
+    Estadopedido? estado,
+    List<Lineapedido>? lineas,
+  }) {
+    return Pedido(
+      id: id ?? this.id,
+      idComprador: idComprador ?? this.idComprador,
+      idVendeodr: idVendeodr ?? this.idVendeodr,
+      estado: estado ?? this.estado,
+      lineas: lineas ?? this.lineas,
+    );
+  }
+
 
 }

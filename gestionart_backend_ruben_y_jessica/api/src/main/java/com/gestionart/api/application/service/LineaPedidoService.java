@@ -35,8 +35,8 @@ public class LineaPedidoService {
         lineaPedidoRepository.deleteById(id);
     }
 
-    public LineaPedido obtenerPorPedido(Long idPedido) {
-        return lineaPedidoRepository.findByIdPedido(idPedido).orElseThrow(() -> new NotFoundByIdException(idPedido));
+    public List<LineaPedido> obtenerPorPedido(Long idPedido) {
+        return lineaPedidoRepository.findByIdPedido(idPedido);
      
     }
 

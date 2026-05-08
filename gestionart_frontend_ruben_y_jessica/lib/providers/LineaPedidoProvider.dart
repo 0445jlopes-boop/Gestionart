@@ -11,9 +11,9 @@ class Lineapedidoprovider with ChangeNotifier{
   List<Lineapedido> get lineasPedido => _lineasPedido;
 
 
-  Future<void> crearLineaPedido(int idLineaPedido, int idArticulo, int cantidad, double precioUnitario) async {
+  Future<Lineapedido?> crearLineaPedido(int idLineaPedido, int idArticulo, int cantidad, double precioUnitario) async {
     try {
-      await _lineaPedidoRepository.crearLineaPedido(idLineaPedido, idArticulo, cantidad, precioUnitario);
+      return await _lineaPedidoRepository.crearLineaPedido(idLineaPedido, idArticulo, cantidad, precioUnitario);
     } catch (e) {
       throw("Error al crear la línea de pedido: $e");
     }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/LineaPedido.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/Pedido.dart';
 import 'package:provider/provider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/Categoria.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoCuentaComprador.dart';
@@ -46,14 +48,19 @@ class _categorias_viewState extends State<categorias_view> {
       final compradorProvider = context.read<Compradorprovider>();
       final anuncioProvider = context.read<AnuncioProvider>();
 
-      _compradorActual = await compradorProvider.obtenerComprador(widget.comprador.id);
+      _compradorActual = await compradorProvider.obtenerComprador(
+        widget.comprador.id,
+      );
 
       String categoriaNombre = widget.categoria.toString().split('.').last;
-      
-      _articulosFiltrados = (await articuloProvider.obtenerPorCategoria(categoriaNombre)) ?? [];
+
+      _articulosFiltrados =
+          (await articuloProvider.obtenerPorCategoria(categoriaNombre)) ?? [];
 
       if (_compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL) {
-        _articulosFiltrados = _articulosFiltrados.where((articulo) => articulo.stock > 0).toList();
+        _articulosFiltrados = _articulosFiltrados
+            .where((articulo) => articulo.stock > 0)
+            .toList();
       }
 
       List<Anuncio> todosAnuncios = await anuncioProvider.fetchListaAnuncios();
@@ -78,225 +85,282 @@ class _categorias_viewState extends State<categorias_view> {
   }
 
   Future<void> _anadirALineaPedido(Articulo articulo) async {
-    try {
-      final pedidoProvider = context.read<Pedidoprovider>();
-      final lineaPedidoProvider = context.read<Lineapedidoprovider>();
+  try {
+    final pedidoProvider = context.read<Pedidoprovider>();
+    final lineaPedidoProvider = context.read<Lineapedidoprovider>();
 
-      if (_compradorActual == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Error: No se encontró el comprador")),
-        );
-        return;
-      }
-
-      await pedidoProvider.fetchPedidosPorComprador(_compradorActual!.id);
-      
-      var pedidoExistente = pedidoProvider.pedidos.isNotEmpty
-          ? pedidoProvider.pedidos.firstWhere(
-              (p) => p.idComprador == _compradorActual!.id &&
-                     p.estado == 'PENDIENTE'
-            )
-          : null;
-
-      late int idPedido;
-
-      if (pedidoExistente != null) {
-        idPedido = pedidoExistente.id;
-      } else {
-        final nuevoPedido = await pedidoProvider.crearPedido({
-          'idComprador': _compradorActual!.id,
-          'idVendedor': articulo.idVendedor,
-          'estado': 'PENDIENTE'
-        });
-        idPedido = nuevoPedido.id;
-      }
-
-      await lineaPedidoProvider.crearLineaPedido(
-        idPedido,
-        articulo.id,
-        1,
-        articulo.precio.toDouble(),
+    if (_compradorActual == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Error: No se encontró el comprador")),
       );
+      return;
+    }
 
-      if (mounted) {
+    // Verificar stock
+    if (_compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL && articulo.stock <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No hay stock disponible de este producto"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Obtener pedidos del comprador
+    final pedidos = await pedidoProvider.fetchPedidosPorComprador(_compradorActual!.id);
+    
+    // Buscar pedido existente en estado PENDIENTE
+    Pedido? pedidoExistente;
+    try {
+      pedidoExistente = pedidos.firstWhere(
+        (p) => p.idComprador == _compradorActual!.id && 
+               p.estado.toString().split('.').last == "PENDIENTE"
+      );
+    } catch (e) {
+      pedidoExistente = null;
+    }
+
+    late Pedido pedidoActual;
+
+    if (pedidoExistente != null) {
+      pedidoActual = pedidoExistente;
+      print("📦 Usando pedido existente ID: ${pedidoActual.id}");
+    } else {
+      // Crear nuevo pedido en estado PENDIENTE
+      final nuevoPedido = await pedidoProvider.crearPedido({
+        'idComprador': _compradorActual!.id,
+        'idVendedor': articulo.idVendedor,
+        'estado': 'PENDIENTE'
+      });
+      pedidoActual = nuevoPedido;
+      print("📦 Creando nuevo pedido ID: ${pedidoActual.id}");
+    }
+
+    // ✅ 1. Crear línea de pedido
+    final lineaCreada = await lineaPedidoProvider.crearLineaPedido(
+      pedidoActual.id,
+      articulo.id,
+      1,
+      articulo.precio,
+    );
+
+    if (mounted && lineaCreada != null) {
+      print("✅ Línea creada ID: ${lineaCreada.id}");
+      
+      // ✅ 2. Añadir la línea al pedido (importante!)
+      final anadido = await pedidoProvider.anadirLinea(pedidoActual.id, lineaCreada.id);
+      
+      if (anadido) {
+        // ✅ 3. Recargar el pedido actualizado
+        final pedidoActualizado = await pedidoProvider.fetchPedidoPorId(pedidoActual.id);
+        print("📦 Pedido actualizado tiene ${pedidoActualizado.lineas.length} líneas");
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${articulo.titulo} añadido al pedido"),
+            content: Text("✅ ${articulo.titulo} añadido al pedido"),
             backgroundColor: Colors.green,
           ),
         );
-      }
-    } catch (e) {
-      print("Error al agregar al pedido: $e");
-      if (mounted) {
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Error al agregar al pedido: $e"),
-            backgroundColor: Colors.red,
+          const SnackBar(
+            content: Text("⚠️ Línea creada pero no asociada al pedido"),
+            backgroundColor: Colors.orange,
           ),
         );
       }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_isLoading && _articulosFiltrados.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.art_track_outlined,
-              size: 80,
-              color: AppColores.colorPrimario.withOpacity(0.5),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              _compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL
-                  ? "No hay obras disponibles en esta categoría"
-                  : "No hay obras en esta categoría",
-              style: AppEstiloTexto.textoPrincipal.copyWith(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Pronto llegaran nuevas creaciones artísticas",
-              style: AppEstiloTexto.textoSecundario,
-              textAlign: TextAlign.center,
-            ),
-          ],
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("❌ Error al crear la línea de pedido"),
+          backgroundColor: Colors.red,
         ),
       );
     }
+  } catch (e) {
+    print("❌ Error al agregar al pedido: $e");
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("❌ Error: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+}
 
-    return Expanded(
-      child: _isLoading
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColores.colorPrimario,
+        title: Text(
+          widget.categoria.toString().split('.').last,
+          style: AppEstiloTexto.encabezado,
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                // Carrusel de Artículos
-                Expanded(
-                  flex: 3,
-                  child: Stack(
+          : _articulosFiltrados.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      PageView.builder(
-                        controller: _pageController,
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentIndex = index;
-                          });
-                        },
-                        itemCount: _articulosFiltrados.length,
-                        itemBuilder: (context, index) {
-                          final articulo = _articulosFiltrados[index];
-                          return _construirCardArticulo(articulo);
-                        },
+                      Icon(
+                        Icons.art_track_outlined,
+                        size: 80,
+                        color: AppColores.colorPrimario.withOpacity(0.5),
                       ),
-                      Positioned(
-                        bottom: 20,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              "${_currentIndex + 1} / ${_articulosFiltrados.length}",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
+                      const SizedBox(height: 16),
+                      Text(
+                        _compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL
+                            ? "No hay obras disponibles en esta categoría"
+                            : "No hay obras en esta categoría",
+                        style: AppEstiloTexto.textoPrincipal.copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
                         ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Pronto llegaran nuevas creaciones artísticas",
+                        style: AppEstiloTexto.textoSecundario,
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 12),
-                
-                if (_articulosFiltrados.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ElevatedButton.icon(
-                      onPressed: () => _anadirALineaPedido(_articulosFiltrados[_currentIndex]),
-                      icon: const Icon(Icons.shopping_cart, color: Colors.white),
-                      label: Text(
-                        "Añadir al pedido",
-                        style: AppEstiloTexto.textoPrincipal.copyWith(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColores.colorSecundario,
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                    ),
-                  ),
-                
-                const SizedBox(height: 16),
-                
-                // Anuncios destacados
-                if (_anunciosAleatorios.isNotEmpty)
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          AppColores.colorPrimario.withOpacity(0.1),
-                          AppColores.colorSecundario.withOpacity(0.05),
+                )
+              : Column(
+                  children: [
+                    // Carrusel de Artículos
+                    Expanded(
+                      flex: 3,
+                      child: Stack(
+                        children: [
+                          PageView.builder(
+                            controller: _pageController,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentIndex = index;
+                              });
+                            },
+                            itemCount: _articulosFiltrados.length,
+                            itemBuilder: (context, index) {
+                              final articulo = _articulosFiltrados[index];
+                              return _construirCardArticulo(articulo);
+                            },
+                          ),
+                          // Indicador de posición
+                          Positioned(
+                            bottom: 20,
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.6),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  "${_currentIndex + 1} / ${_articulosFiltrados.length}",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.campaign, size: 20, color: AppColores.colorPrimario),
-                              const SizedBox(width: 8),
-                              Text(
-                                "ANUNCIOS DESTACADOS",
-                                style: AppEstiloTexto.textoPrincipal.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.5,
-                                ),
-                              ),
+                    const SizedBox(height: 12),
+                    
+                    // Botón añadir al pedido
+                    if (_articulosFiltrados.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ElevatedButton.icon(
+                          onPressed: () => _anadirALineaPedido(_articulosFiltrados[_currentIndex]),
+                          icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                          label: Text(
+                            "Añadir al pedido",
+                            style: AppEstiloTexto.textoPrincipal.copyWith(color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColores.colorSecundario,
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                        ),
+                      ),
+                    
+                    const SizedBox(height: 16),
+                    
+                    // Anuncios destacados
+                    if (_anunciosAleatorios.isNotEmpty)
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppColores.colorPrimario.withOpacity(0.1),
+                              AppColores.colorSecundario.withOpacity(0.05),
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 200,
-                          child: PageView.builder(
-                            controller: _anunciosController,
-                            onPageChanged: (index) {
-                              setState(() {
-                                _currentAnuncioIndex = index;
-                              });
-                            },
-                            itemCount: _anunciosAleatorios.length,
-                            itemBuilder: (context, index) {
-                              final anuncio = _anunciosAleatorios[index];
-                              return _construirCardAnuncio(anuncio);
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.campaign, size: 20, color: AppColores.colorPrimario),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "ANUNCIOS DESTACADOS",
+                                    style: AppEstiloTexto.textoPrincipal.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 200,
+                              child: PageView.builder(
+                                controller: _anunciosController,
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    _currentAnuncioIndex = index;
+                                  });
+                                },
+                                itemCount: _anunciosAleatorios.length,
+                                itemBuilder: (context, index) {
+                                  final anuncio = _anunciosAleatorios[index];
+                                  return _construirCardAnuncio(anuncio);
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+                      ),
+                  ],
+                ),
     );
   }
 
@@ -367,6 +431,7 @@ class _categorias_viewState extends State<categorias_view> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Categoría
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
@@ -383,6 +448,7 @@ class _categorias_viewState extends State<categorias_view> {
                     ),
                   ),
                   const SizedBox(height: 12),
+                  // Título
                   Text(
                     articulo.titulo,
                     style: const TextStyle(
@@ -401,6 +467,7 @@ class _categorias_viewState extends State<categorias_view> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
+                  // Descripción
                   Text(
                     articulo.descripcion,
                     style: const TextStyle(
@@ -411,6 +478,7 @@ class _categorias_viewState extends State<categorias_view> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 12),
+                  // Precio y estado
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -421,7 +489,7 @@ class _categorias_viewState extends State<categorias_view> {
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Text(
-                          "\$${articulo.precio.toStringAsFixed(2)}",
+                          "${articulo.precio.toStringAsFixed(2)} €",
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -492,11 +560,9 @@ class _categorias_viewState extends State<categorias_view> {
         borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: [
-            // Imagen de fondo
             Positioned.fill(
               child: _buildImage(anuncio.imagen, false),
             ),
-            // Overlay oscuro
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
@@ -511,13 +577,11 @@ class _categorias_viewState extends State<categorias_view> {
                 ),
               ),
             ),
-            // Contenido: Título y Precio
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Título
                   Text(
                     anuncio.titulo,
                     textAlign: TextAlign.center,
@@ -529,7 +593,6 @@ class _categorias_viewState extends State<categorias_view> {
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 16),
                 ],
               ),
             ),
