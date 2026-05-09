@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoPago.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/LineaPedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Pedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/ArticuloProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/PedidoProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/LineaPedidoProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaPago.dart';
 import 'package:provider/provider.dart';
 
 class PedidosView extends StatefulWidget {
@@ -38,7 +41,6 @@ class _PedidosViewState extends State<PedidosView> {
       
       await pedidoProvider.fetchPedidosPorComprador(widget.comprador.id);
       
-      // ✅ Para cada pedido, cargar sus líneas por separado
       final pedidosConLineas = <Pedido>[];
       for (var pedido in pedidoProvider.pedidos) {
         final lineas = await lineaPedidoProvider.fetchLineasPedidoPorPedido(pedido.id);
@@ -67,6 +69,33 @@ class _PedidosViewState extends State<PedidosView> {
 
   double _calcularTotalPedido(Pedido pedido) {
     return pedido.lineas.fold(0.0, (total, linea) => total + (linea.cantidad * linea.precioUnitario));
+  }
+
+  Future<void> _pagarPedido(Pedido pedido) async {
+    final total = _calcularTotalPedido(pedido);
+    
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => pago_view(
+          pago: Tipopago.PEDIDO,
+          importe: total,
+          comprador: widget.comprador,
+        ),
+      ),
+    );
+    
+    if (result == true && mounted) {
+      await context.read<Pedidoprovider>().cambiarEstado(pedido.id);
+      await context.read<Pedidoprovider>().cambiarEstado(pedido.id);
+      await _cargarPedidos();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("¡Pedido pagado correctamente!"),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
   }
 
   Future<void> _eliminarPedido(Pedido pedido) async {
@@ -204,6 +233,7 @@ class _PedidosViewState extends State<PedidosView> {
     final colorEstado = _getEstadoColor(estadoStr);
     final estadoIcon = _getEstadoIcon(estadoStr);
     final puedeEliminar = estadoStr == "FINALIZADO";
+    final puedePagar = estadoStr == "PENDIENTE";
     
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -232,13 +262,13 @@ class _PedidosViewState extends State<PedidosView> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
-                      color: _getEstadoColor(estadoStr).withOpacity(0.1),
+                      color: colorEstado.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: _getEstadoColor(estadoStr), width: 1),
+                      border: Border.all(color: colorEstado, width: 1),
                     ),
                     child: Text(
                       estadoStr,
-                      style: TextStyle(color: _getEstadoColor(estadoStr), fontWeight: FontWeight.bold, fontSize: 12),
+                      style: TextStyle(color: colorEstado, fontWeight: FontWeight.bold, fontSize: 12),
                     ),
                   ),
                 ],
@@ -259,11 +289,22 @@ class _PedidosViewState extends State<PedidosView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  if (puedePagar)
+                    ElevatedButton(
+                      onPressed: () => _pagarPedido(pedido),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      ),
+                      child: const Text("Pagar", style: TextStyle(color: Colors.white)),
+                    ),
+                  if (puedeEliminar)
+                    const SizedBox(width: 8),
                   if (puedeEliminar)
                     TextButton.icon(
                       onPressed: () => _eliminarPedido(pedido),
                       icon: const Icon(Icons.delete, size: 18),
-                      label: const Text("Eliminar pedido"),
+                      label: const Text("Eliminar"),
                       style: TextButton.styleFrom(foregroundColor: Colors.red),
                     ),
                 ],
@@ -288,7 +329,7 @@ class DetallePedidoView extends StatefulWidget {
 }
 
 class _DetallePedidoViewState extends State<DetallePedidoView> {
-  Map<int, String> _imagenesArticulos = {};
+  Map<int, String> _nombreArticulos = {};
   bool _cargandoArticulos = true;
   List<Lineapedido> _lineas = [];
 
@@ -302,22 +343,21 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
     final lineaPedidoProvider = context.read<Lineapedidoprovider>();
     final articuloProvider = context.read<Articuloprovider>();
     
-    // ✅ Cargar líneas del pedido por separado
     final lineas = await lineaPedidoProvider.fetchLineasPedidoPorPedido(widget.pedido.id);
     
     setState(() {
       _lineas = lineas;
     });
     
-    // Cargar imágenes de los artículos
+    // Cargar nombres de los artículos
     for (var linea in lineas) {
       try {
         final articulo = await articuloProvider.obtenerArticulo(linea.idArticulo);
         if (articulo != null && mounted) {
-          _imagenesArticulos[linea.idArticulo] = articulo.imagen;
+          _nombreArticulos[linea.idArticulo] = articulo.titulo;
         }
       } catch (e) {
-        _imagenesArticulos[linea.idArticulo] = "";
+        _nombreArticulos[linea.idArticulo] = "Producto no disponible";
       }
     }
     if (mounted) setState(() => _cargandoArticulos = false);
@@ -325,6 +365,30 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
 
   double get _totalPedido {
     return _lineas.fold(0.0, (total, l) => total + (l.cantidad * l.precioUnitario));
+  }
+
+  Future<void> _pagarPedido() async {
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => pago_view(
+          pago: Tipopago.PEDIDO,
+          importe: _totalPedido,
+          comprador: widget.comprador,
+        ),
+      ),
+    );
+    
+    if (result == true && mounted) {
+      widget.onPedidoActualizado();
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("¡Pedido pagado correctamente!"),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
   }
 
   Future<void> _eliminarPedido() async {
@@ -365,6 +429,7 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
   Widget build(BuildContext context) {
     final estadoStr = widget.pedido.estado.toString().split('.').last;
     final puedeEliminar = estadoStr == "FINALIZADO";
+    final puedePagar = estadoStr == "PENDIENTE";
     final estadoIcon = _getEstadoIcon(estadoStr);
 
     return Scaffold(
@@ -373,6 +438,12 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
         title: Text("Pedido #${widget.pedido.id}", style: AppEstiloTexto.encabezado),
         centerTitle: true,
         actions: [
+          if (puedePagar)
+            IconButton(
+              icon: const Icon(Icons.payment, color: Colors.white),
+              onPressed: _pagarPedido,
+              tooltip: "Pagar pedido",
+            ),
           if (puedeEliminar)
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.white),
@@ -436,6 +507,22 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  if (puedePagar)
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _pagarPedido,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                        child: const Text(
+                          "PAGAR AHORA",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -444,6 +531,7 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
 
   Widget _buildLineaCard(Lineapedido linea) {
     final subtotal = linea.cantidad * linea.precioUnitario;
+    final nombreArticulo = _nombreArticulos[linea.idArticulo] ?? "Cargando...";
     
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -452,49 +540,33 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: _imagenesArticulos[linea.idArticulo] != null && _imagenesArticulos[linea.idArticulo]!.isNotEmpty
-                    ? Image.network(
-                        _imagenesArticulos[linea.idArticulo]!,
-                        fit: BoxFit.cover,
-                        width: 60,
-                        height: 60,
-                        errorBuilder: (_, __, ___) => Container(
-                          color: Colors.grey[200],
-                          child: const Icon(Icons.broken_image, size: 30),
-                        ),
-                      )
-                    : Container(
-                        color: Colors.grey[200],
-                        child: const Icon(Icons.image, size: 30),
-                      ),
-              ),
-            ),
-            const SizedBox(width: 12),
+            // ✅ SOLO NOMBRE DEL ARTÍCULO (sin imagen)
             Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "x${linea.cantidad}",
-                    style: AppEstiloTexto.textoPrincipal.copyWith(fontSize: 16),
-                  ),
-                  Text(
-                    "${subtotal.toStringAsFixed(2)} €",
+                    nombreArticulo,
                     style: AppEstiloTexto.textoPrincipal.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "${linea.precioUnitario.toStringAsFixed(2)} € x ${linea.cantidad}",
+                    style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
                   ),
                 ],
+              ),
+            ),
+            Text(
+              "${subtotal.toStringAsFixed(2)} €",
+              style: AppEstiloTexto.textoPrincipal.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
             ),
           ],

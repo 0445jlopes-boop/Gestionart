@@ -86,19 +86,32 @@ class _pago_viewState extends State<pago_view> {
       final anuncioProvider = context.read<AnuncioProvider>();
       
       final pagoExitoso = await stripeProvider.crearPago();
-      
+
       if (pagoExitoso) {
         switch (widget.pago) {
           case Tipopago.PEDIDO:
-            _compradorActualizado = widget.comprador;
-            _mostrarDialogoExito(
-              "¡Pedido completado!",
-              "Tu pedido ha sido procesado correctamente. Recibirás un correo de confirmación.",
-              Icons.shopping_bag,
-              () {
-                _navegarAInicio(_compradorActualizado!);
-              },
-            );
+            try {
+              if (mounted) {
+                _mostrarDialogoExito(
+                  "¡Pedido completado!",
+                  "Tu pedido ha sido procesado correctamente. Recibirás un correo de confirmación.",
+                  Icons.shopping_bag,
+                  () {
+                    Navigator.pop(context, true);
+                  },
+                );
+              }
+            } catch (e) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Error: $e"),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                setState(() => _isProcessing = false);
+              }
+            }
             break;
 
           case Tipopago.SUSCRIPCION:
