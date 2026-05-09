@@ -86,15 +86,20 @@ class _PedidosViewState extends State<PedidosView> {
     );
     
     if (result == true && mounted) {
-      await context.read<Pedidoprovider>().cambiarEstado(pedido.id);
-      await context.read<Pedidoprovider>().cambiarEstado(pedido.id);
-      await _cargarPedidos();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("¡Pedido pagado correctamente!"),
-          backgroundColor: Colors.green,
-        ),
-      );
+      try {
+        await context.read<Pedidoprovider>().cambiarEstado(pedido.id);
+        await _cargarPedidos();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("¡Pedido pagado correctamente!"),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error al actualizar estado: $e"), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
@@ -103,7 +108,8 @@ class _PedidosViewState extends State<PedidosView> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Eliminar pedido", style: AppEstiloTexto.textoPrincipal),
-        content: Text("¿Seguro que quieres eliminar el pedido #${pedido.id}?", style: AppEstiloTexto.textoSecundario),
+        content: Text("¿Seguro que quieres eliminar el pedido #${pedido.id}?\n\nSe eliminarán todas las líneas asociadas.", 
+          style: AppEstiloTexto.textoSecundario),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("No")),
           TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Sí", style: TextStyle(color: Colors.red))),
@@ -112,15 +118,17 @@ class _PedidosViewState extends State<PedidosView> {
     );
     if (confirm != true) return;
 
+    setState(() => _isLoading = true);
     try {
       await context.read<Pedidoprovider>().eliminarPedido(pedido.id);
       await _cargarPedidos();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Pedido eliminado"), backgroundColor: Colors.green),
+          const SnackBar(content: Text("Pedido eliminado correctamente"), backgroundColor: Colors.green),
         );
       }
     } catch (e) {
+      setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
@@ -317,7 +325,7 @@ class _PedidosViewState extends State<PedidosView> {
   }
 }
 
-// ========== DETALLE DEL PEDIDO ==========
+// ========== DETALLE DEL PEDIDO CON ELIMINAR LÍNEAS ==========
 class DetallePedidoView extends StatefulWidget {
   final Pedido pedido;
   final Comprador comprador;
@@ -349,7 +357,6 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
       _lineas = lineas;
     });
     
-    // Cargar nombres de los artículos
     for (var linea in lineas) {
       try {
         final articulo = await articuloProvider.obtenerArticulo(linea.idArticulo);
@@ -380,14 +387,25 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
     );
     
     if (result == true && mounted) {
-      widget.onPedidoActualizado();
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("¡Pedido pagado correctamente!"),
-          backgroundColor: Colors.green,
-        ),
-      );
+      try {
+        await context.read<Pedidoprovider>().cambiarEstado(widget.pedido.id);
+        widget.onPedidoActualizado();
+        if (mounted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("¡Pedido pagado correctamente!"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Error al actualizar estado: $e"), backgroundColor: Colors.red),
+          );
+        }
+      }
     }
   }
 
@@ -395,8 +413,9 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Eliminar pedido"),
-        content: Text("¿Eliminar pedido #${widget.pedido.id}?"),
+        title: const Text("Eliminar pedido", style: AppEstiloTexto.textoPrincipal),
+        content: Text("¿Seguro que quieres eliminar el pedido #${widget.pedido.id}?\n\nSe eliminarán todas las líneas asociadas.", 
+          style: AppEstiloTexto.textoSecundario),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("No")),
           TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Sí", style: TextStyle(color: Colors.red))),
@@ -405,13 +424,62 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
     );
     if (confirm != true) return;
 
+    setState(() => _cargandoArticulos = true);
     try {
       await context.read<Pedidoprovider>().eliminarPedido(widget.pedido.id);
       widget.onPedidoActualizado();
       if (mounted) Navigator.pop(context);
     } catch (e) {
+      setState(() => _cargandoArticulos = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  // ✅ MÉTODO PARA ELIMINAR UNA LÍNEA DE PEDIDO INDIVIDUAL
+  Future<void> _eliminarLineaPedido(Lineapedido linea) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Eliminar producto", style: AppEstiloTexto.textoPrincipal),
+        content: Text("¿Seguro que quieres eliminar '${_nombreArticulos[linea.idArticulo]}' del pedido?", 
+          style: AppEstiloTexto.textoSecundario),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("No")),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Sí", style: TextStyle(color: Colors.red))),
+        ],
+      ),
+    );
+    if (confirm != true) return;
+
+    setState(() => _cargandoArticulos = true);
+    try {
+      final lineaPedidoProvider = context.read<Lineapedidoprovider>();
+      await lineaPedidoProvider.eliminarLineaPedido(linea.id);
+      
+      // Recargar líneas después de eliminar
+      await _cargarLineasYArticulos();
+      
+      // Si el pedido se queda sin líneas, volver atrás
+      if (_lineas.isEmpty && mounted) {
+        widget.onPedidoActualizado();
+        Navigator.pop(context);
+      }
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Producto eliminado del pedido"), backgroundColor: Colors.green),
+        );
+      }
+    } catch (e) {
+      setState(() => _cargandoArticulos = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
+        );
       }
     }
   }
@@ -428,8 +496,9 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
   @override
   Widget build(BuildContext context) {
     final estadoStr = widget.pedido.estado.toString().split('.').last;
-    final puedeEliminar = estadoStr == "FINALIZADO";
+    final puedeEliminarPedido = estadoStr == "FINALIZADO";
     final puedePagar = estadoStr == "PENDIENTE";
+    final puedeEliminarLinea = estadoStr == "PENDIENTE";  // Solo se pueden eliminar líneas de pedidos pendientes
     final estadoIcon = _getEstadoIcon(estadoStr);
 
     return Scaffold(
@@ -444,7 +513,7 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
               onPressed: _pagarPedido,
               tooltip: "Pagar pedido",
             ),
-          if (puedeEliminar)
+          if (puedeEliminarPedido)
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.white),
               onPressed: _eliminarPedido,
@@ -482,13 +551,23 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Text("Productos", style: AppEstiloTexto.textoPrincipal.copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Productos", style: AppEstiloTexto.textoPrincipal.copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+                      if (puedeEliminarLinea && _lineas.isNotEmpty)
+                        Text(
+                          "Desliza para eliminar",
+                          style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12, fontStyle: FontStyle.italic),
+                        ),
+                    ],
+                  ),
                   const SizedBox(height: 12),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: _lineas.length,
-                    itemBuilder: (context, index) => _buildLineaCard(_lineas[index]),
+                    itemBuilder: (context, index) => _buildLineaCard(_lineas[index], puedeEliminarLinea),
                   ),
                   const SizedBox(height: 20),
                   Container(
@@ -529,47 +608,62 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
     );
   }
 
-  Widget _buildLineaCard(Lineapedido linea) {
+  Widget _buildLineaCard(Lineapedido linea, bool puedeEliminar) {
     final subtotal = linea.cantidad * linea.precioUnitario;
     final nombreArticulo = _nombreArticulos[linea.idArticulo] ?? "Cargando...";
     
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            // ✅ SOLO NOMBRE DEL ARTÍCULO (sin imagen)
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    nombreArticulo,
-                    style: AppEstiloTexto.textoPrincipal.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
+    return Dismissible(
+      key: Key(linea.id.toString()),
+      direction: puedeEliminar ? DismissDirection.endToStart : DismissDirection.none,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      onDismissed: (direction) async {
+        await _eliminarLineaPedido(linea);
+      },
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      nombreArticulo,
+                      style: AppEstiloTexto.textoPrincipal.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "${linea.precioUnitario.toStringAsFixed(2)} € x ${linea.cantidad}",
-                    style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      "${linea.precioUnitario.toStringAsFixed(2)} € x ${linea.cantidad}",
+                      style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Text(
-              "${subtotal.toStringAsFixed(2)} €",
-              style: AppEstiloTexto.textoPrincipal.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+              Text(
+                "${subtotal.toStringAsFixed(2)} €",
+                style: AppEstiloTexto.textoPrincipal.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

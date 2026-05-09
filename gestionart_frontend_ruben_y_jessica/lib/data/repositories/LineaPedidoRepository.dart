@@ -72,7 +72,7 @@ class LineaPedidoRepository {
     print("ESTOY LLAMANDO A ELIMINAR PEDIDO");
     try {
       final response = await _apiService.dio.delete("/lineas-pedido/$idLineaPedido");
-      if (response.statusCode != 204) {
+      if (response.statusCode != 200) {
         throw Exception("Error al eliminar la línea de pedido: ${response.statusCode}");
       }
     } catch (e) {
