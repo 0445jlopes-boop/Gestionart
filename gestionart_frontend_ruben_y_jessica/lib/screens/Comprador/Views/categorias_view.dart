@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/data/models/LineaPedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Pedido.dart';
 import 'package:provider/provider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/Categoria.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoCuentaComprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoNotificacion.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Aticulo.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Anuncio.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
@@ -12,6 +12,8 @@ import 'package:gestionart_frontend_ruben_y_jessica/providers/ArticuloProvider.d
 import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/PedidoProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/LineaPedidoProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/NotificacionProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/SolicitudExclusivaProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/AnuincioProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 
@@ -84,77 +86,161 @@ class _categorias_viewState extends State<categorias_view> {
     }
   }
 
-  Future<void> _anadirALineaPedido(Articulo articulo) async {
-  try {
-    final pedidoProvider = context.read<Pedidoprovider>();
-    final lineaPedidoProvider = context.read<Lineapedidoprovider>();
-
-    if (_compradorActual == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Error: No se encontró el comprador")),
-      );
-      return;
-    }
-
-    // Verificar stock
-    if (_compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL && articulo.stock <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("No hay stock disponible de este producto"),
-          backgroundColor: Colors.red,
+  Future<String?> _mostrarDialogoMensajeSolicitud() async {
+    final controller = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          "Solicitud Exclusiva",
+          style: AppEstiloTexto.textoPrincipal,
         ),
-      );
-      return;
-    }
-
-    // Obtener pedidos del comprador
-    final pedidos = await pedidoProvider.fetchPedidosPorComprador(_compradorActual!.id);
-    
-    // Buscar pedido existente en estado PENDIENTE
-    Pedido? pedidoExistente;
-    try {
-      pedidoExistente = pedidos.firstWhere(
-        (p) => p.idComprador == _compradorActual!.id && 
-               p.estado.toString().split('.').last == "PENDIENTE"
-      );
-    } catch (e) {
-      pedidoExistente = null;
-    }
-
-    late Pedido pedidoActual;
-
-    if (pedidoExistente != null) {
-      pedidoActual = pedidoExistente;
-      print("📦 Usando pedido existente ID: ${pedidoActual.id}");
-    } else {
-      // Crear nuevo pedido en estado PENDIENTE
-      final nuevoPedido = await pedidoProvider.crearPedido({
-        'idComprador': _compradorActual!.id,
-        'idVendedor': articulo.idVendedor,
-        'estado': 'PENDIENTE'
-      });
-      pedidoActual = nuevoPedido;
-      print("📦 Creando nuevo pedido ID: ${pedidoActual.id}");
-    }
-
-    // ✅ 1. Crear línea de pedido
-    final lineaCreada = await lineaPedidoProvider.crearLineaPedido(
-      pedidoActual.id,
-      articulo.id,
-      1,
-      articulo.precio,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Este producto está agotado. Como usuario Premium, puedes solicitar una edición exclusiva.",
+              style: AppEstiloTexto.textoSecundario,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: controller,
+              decoration: const InputDecoration(
+                labelText: "Mensaje para el artista (opcional)",
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, null),
+            child: const Text("Cancelar"),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, controller.text.isEmpty ? "Solicito este producto" : controller.text),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColores.colorPrimario,
+            ),
+            child: const Text("Enviar solicitud"),
+          ),
+        ],
+      ),
     );
+  }
 
-    if (mounted && lineaCreada != null) {
-      print("✅ Línea creada ID: ${lineaCreada.id}");
+  Future<void> _crearSolicitudExclusiva(Articulo articulo) async {
+    try {
+      final solicitudProvider = context.read<SolicitudExclusivaProvider>();
+      final notificacionProvider = context.read<NotificacionProvider>();
       
-      // ✅ 2. Añadir la línea al pedido (importante!)
-      final anadido = await pedidoProvider.anadirLinea(pedidoActual.id, lineaCreada.id);
+      final mensaje = await _mostrarDialogoMensajeSolicitud();
+      if (mensaje == null) return;
       
-      if (anadido) {
-        // ✅ 3. Recargar el pedido actualizado
-        final pedidoActualizado = await pedidoProvider.fetchPedidoPorId(pedidoActual.id);
-        print("📦 Pedido actualizado tiene ${pedidoActualizado.lineas.length} líneas");
+      await solicitudProvider.crearSolicitudExclusiva(
+        _compradorActual!.id,
+        articulo.id,
+        mensaje,
+        articulo.idVendedor,
+      );
+      
+      await notificacionProvider.crearNotificacion(
+        articulo.idVendedor,
+        Tiponotificacion.SOLICITUD_EXCLUSIVA,
+      );
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("⭐ Solicitud exclusiva enviada al vendedor"),
+            backgroundColor: Colors.amber,
+          ),
+        );
+      }
+    } catch (e) {
+      print("❌ Error al crear solicitud exclusiva: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error al enviar solicitud: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _anadirALineaPedido(Articulo articulo) async {
+    try {
+      if (_compradorActual == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Error: No se encontró el comprador")),
+        );
+        return;
+      }
+
+      // ✅ Si es PREMIUM y stock = 0, crear solicitud exclusiva
+      if (_compradorActual?.tipoCuenta == Tipocuentacomprador.PREMIUM && articulo.stock == 0) {
+        await _crearSolicitudExclusiva(articulo);
+        return;
+      }
+
+      // Verificar stock para usuarios NORMALES
+      if (_compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL && articulo.stock <= 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("No hay stock disponible de este producto"),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      final pedidoProvider = context.read<Pedidoprovider>();
+      final lineaPedidoProvider = context.read<Lineapedidoprovider>();
+
+      // Obtener pedidos del comprador
+      final pedidos = await pedidoProvider.fetchPedidosPorComprador(_compradorActual!.id);
+      
+      // Buscar pedido existente en estado PENDIENTE
+      Pedido? pedidoExistente;
+      try {
+        pedidoExistente = pedidos.firstWhere(
+          (p) => p.idComprador == _compradorActual!.id && 
+                 p.estado.toString().split('.').last == "PENDIENTE",
+        );
+      } catch (e) {
+        pedidoExistente = null;
+      }
+
+      late int idPedido;
+
+      if (pedidoExistente != null) {
+        idPedido = pedidoExistente.id;
+        print("📦 Usando pedido existente ID: $idPedido");
+      } else {
+        // Crear nuevo pedido en estado PENDIENTE
+        final nuevoPedido = await pedidoProvider.crearPedido({
+          'idComprador': _compradorActual!.id,
+          'idVendedor': articulo.idVendedor,
+          'estado': 'PENDIENTE'
+        });
+        idPedido = nuevoPedido.id;
+        print("📦 Creando nuevo pedido ID: $idPedido");
+      }
+
+      // Crear línea de pedido
+      final lineaCreada = await lineaPedidoProvider.crearLineaPedido(
+        idPedido,
+        articulo.id,
+        1,
+        articulo.precio,
+      );
+
+      if (mounted && lineaCreada != null) {
+        // Recargar el pedido actualizado
+        await pedidoProvider.fetchPedidoPorId(idPedido);
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -162,34 +248,19 @@ class _categorias_viewState extends State<categorias_view> {
             backgroundColor: Colors.green,
           ),
         );
-      } else {
+      }
+    } catch (e) {
+      print("❌ Error al agregar al pedido: $e");
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("⚠️ Línea creada pero no asociada al pedido"),
-            backgroundColor: Colors.orange,
+          SnackBar(
+            content: Text("❌ Error: $e"),
+            backgroundColor: Colors.red,
           ),
         );
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("❌ Error al crear la línea de pedido"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  } catch (e) {
-    print("❌ Error al agregar al pedido: $e");
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("❌ Error: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -591,6 +662,22 @@ class _categorias_viewState extends State<categorias_view> {
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: AppColores.colorSecundario,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Text(
+                      "${anuncio.precio.toStringAsFixed(2)} €",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],

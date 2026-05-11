@@ -88,6 +88,8 @@ class _NotificacionesViewState extends State<NotificacionesView> {
         return "⚠️";
       case Tiponotificacion.ANUNCIO_EXPIRADO:
         return "📢";
+      case Tiponotificacion.SOLICITUD_EXCLUSIVA:
+      return "⭐";
     }
   }
 
@@ -101,6 +103,8 @@ class _NotificacionesViewState extends State<NotificacionesView> {
         return "Hay productos con stock bajo";
       case Tiponotificacion.ANUNCIO_EXPIRADO:
         return "Tu anuncio ha expirado";
+        case Tiponotificacion.SOLICITUD_EXCLUSIVA:
+      return "✨ Solicitud exclusiva de un usuario Premium ✨";
     }
   }
 
@@ -114,6 +118,8 @@ class _NotificacionesViewState extends State<NotificacionesView> {
         return Colors.orange;
       case Tiponotificacion.ANUNCIO_EXPIRADO:
         return Colors.purple;
+      case Tiponotificacion.SOLICITUD_EXCLUSIVA:
+       return Colors.yellow;
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.
 import 'package:gestionart_frontend_ruben_y_jessica/providers/LineaPedidoProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/NotificacionProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/PedidoProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/SolicitudExclusivaProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/StripeProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/UsuarioProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/VendedorProvider.dart';
@@ -26,6 +27,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => Lineapedidoprovider()),
         ChangeNotifierProvider(create: (_) => Stripeprovider()),
         ChangeNotifierProvider(create: (_) => NotificacionProvider()),
+              ChangeNotifierProvider(create: (_) => SolicitudExclusivaProvider()),  
       ],
       child: const MyApp(),
     ),

@@ -110,7 +110,6 @@ class Pedidoprovider with ChangeNotifier {
   Future<List<Pedido>> fetchPedidosPorComprador(int idComprador) async {
     try {
       _isLoading = true;
-      notifyListeners();
       
       _pedidos = await _pedidoRepository.obtenerPedidosPorComprador(idComprador);
       
@@ -127,7 +126,6 @@ class Pedidoprovider with ChangeNotifier {
    Future<List<Pedido>> fetchPedidosPorVedndedor(int idVendedor) async {
     try {
       _isLoading = true;
-      notifyListeners();
       
       _pedidos = await _pedidoRepository.obtenerPedidosPorVendedor(idVendedor);
       

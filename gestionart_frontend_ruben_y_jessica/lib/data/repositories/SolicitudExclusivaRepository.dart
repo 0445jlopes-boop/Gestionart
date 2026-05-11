@@ -16,7 +16,7 @@ class Solicitudexclusivarepository {
         "mensaje": mensaje,
         "idVendedor": idVendedor
       });
-      if (response.statusCode != 201) {
+      if (response.statusCode == 200) {
         throw Exception("Error al crear la solicitud exclusiva: ${response.statusCode}");
       }
     } catch (e) {

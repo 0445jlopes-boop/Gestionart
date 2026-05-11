@@ -33,7 +33,7 @@ class Pedido { //Clase pedido
       id: json['id'] ?? 0,
       idComprador: json['idComprador'] ?? 0,
       idVendeodr: json['idVendedor'] ?? 0,
-      estado: Estadopedido.values.firstWhere((e) => e.toString().split('.').last == 'Estadopedido.' + (json['estado'] ?? ''), orElse: () => Estadopedido.values.first),
+      estado: Estadopedido.values.firstWhere((e) => e.toString().split('.').last == (json['estado'] ?? ''), orElse: () => Estadopedido.values.first),
       lineas: ((json['lineas'] as List?) ?? []).map((json) => Lineapedido.fromJson(json)).toList()
     );
   }
