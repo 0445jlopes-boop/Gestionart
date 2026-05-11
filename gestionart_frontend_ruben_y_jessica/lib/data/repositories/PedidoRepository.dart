@@ -121,5 +121,24 @@ class PedidoRepository {
       throw Exception("Error al eliminar el pedido: $e");
     }
   }
+
+  Future<List<Pedido>> obtenerPedidosPorVendedor(int idVendedor) async {
+    try {
+      final response = await _apiService.dio.get("/pedidos/vendedor/$idVendedor");
+      if (response.statusCode == 200) {
+        List<Pedido> pedidos = [];
+        for (var item in response.data) {
+          pedidos.add(Pedido.fromJson(item));
+        }
+        return pedidos;
+      } else if (response.statusCode == 204) {
+        return [];
+      } else {
+        throw Exception("Error al obtener los pedidos: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Error al obtener los pedidos: $e");
+    }
+  }
 }
 

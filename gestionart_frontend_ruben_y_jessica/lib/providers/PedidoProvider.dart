@@ -124,6 +124,23 @@ class Pedidoprovider with ChangeNotifier {
     }
   }
 
+   Future<List<Pedido>> fetchPedidosPorVedndedor(int idVendedor) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      
+      _pedidos = await _pedidoRepository.obtenerPedidosPorVendedor(idVendedor);
+      
+      _isLoading = false;
+      notifyListeners();
+      return _pedidos;
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      throw Exception("Error al obtener los pedidos por vendedor: $e");
+    }
+  }
+
   Future<List<Pedido>> fetchPedidosPorCompradorYEstado(int idComprador, String estado) async {
     try {
       _isLoading = true;

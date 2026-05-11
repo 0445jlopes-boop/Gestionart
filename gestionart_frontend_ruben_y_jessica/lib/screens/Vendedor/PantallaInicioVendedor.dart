@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/views/calculadora_beneficios_view.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/Views/perfil_vendedor_view.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/views/dashboard_ventas.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/views/perfil_vendedor_view.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/views/anuncios_view.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/views/articulos_view.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/views/calculadora_beneficios_view.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/views/notificaciones_view.dart';
 
 class PantallaInicioVendedor extends StatefulWidget {
@@ -28,17 +29,9 @@ class _PantallaInicioVendedorState extends State<PantallaInicioVendedor> {
       perfil_vendedor_view(vendedor: widget.vendedor),
       articulos_view(vendedor: widget.vendedor),
       anuncios_view(vendedor: widget.vendedor),
-      NotificacionesView(vendedor: widget.vendedor)
+      NotificacionesView(vendedor: widget.vendedor),
+      DashboardVentasView(vendedor: widget.vendedor),  // ← AÑADIR DASHBOARD
     ];
-  }
-
-  void _abrirCalculadora() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const CalculadoraBeneficiosView(),
-      ),
-    );
   }
 
   @override
@@ -55,12 +48,21 @@ class _PantallaInicioVendedorState extends State<PantallaInicioVendedor> {
         actions: [
           IconButton(
             icon: const Icon(Icons.calculate, color: Colors.white),
-            onPressed: _abrirCalculadora,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CalculadoraBeneficiosView(),
+                ),
+              );
+            },
             tooltip: "Calculadora de beneficios",
           ),
         ],
       ),
-      body: _views[_currentIndex],
+      body:  Container(
+        alignment: AlignmentGeometry.center,
+        child:_views[_currentIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -90,6 +92,10 @@ class _PantallaInicioVendedorState extends State<PantallaInicioVendedor> {
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
             label: 'Notificaciones',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),  // ← ICONO DEL DASHBOARD
+            label: 'Ventas',
           ),
         ],
       ),
