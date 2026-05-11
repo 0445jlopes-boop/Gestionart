@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/views/calculadora_beneficios_view.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/Views/perfil_vendedor_view.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/views/anuncios_view.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/views/articulos_view.dart';
@@ -31,6 +32,15 @@ class _PantallaInicioVendedorState extends State<PantallaInicioVendedor> {
     ];
   }
 
+  void _abrirCalculadora() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CalculadoraBeneficiosView(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +52,13 @@ class _PantallaInicioVendedorState extends State<PantallaInicioVendedor> {
             style: AppEstiloTexto.encabezado,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.calculate, color: Colors.white),
+            onPressed: _abrirCalculadora,
+            tooltip: "Calculadora de beneficios",
+          ),
+        ],
       ),
       body: _views[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -74,7 +91,6 @@ class _PantallaInicioVendedorState extends State<PantallaInicioVendedor> {
             icon: Icon(Icons.notifications),
             label: 'Notificaciones',
           ),
-          
         ],
       ),
     );

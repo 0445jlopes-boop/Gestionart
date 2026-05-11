@@ -57,21 +57,28 @@ class Pedidoprovider with ChangeNotifier {
     }
   }
 
-  Future<void> cambiarEstado(int idPedido) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-      
-      await _pedidoRepository.cambiarEstado(idPedido);
-      
-      _isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      _isLoading = false;
-      notifyListeners();
-      throw Exception("Error al cambiar estado: $e");
+ Future<Pedido> cambiarEstado(int idPedido) async {
+  try {
+    _isLoading = true;
+    notifyListeners();
+    
+    final pedidoActualizado = await _pedidoRepository.cambiarEstado(idPedido);
+    
+    // Actualizar en la lista local
+    final index = _pedidos.indexWhere((p) => p.id == idPedido);
+    if (index != -1) {
+      _pedidos[index] = pedidoActualizado;
     }
+    
+    _isLoading = false;
+    notifyListeners();
+    return pedidoActualizado;
+  } catch (e) {
+    _isLoading = false;
+    notifyListeners();
+    throw Exception("Error al cambiar estado del pedido: $e");
   }
+}
 
   Future<bool> anadirLinea(int idPedido, int idLinea) async {
     try {

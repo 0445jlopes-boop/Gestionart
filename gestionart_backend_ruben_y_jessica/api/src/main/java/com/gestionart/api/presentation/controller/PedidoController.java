@@ -48,9 +48,9 @@ public class PedidoController {
     }
 
     @PutMapping("/cambiarEstado/{id}")
-    public ResponseEntity<Void> cambiarEstado(@PathVariable Long id) {
-        pedidoService.cambiarEstado(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PedidoResponse> cambiarEstado(@PathVariable Long id) {
+        Pedido pedido = pedidoService.cambiarEstado(id);
+        return ResponseEntity.ok(pedidoMapper.toResponse(pedido));
     }
 
     @PutMapping("/{id}/anadirLinea/{idLinea}")

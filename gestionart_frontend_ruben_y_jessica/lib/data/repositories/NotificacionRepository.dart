@@ -13,7 +13,7 @@ class Notificacionrepository {
         "idVendedor": idVendedor,
         "tipo": tipo.toString().split('.').last
       });
-      if (response.statusCode != 201) {
+      if (response.statusCode != 204) {
         throw Exception("Error al crear la notificación: ${response.statusCode}");
       }
     } catch (e) {

@@ -72,6 +72,17 @@ class _PedidosViewState extends State<PedidosView> {
   }
 
   Future<void> _pagarPedido(Pedido pedido) async {
+    // ✅ Verificar que el pedido tenga líneas antes de pagar
+    if (pedido.lineas.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No se puede pagar un pedido sin productos"),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+    
     final total = _calcularTotalPedido(pedido);
     
     final result = await Navigator.push<bool>(
@@ -81,12 +92,14 @@ class _PedidosViewState extends State<PedidosView> {
           pago: Tipopago.PEDIDO,
           importe: total,
           comprador: widget.comprador,
+          pedido: pedido,  // ✅ Pasar el pedido para actualizar stock
         ),
       ),
     );
     
     if (result == true && mounted) {
       try {
+        // ✅ Cambiar estado del pedido a PROCESANDO
         await context.read<Pedidoprovider>().cambiarEstado(pedido.id);
         await _cargarPedidos();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -241,7 +254,8 @@ class _PedidosViewState extends State<PedidosView> {
     final colorEstado = _getEstadoColor(estadoStr);
     final estadoIcon = _getEstadoIcon(estadoStr);
     final puedeEliminar = estadoStr == "FINALIZADO";
-    final puedePagar = estadoStr == "PENDIENTE";
+    final puedePagar = estadoStr == "PENDIENTE" && pedido.lineas.isNotEmpty;  // ✅ Solo pagar si tiene líneas
+    final estaVacio = pedido.lineas.isEmpty;
     
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -294,6 +308,14 @@ class _PedidosViewState extends State<PedidosView> {
                 ],
               ),
               const SizedBox(height: 12),
+              if (estaVacio && estadoStr == "PENDIENTE")
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    "⚠️ Pedido vacío (se eliminará automáticamente)",
+                    style: AppEstiloTexto.textoSecundario.copyWith(color: Colors.orange, fontSize: 12),
+                  ),
+                ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -325,7 +347,7 @@ class _PedidosViewState extends State<PedidosView> {
   }
 }
 
-// ========== DETALLE DEL PEDIDO CON ELIMINAR LÍNEAS ==========
+// ========== DETALLE DEL PEDIDO ==========
 class DetallePedidoView extends StatefulWidget {
   final Pedido pedido;
   final Comprador comprador;
@@ -375,6 +397,17 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
   }
 
   Future<void> _pagarPedido() async {
+    // ✅ Verificar que el pedido tenga líneas antes de pagar
+    if (_lineas.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No se puede pagar un pedido sin productos"),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+    
     final result = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
@@ -382,6 +415,7 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
           pago: Tipopago.PEDIDO,
           importe: _totalPedido,
           comprador: widget.comprador,
+          pedido: widget.pedido,
         ),
       ),
     );
@@ -439,7 +473,6 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
     }
   }
 
-  // ✅ MÉTODO PARA ELIMINAR UNA LÍNEA DE PEDIDO INDIVIDUAL
   Future<void> _eliminarLineaPedido(Lineapedido linea) async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -460,10 +493,8 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
       final lineaPedidoProvider = context.read<Lineapedidoprovider>();
       await lineaPedidoProvider.eliminarLineaPedido(linea.id);
       
-      // Recargar líneas después de eliminar
       await _cargarLineasYArticulos();
       
-      // Si el pedido se queda sin líneas, volver atrás
       if (_lineas.isEmpty && mounted) {
         widget.onPedidoActualizado();
         Navigator.pop(context);
@@ -497,8 +528,8 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
   Widget build(BuildContext context) {
     final estadoStr = widget.pedido.estado.toString().split('.').last;
     final puedeEliminarPedido = estadoStr == "FINALIZADO";
-    final puedePagar = estadoStr == "PENDIENTE";
-    final puedeEliminarLinea = estadoStr == "PENDIENTE";  // Solo se pueden eliminar líneas de pedidos pendientes
+    final puedePagar = estadoStr == "PENDIENTE" && _lineas.isNotEmpty;  // ✅ Solo pagar si tiene líneas
+    final puedeEliminarLinea = estadoStr == "PENDIENTE";
     final estadoIcon = _getEstadoIcon(estadoStr);
 
     return Scaffold(

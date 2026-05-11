@@ -30,16 +30,23 @@ class PedidoRepository {
     }
   }
 
-  Future<void> cambiarEstado(int idPedido) async {
-    try {
-      final response = await _apiService.dio.put("/pedidos/cambiarEstado/$idPedido");
-      if (response.statusCode != 200) {
-        throw Exception("Error al cambiar estado del pedido: ${response.statusCode}");
-      }
-    } catch (e) {
-      throw Exception("Error al cambiar estado del pedido: $e");
+ Future<Pedido> cambiarEstado(int idPedido) async {
+  try {
+    final response = await _apiService.dio.put("/pedidos/cambiarEstado/$idPedido");
+    
+    print("🔵 Status code: ${response.statusCode}");
+    print("🔵 Response data: ${response.data}");
+    
+    if (response.statusCode == 200) {
+      return Pedido.fromJson(response.data);  // ← Retornar el pedido actualizado
+    } else {
+      throw Exception("Error al cambiar estado: ${response.statusCode}");
     }
+  } catch (e) {
+    print("❌ Error: $e");
+    throw Exception("Error al cambiar estado del pedido: $e");
   }
+}
 
   Future<bool> anadirLinea(int idPedido, int idLinea) async {
     try {

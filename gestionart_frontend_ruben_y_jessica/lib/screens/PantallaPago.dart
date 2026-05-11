@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_colores.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoPago.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoNotificacion.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Anuncio.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/Pedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Vendedor.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/AnuincioProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/ArticuloProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/LineaPedidoProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/NotificacionProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/PedidoProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/StripeProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/Comprador/PantallaInicioComprador.dart';
@@ -19,7 +24,8 @@ class pago_view extends StatefulWidget {
     required this.importe,
     this.comprador,
     this.vendedor,
-    this.anuncio
+    this.anuncio,
+    this.pedido,
   });
   
   final Tipopago pago;
@@ -27,6 +33,7 @@ class pago_view extends StatefulWidget {
   final Comprador? comprador;
   final Vendedor? vendedor;
   final Anuncio? anuncio;
+  final Pedido? pedido;
 
   @override
   State<pago_view> createState() => _pago_viewState();
@@ -58,6 +65,16 @@ class _pago_viewState extends State<pago_view> {
     return "${fecha.day}/${fecha.month}/${fecha.year}";
   }
 
+  String _getEstadoTexto(String estado) {
+    switch (estado) {
+      case "PENDIENTE": return "Pendiente";
+      case "CONFIRMADO": return "Confirmado";
+      case "PROCESANDO": return "Procesando";
+      case "FINALIZADO": return "Finalizado";
+      default: return estado;
+    }
+  }
+
   void _navegarAInicio(Comprador comprador) {
     Navigator.pushAndRemoveUntil(
       context,
@@ -75,145 +92,202 @@ class _pago_viewState extends State<pago_view> {
       return;
     }
 
+    if (widget.pedido!.estado.toString().split('.').last == "FINALIZADO") {
+      if (mounted) {
+        _mostrarDialogoExito(
+          "Pedido ya procesado",
+          "Este pedido ya ha sido procesado anteriormente.",
+          Icons.info,
+          () {
+            Navigator.pop(context, true);
+          },
+        );
+      }
+      return;
+    }
+
     setState(() {
       _isProcessing = true;
     });
 
     try {
       final stripeProvider = context.read<Stripeprovider>();
-      final pedidoProvider = context.read<Pedidoprovider>();
-      final compradorProvider = context.read<Compradorprovider>();
-      final anuncioProvider = context.read<AnuncioProvider>();
       
       final pagoExitoso = await stripeProvider.crearPago();
-
+      
       if (pagoExitoso) {
         switch (widget.pago) {
           case Tipopago.PEDIDO:
-            try {
-              if (mounted) {
-                _mostrarDialogoExito(
-                  "¡Pedido completado!",
-                  "Tu pedido ha sido procesado correctamente. Recibirás un correo de confirmación.",
-                  Icons.shopping_bag,
-                  () {
-                    Navigator.pop(context, true);
-                  },
-                );
-              }
-            } catch (e) {
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("Error: $e"),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                setState(() => _isProcessing = false);
-              }
-            }
+            await _procesarPagoPedido();
             break;
 
           case Tipopago.SUSCRIPCION:
-            try {
-              final activado = await compradorProvider.activarPremium(
-                widget.comprador!.id,
-              );
-
-              if (activado) {
-                _compradorActualizado = await compradorProvider
-                    .obtenerComprador(widget.comprador!.id);
-
-                if (mounted) {
-                  _mostrarDialogoExito(
-                    "¡Suscripción Premium Activada!",
-                    "Disfruta de todos los beneficios premium durante 3 meses.\n\n"
-                        "Fecha de inicio: ${_formatearFecha(_compradorActualizado!.fechaInicioPremium!)}\n"
-                        "Fecha de fin: ${_formatearFecha(_compradorActualizado!.fechafinPremium!)}",
-                    Icons.star,
-                    () {
-                      Navigator.pop(context, _compradorActualizado);
-                    },
-                  );
-                }
-              } else {
-                if (mounted) {
-                  _mostrarDialogoExito(
-                    "¡Pago completado!",
-                    "El pago fue exitoso, pero hubo un problema activando el premium. Contacta con soporte.",
-                    Icons.warning,
-                    () {
-                      Navigator.pop(context, widget.comprador);
-                    },
-                  );
-                }
-              }
-            } catch (e) {
-              if (mounted) {
-                _mostrarDialogoExito(
-                  "¡Pago completado!",
-                  "Error al activar premium: $e",
-                  Icons.warning,
-                  () {
-                    Navigator.pop(context, widget.comprador);
-                  },
-                );
-              }
-            }
+            await _procesarSuscripcion();
             break;
 
           case Tipopago.PUBLICIDAD:
-  try {
-    
-    if (mounted) {
-      _mostrarDialogoExito(
-        "¡Pago completado!",
-        "El pago de 2€ se ha procesado correctamente.\n\nAhora puedes publicar tu anuncio.",
-        Icons.campaign,
-        () {
-          // Retornar true para indicar que el pago fue exitoso
-          Navigator.pop(context, true);
-        },
-      );
-    }
-  } catch (e) {
-    print("❌ Error en pago de publicidad: $e");
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Error: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
-      setState(() {
-        _isProcessing = false;
-      });
-    }
-  }
-  break;
+            await _procesarPublicidad();
+            break;
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Error en el pago. Inténtalo de nuevo."),
-            backgroundColor: Colors.red,
-          ),
-        );
-        setState(() {
-          _isProcessing = false;
-        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Error en el pago. Inténtalo de nuevo."),
+              backgroundColor: Colors.red,
+            ),
+          );
+          setState(() => _isProcessing = false);
+        }
       }
     } catch (e) {
       print("❌ Error general: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Error al procesar el pago: $e"),
-          backgroundColor: Colors.red,
-        ),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error al procesar el pago: $e"), backgroundColor: Colors.red),
+        );
+        setState(() => _isProcessing = false);
+      }
+    }
+  }
+
+  Future<void> _procesarPagoPedido() async {
+    try {
+      if (widget.pedido == null) {
+        throw Exception("No se encontró el pedido");
+      }
+
+      print("🔵 Procesando pago del pedido ID: ${widget.pedido!.id}");
+      print("🔵 Estado actual: ${widget.pedido!.estado}");
+
+      final pedidoProvider = context.read<Pedidoprovider>();
+      final articuloProvider = context.read<Articuloprovider>();
+      final lineaPedidoProvider = context.read<Lineapedidoprovider>();
+      final notificacionProvider = context.read<NotificacionProvider>();
+
+      // 1. Cambiar estado del pedido
+      final pedidoActualizado = await pedidoProvider.cambiarEstado(widget.pedido!.id);
+      print("🟢 Nuevo estado del pedido: ${pedidoActualizado.estado}");
+
+      // 2. Obtener las líneas del pedido
+      final lineas = await lineaPedidoProvider.fetchLineasPedidoPorPedido(widget.pedido!.id);
+      print("📦 Líneas del pedido: ${lineas.length}");
+
+      // 3. Disminuir stock de cada artículo
+      for (var linea in lineas) {
+        final articulo = await articuloProvider.obtenerArticulo(linea.idArticulo);
+        if (articulo != null && mounted) {
+          final nuevoStock = articulo.stock - linea.cantidad;
+          print("📦 Actualizando stock de ${articulo.titulo}: ${articulo.stock} → $nuevoStock");
+          await articuloProvider.actualizarArticulo(
+            articulo.id,
+            articulo.titulo,
+            articulo.descripcion,
+            articulo.precio,
+            articulo.imagen,
+            articulo.categoria,
+            nuevoStock,
+          );
+        }
+      }
+
+      // 4. Crear notificación para el vendedor
+      await notificacionProvider.crearNotificacion(
+        widget.pedido!.idVendeodr,
+        Tiponotificacion.NUEVO_PEDIDO,
       );
-      setState(() {
-        _isProcessing = false;
-      });
+      print("🟢 Notificación enviada al vendedor");
+
+      if (mounted) {
+        _mostrarDialogoExito(
+          "¡Pedido completado!",
+          "Tu pedido #${widget.pedido!.id} ha sido procesado correctamente.\n\n"
+          "Estado: ${_getEstadoTexto(pedidoActualizado.estado.toString().split('.').last)}\n"
+          "Total pagado: ${widget.importe.toStringAsFixed(2)} €",
+          Icons.shopping_bag,
+          () {
+            Navigator.pop(context, true);
+          },
+        );
+      }
+    } catch (e) {
+      print("❌ Error al procesar pedido: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error al procesar el pedido: $e"), backgroundColor: Colors.red),
+        );
+        setState(() => _isProcessing = false);
+      }
+    }
+  }
+
+  Future<void> _procesarSuscripcion() async {
+    try {
+      final compradorProvider = context.read<Compradorprovider>();
+
+      final activado = await compradorProvider.activarPremium(widget.comprador!.id);
+
+      if (activado) {
+        _compradorActualizado = await compradorProvider.obtenerComprador(widget.comprador!.id);
+
+        if (mounted) {
+          _mostrarDialogoExito(
+            "¡Suscripción Premium Activada!",
+            "Disfruta de todos los beneficios premium durante 3 meses.\n\n"
+            "Fecha de inicio: ${_formatearFecha(_compradorActualizado!.fechaInicioPremium!)}\n"
+            "Fecha de fin: ${_formatearFecha(_compradorActualizado!.fechafinPremium!)}",
+            Icons.star,
+            () {
+              Navigator.pop(context, _compradorActualizado);
+            },
+          );
+        }
+      } else {
+        if (mounted) {
+          _mostrarDialogoExito(
+            "¡Pago completado!",
+            "El pago fue exitoso, pero hubo un problema activando el premium. Contacta con soporte.",
+            Icons.warning,
+            () {
+              Navigator.pop(context, widget.comprador);
+            },
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        _mostrarDialogoExito(
+          "¡Pago completado!",
+          "Error al activar premium: $e",
+          Icons.warning,
+          () {
+            Navigator.pop(context, widget.comprador);
+          },
+        );
+      }
+    }
+  }
+
+  Future<void> _procesarPublicidad() async {
+    try {
+      if (mounted) {
+        _mostrarDialogoExito(
+          "¡Pago completado!",
+          "El pago de ${widget.importe.toStringAsFixed(2)}€ se ha procesado correctamente.\n\nAhora puedes publicar tu anuncio.",
+          Icons.campaign,
+          () {
+            Navigator.pop(context, true);
+          },
+        );
+      }
+    } catch (e) {
+      print("❌ Error en pago de publicidad: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
+        );
+        setState(() => _isProcessing = false);
+      }
     }
   }
 
@@ -317,11 +391,11 @@ class _pago_viewState extends State<pago_view> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      if (widget.pago == Tipopago.PUBLICIDAD)
+                      if (widget.pago == Tipopago.PEDIDO && widget.pedido != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
-                            "Anuncio",
+                            "Pedido #${widget.pedido!.id}",
                             style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
                           ),
                         ),

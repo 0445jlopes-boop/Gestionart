@@ -40,22 +40,34 @@ public class PedidoService {
         pedidoRepository.save(pedido);
     }
 
-    public void cambiarEstado(Long id) {
-        Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundByIdException(id));
-
-        if (pedido.getEstado() == EstadoPedido.PENDIENTE) {
-            pedido.setEstado(EstadoPedido.CONFIRMADO);
-            pedido.setFechaConfirmacion(LocalDateTime.now());
-        } else if (pedido.getEstado() == EstadoPedido.CONFIRMADO) {
-            pedido.setEstado(EstadoPedido.PROCESANDO);
-        }else if (pedido.getEstado() == EstadoPedido.PROCESANDO) {
-            pedido.setEstado(EstadoPedido.FINALIZADO);
-        }
-
-        pedidoRepository.save(pedido);
+    @Transactional
+public Pedido cambiarEstado(Long id) {
+    Pedido pedido = pedidoRepository.findById(id)
+            .orElseThrow(() -> new NotFoundByIdException(id));
+    
+    System.out.println("🔵 Estado actual en BD: " + pedido.getEstado());
+    
+    // Usar equals para comparar enums
+    if (pedido.getEstado() == EstadoPedido.PENDIENTE) {
+        pedido.setEstado(EstadoPedido.CONFIRMADO);
+        pedido.setFechaConfirmacion(LocalDateTime.now());
+        System.out.println("🟢 Nuevo estado: " + pedido.getEstado());
+    } else if (pedido.getEstado() == EstadoPedido.CONFIRMADO) {
+        pedido.setEstado(EstadoPedido.PROCESANDO);
+        System.out.println("🟢 Nuevo estado: " + pedido.getEstado());
+    } else if (pedido.getEstado() == EstadoPedido.PROCESANDO) {
+        pedido.setEstado(EstadoPedido.FINALIZADO);
+        System.out.println("🟢 Nuevo estado: " + pedido.getEstado());
+    } else {
+        System.out.println("⚠️ Estado no reconocido: " + pedido.getEstado());
+        return pedido;
     }
-
+    
+    Pedido guardado = pedidoRepository.save(pedido);
+    System.out.println("💾 Estado guardado en BD: " + guardado.getEstado());
+    
+    return guardado;
+}
     public Pedido obtenerPorId(Long id) {
         return pedidoRepository.findById(id).orElseThrow(() -> new NotFoundByIdException(id));
     }
