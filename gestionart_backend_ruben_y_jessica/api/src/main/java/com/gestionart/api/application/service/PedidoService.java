@@ -51,20 +51,16 @@ public Pedido cambiarEstado(Long id) {
     if (pedido.getEstado() == EstadoPedido.PENDIENTE) {
         pedido.setEstado(EstadoPedido.CONFIRMADO);
         pedido.setFechaConfirmacion(LocalDateTime.now());
-        System.out.println("🟢 Nuevo estado: " + pedido.getEstado());
     } else if (pedido.getEstado() == EstadoPedido.CONFIRMADO) {
         pedido.setEstado(EstadoPedido.PROCESANDO);
-        System.out.println("🟢 Nuevo estado: " + pedido.getEstado());
     } else if (pedido.getEstado() == EstadoPedido.PROCESANDO) {
         pedido.setEstado(EstadoPedido.FINALIZADO);
-        System.out.println("🟢 Nuevo estado: " + pedido.getEstado());
     } else {
-        System.out.println("⚠️ Estado no reconocido: " + pedido.getEstado());
+       
         return pedido;
     }
     
     Pedido guardado = pedidoRepository.save(pedido);
-    System.out.println("💾 Estado guardado en BD: " + guardado.getEstado());
     
     return guardado;
 }

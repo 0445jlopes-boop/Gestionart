@@ -3,5 +3,4 @@ enum Tiponotificacion {
   STOCK_AGOTADO,
   STOCK_BAJO,
   ANUNCIO_EXPIRADO,
-  SOLICITUD_EXCLUSIVA
 }

@@ -3,12 +3,15 @@ import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_texto.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/config/common/resources/app_estilo_botones.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoPago.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/enums/TipoCuentaComprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/LineaPedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Pedido.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/data/models/SolicitudExclusiva.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/ArticuloProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/PedidoProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/LineaPedidoProvider.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/SolicitudExclusivaProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/screens/PantallaPago.dart';
 import 'package:provider/provider.dart';
 
@@ -24,21 +27,26 @@ class _PedidosViewState extends State<PedidosView> {
   String _filtroEstado = "TODOS";
   bool _isLoading = true;
   List<Pedido> _pedidos = [];
+  List<Solicitudexclusiva> _solicitudes = [];
+  Map<int, String> _titulosArticulo = {};
 
   final List<String> _estadosFiltro = ["TODOS", "PENDIENTE", "PROCESANDO", "FINALIZADO"];
 
   @override
   void initState() {
     super.initState();
-    _cargarPedidos();
+    _cargarDatos();
   }
 
-  Future<void> _cargarPedidos() async {
+  Future<void> _cargarDatos() async {
     setState(() => _isLoading = true);
     try {
       final pedidoProvider = context.read<Pedidoprovider>();
       final lineaPedidoProvider = context.read<Lineapedidoprovider>();
+      final solicitudProvider = context.read<SolicitudExclusivaProvider>();
+      final articuloProvider = context.read<Articuloprovider>();
       
+      // Cargar pedidos
       await pedidoProvider.fetchPedidosPorComprador(widget.comprador.id);
       
       final pedidosConLineas = <Pedido>[];
@@ -48,8 +56,31 @@ class _PedidosViewState extends State<PedidosView> {
         pedidosConLineas.add(pedidoConLineas);
       }
       
+      // Cargar solicitudes exclusivas (solo para usuarios premium)
+      List<Solicitudexclusiva> solicitudes = [];
+      Map<int, String> titulosTemp = {};
+      
+      if (widget.comprador.tipoCuenta == Tipocuentacomprador.PREMIUM) {
+        await solicitudProvider.fetchSolicitudesPorComprador(widget.comprador.id);
+        solicitudes = solicitudProvider.solicitudes;
+        
+        // Obtener títulos de los artículos
+        for (var solicitud in solicitudes) {
+          if (!titulosTemp.containsKey(solicitud.idArticulo)) {
+            final articulo = await articuloProvider.obtenerArticulo(solicitud.idArticulo);
+            if (articulo != null) {
+              titulosTemp[solicitud.idArticulo] = articulo.titulo;
+            } else {
+              titulosTemp[solicitud.idArticulo] = "Producto no disponible";
+            }
+          }
+        }
+      }
+      
       setState(() {
         _pedidos = pedidosConLineas;
+        _solicitudes = solicitudes;
+        _titulosArticulo = titulosTemp;
         _isLoading = false;
       });
     } catch (e) {
@@ -67,12 +98,20 @@ class _PedidosViewState extends State<PedidosView> {
     return _pedidos.where((p) => p.estado.toString().split('.').last == _filtroEstado).toList();
   }
 
+  List<Solicitudexclusiva> get _solicitudesFiltradas {
+    if (_filtroEstado == "TODOS") return _solicitudes;
+    // Solo mostrar solicitudes PENDIENTE cuando se filtra por ese estado
+    if (_filtroEstado == "PENDIENTE") {
+      return _solicitudes.where((s) => s.estado.toString().split('.').last == "PENDIENTE").toList();
+    }
+    return [];
+  }
+
   double _calcularTotalPedido(Pedido pedido) {
     return pedido.lineas.fold(0.0, (total, linea) => total + (linea.cantidad * linea.precioUnitario));
   }
 
   Future<void> _pagarPedido(Pedido pedido) async {
-    // ✅ Verificar que el pedido tenga líneas antes de pagar
     if (pedido.lineas.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -92,16 +131,15 @@ class _PedidosViewState extends State<PedidosView> {
           pago: Tipopago.PEDIDO,
           importe: total,
           comprador: widget.comprador,
-          pedido: pedido,  // ✅ Pasar el pedido para actualizar stock
+          pedido: pedido,
         ),
       ),
     );
     
     if (result == true && mounted) {
       try {
-        // ✅ Cambiar estado del pedido a PROCESANDO
         await context.read<Pedidoprovider>().cambiarEstado(pedido.id);
-        await _cargarPedidos();
+        await _cargarDatos();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("¡Pedido pagado correctamente!"),
@@ -134,7 +172,7 @@ class _PedidosViewState extends State<PedidosView> {
     setState(() => _isLoading = true);
     try {
       await context.read<Pedidoprovider>().eliminarPedido(pedido.id);
-      await _cargarPedidos();
+      await _cargarDatos();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Pedido eliminado correctamente"), backgroundColor: Colors.green),
@@ -157,22 +195,22 @@ class _PedidosViewState extends State<PedidosView> {
         builder: (context) => DetallePedidoView(
           pedido: pedido,
           comprador: widget.comprador,
-          onPedidoActualizado: _cargarPedidos,
+          onPedidoActualizado: _cargarDatos,
         ),
       ),
     );
   }
 
-  Color _getEstadoColor(String estado) {
+  String _getEstadoColor(String estado) {
     switch (estado) {
       case "PENDIENTE": 
-        return AppColores.colorPrimario;
+        return "#FF9800";
       case "PROCESANDO": 
-        return AppColores.colorSecundario;
+        return "#2196F3";
       case "FINALIZADO":
-        return AppColores.colorDesactivado;
+        return "#4CAF50";
       default: 
-        return AppColores.colorPrimario;
+        return "#757575";
     }
   }
 
@@ -185,8 +223,33 @@ class _PedidosViewState extends State<PedidosView> {
     }
   }
 
+  String _getEstadoSolicitud(String estado) {
+    switch (estado) {
+      case "PENDIENTE": return "⏳ Pendiente";
+      case "ACEPTADA": return "✅ Aceptada";
+      case "RECHAZADA": return "❌ Rechazada";
+      default: return "📦";
+    }
+  }
+
+  Color _getColorSolicitud(String estado) {
+    switch (estado) {
+      case "PENDIENTE": 
+        return Colors.orange;
+      case "ACEPTADA": 
+        return Colors.green;
+      case "RECHAZADA":
+        return Colors.red;
+      default: 
+        return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final esPremium = widget.comprador.tipoCuenta == Tipocuentacomprador.PREMIUM;
+    final totalItems = _pedidosFiltrados.length + (esPremium ? _solicitudesFiltradas.length : 0);
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColores.colorPrimario,
@@ -222,8 +285,8 @@ class _PedidosViewState extends State<PedidosView> {
                 ),
                 Expanded(
                   child: RefreshIndicator(
-                    onRefresh: _cargarPedidos,
-                    child: _pedidosFiltrados.isEmpty
+                    onRefresh: _cargarDatos,
+                    child: totalItems == 0
                         ? Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -238,13 +301,160 @@ class _PedidosViewState extends State<PedidosView> {
                           )
                         : ListView.builder(
                             padding: const EdgeInsets.all(16),
-                            itemCount: _pedidosFiltrados.length,
-                            itemBuilder: (context, index) => _buildPedidoCard(_pedidosFiltrados[index]),
+                            itemCount: totalItems,
+                            itemBuilder: (context, index) {
+                              // Primero mostrar solicitudes exclusivas (si es premium y filtradas)
+                              if (esPremium && index < _solicitudesFiltradas.length) {
+                                return _buildSolicitudCard(_solicitudesFiltradas[index]);
+                              }
+                              // Luego mostrar pedidos
+                              final pedidoIndex = esPremium ? index - _solicitudesFiltradas.length : index;
+                              if (pedidoIndex < _pedidosFiltrados.length) {
+                                return _buildPedidoCard(_pedidosFiltrados[pedidoIndex]);
+                              }
+                              return const SizedBox.shrink();
+                            },
                           ),
                   ),
                 ),
               ],
             ),
+    );
+  }
+
+  Widget _buildSolicitudCard(Solicitudexclusiva solicitud) {
+    final estado = solicitud.estado.toString().split('.').last;
+    final colorEstado = _getColorSolicitud(estado);
+    final tituloArticulo = _titulosArticulo[solicitud.idArticulo] ?? "Cargando...";
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFFF3E0), Colors.white],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.amber.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Cabecera
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Icon(Icons.star, color: Colors.amber, size: 24),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    "Solicitud Exclusiva",
+                    style: AppEstiloTexto.textoPrincipal.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.amber[800],
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: colorEstado.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: colorEstado, width: 1),
+                  ),
+                  child: Text(
+                    _getEstadoSolicitud(estado),
+                    style: TextStyle(color: colorEstado, fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Artículo solicitado
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.amber.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Artículo solicitado",
+                    style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 11),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    tituloArticulo,
+                    style: AppEstiloTexto.textoPrincipal.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 12),
+            
+            // Mensaje
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.amber.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Tu mensaje",
+                    style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 11),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    solicitud.mensage,
+                    style: AppEstiloTexto.textoPrincipal,
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 12),
+            
+            // Fecha
+            Row(
+              children: [
+                Icon(Icons.calendar_today, size: 14, color: Colors.amber[700]),
+                const SizedBox(width: 8),
+                Text(
+                  "Enviado el ${solicitud.fecha.day}/${solicitud.fecha.month}/${solicitud.fecha.year}",
+                  style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -254,7 +464,7 @@ class _PedidosViewState extends State<PedidosView> {
     final colorEstado = _getEstadoColor(estadoStr);
     final estadoIcon = _getEstadoIcon(estadoStr);
     final puedeEliminar = estadoStr == "FINALIZADO";
-    final puedePagar = estadoStr == "PENDIENTE" && pedido.lineas.isNotEmpty;  // ✅ Solo pagar si tiene líneas
+    final puedePagar = estadoStr == "PENDIENTE" && pedido.lineas.isNotEmpty;
     final estaVacio = pedido.lineas.isEmpty;
     
     return Card(
@@ -284,13 +494,13 @@ class _PedidosViewState extends State<PedidosView> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
-                      color: colorEstado.withOpacity(0.1),
+                      color: Color(int.parse(colorEstado.replaceFirst("#", "0xFF"))).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: colorEstado, width: 1),
+                      border: Border.all(color: Color(int.parse(colorEstado.replaceFirst("#", "0xFF"))), width: 1),
                     ),
                     child: Text(
                       estadoStr,
-                      style: TextStyle(color: colorEstado, fontWeight: FontWeight.bold, fontSize: 12),
+                      style: TextStyle(color: Color(int.parse(colorEstado.replaceFirst("#", "0xFF"))), fontWeight: FontWeight.bold, fontSize: 12),
                     ),
                   ),
                 ],
@@ -347,7 +557,7 @@ class _PedidosViewState extends State<PedidosView> {
   }
 }
 
-// ========== DETALLE DEL PEDIDO ==========
+// ========== DETALLE DEL PEDIDO (sin cambios) ==========
 class DetallePedidoView extends StatefulWidget {
   final Pedido pedido;
   final Comprador comprador;
@@ -397,7 +607,6 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
   }
 
   Future<void> _pagarPedido() async {
-    // ✅ Verificar que el pedido tenga líneas antes de pagar
     if (_lineas.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -528,7 +737,7 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
   Widget build(BuildContext context) {
     final estadoStr = widget.pedido.estado.toString().split('.').last;
     final puedeEliminarPedido = estadoStr == "FINALIZADO";
-    final puedePagar = estadoStr == "PENDIENTE" && _lineas.isNotEmpty;  // ✅ Solo pagar si tiene líneas
+    final puedePagar = estadoStr == "PENDIENTE" && _lineas.isNotEmpty;
     final puedeEliminarLinea = estadoStr == "PENDIENTE";
     final estadoIcon = _getEstadoIcon(estadoStr);
 

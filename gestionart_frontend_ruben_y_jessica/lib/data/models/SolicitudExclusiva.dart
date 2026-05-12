@@ -44,7 +44,7 @@ class Solicitudexclusiva {
       idArticulo: json['idArticulo'] ?? 0,
       idVendedor: json['idVendedor'] ?? 0,
       mensage: json['mensage'] ?? '',
-      estado: Estadosolicitud.values.firstWhere((e) => e.toString().split('.').last == 'Estadosolicitud.' + (json['estado'] ?? ''), orElse: () => Estadosolicitud.values.first),
+      estado: Estadosolicitud.values.firstWhere((e) => e.toString().split('.').last == (json['estado'] ?? ''), orElse: () => Estadosolicitud.values.first),
       fecha: DateTime.parse(json['fecha'] ?? DateTime.now().toIso8601String())
     );
   }

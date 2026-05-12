@@ -20,6 +20,7 @@ class articulos_view extends StatefulWidget {
 }
 
 class _articulos_viewState extends State<articulos_view> {
+  List<Articulo> _todosLosArticulos = [];  // ✅ Guardar todos los artículos
   List<Articulo> _articulosFiltrados = [];
   String _categoriaSeleccionada = "Todas";
   bool _isLoading = true;
@@ -63,8 +64,8 @@ class _articulos_viewState extends State<articulos_view> {
       final articulos = await articuloProvider.obtenerPorVendedor(widget.vendedor.id);
       
       setState(() {
-        _articulosFiltrados = articulos;
-        _filtrarPorCategoria();
+        _todosLosArticulos = articulos;  // ✅ Guardar todos
+        _filtrarPorCategoria();          // ✅ Aplicar filtro
         _isLoading = false;
       });
     } catch (e) {
@@ -93,18 +94,17 @@ class _articulos_viewState extends State<articulos_view> {
     });
   }
 
+  // ✅ Filtrar desde la lista completa sin perderla
   void _filtrarPorCategoria() {
-    if (_categoriaSeleccionada == "Todas") {
-      setState(() {
-        _articulosFiltrados = _articulosFiltrados;
-      });
-    } else {
-      setState(() {
-        _articulosFiltrados = _articulosFiltrados
+    setState(() {
+      if (_categoriaSeleccionada == "Todas") {
+        _articulosFiltrados = List.from(_todosLosArticulos);
+      } else {
+        _articulosFiltrados = _todosLosArticulos
             .where((a) => a.categoria == _categoriaSeleccionada)
             .toList();
-      });
-    }
+      }
+    });
   }
 
   Future<void> _eliminarArticulo(Articulo articulo) async {
@@ -227,7 +227,6 @@ class _articulos_viewState extends State<articulos_view> {
                                 width: double.infinity,
                                 height: 150,
                                 errorBuilder: (context, error, stackTrace) {
-                                  // Si falla la carga de la red, usar imagen por defecto
                                   return Image.asset(
                                     'assets/images/defaultArticulo.jpg',
                                     fit: BoxFit.cover,
@@ -376,7 +375,6 @@ class _articulos_viewState extends State<articulos_view> {
                 style: AppEstiloBotones.botonPrincipal,
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    // ✅ Guardar referencia del messenger ANTES de cerrar el diálogo
                     final messenger = ScaffoldMessenger.of(dialogContext);
                     
                     Navigator.pop(dialogContext);
@@ -421,7 +419,6 @@ class _articulos_viewState extends State<articulos_view> {
                           categoriaNombre,
                           int.parse(_stockController.text),
                         );
-                        // ✅ Usar la referencia guardada
                         messenger.showSnackBar(
                           const SnackBar(
                             content: Text("Obra actualizada correctamente"),
@@ -435,7 +432,6 @@ class _articulos_viewState extends State<articulos_view> {
                       setState(() {
                         _isLoading = false;
                       });
-                      // ✅ Usar la referencia guardada
                       messenger.showSnackBar(
                         SnackBar(
                           content: Text("Error: $e"),
@@ -466,7 +462,11 @@ class _articulos_viewState extends State<articulos_view> {
 
   @override
   Widget build(BuildContext context) {
-    final categoriasUnicas = ["Todas", ..._articulosFiltrados.map((a) => a.categoria).toSet()];
+    // ✅ Obtener categorías únicas de TODOS los artículos
+    final List<String> categoriasUnicas = [
+      "Todas",
+      ..._todosLosArticulos.map((a) => a.categoria).toSet()
+    ];
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -480,7 +480,8 @@ class _articulos_viewState extends State<articulos_view> {
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: [
-                  if (_articulosFiltrados.isNotEmpty)
+                  // ✅ Filtros siempre visibles si hay artículos
+                  if (_todosLosArticulos.isNotEmpty)
                     Container(
                       height: 50,
                       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -567,7 +568,6 @@ class _articulos_viewState extends State<articulos_view> {
                       articulo.imagen,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        // ✅ Si falla la red, usar imagen por defecto
                         return Image.asset(
                           'assets/images/defaultArticulo.jpg',
                           fit: BoxFit.cover,
@@ -577,7 +577,6 @@ class _articulos_viewState extends State<articulos_view> {
                       },
                     )
                   : Image.asset(
-                      // ✅ Si no tiene imagen, usar imagen por defecto
                       'assets/images/defaultArticulo.jpg',
                       fit: BoxFit.cover,
                       width: double.infinity,

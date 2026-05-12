@@ -91,7 +91,7 @@ class _pago_viewState extends State<pago_view> {
       return;
     }
 
-    if (widget.pedido!.estado.toString().split('.').last == "FINALIZADO") {
+    if (widget.pedido != null && widget.pedido!.estado.toString().split('.').last == "FINALIZADO") {
       if (mounted) {
         _mostrarDialogoExito(
           "Pedido ya procesado",
@@ -128,6 +128,10 @@ class _pago_viewState extends State<pago_view> {
             await _procesarPublicidad();
             break;
         }
+        // Resetear estado después de procesar exitosamente
+        if (mounted) {
+          setState(() => _isProcessing = false);
+        }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -141,6 +145,7 @@ class _pago_viewState extends State<pago_view> {
       }
     } catch (e) {
       if (mounted) {
+        print("❌ Error al procesar el pago: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error al procesar el pago: $e"), backgroundColor: Colors.red),
         );
@@ -258,11 +263,12 @@ class _pago_viewState extends State<pago_view> {
         }
       }
     } catch (e) {
+      print("❌ Error en _procesarSuscripcion: $e");
       if (mounted) {
         _mostrarDialogoExito(
-          "¡Pago completado!",
-          "Error al activar premium: $e",
-          Icons.warning,
+          "Error en la suscripción",
+          "Error al activar premium: $e\n\nEl pago se realizó pero hubo un problema con la suscripción. Contacta con soporte.",
+          Icons.error,
           () {
             Navigator.pop(context, widget.comprador);
           },

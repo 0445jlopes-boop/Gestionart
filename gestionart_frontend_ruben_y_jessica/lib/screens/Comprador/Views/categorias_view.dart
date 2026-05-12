@@ -106,7 +106,7 @@ class _categorias_viewState extends State<categorias_view> {
             TextFormField(
               controller: controller,
               decoration: const InputDecoration(
-                labelText: "Mensaje para el artista (opcional)",
+                labelText: "Mensaje para el artista (Recomendamos que ponga cómo prefiere que se ponga en contacto )",
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
@@ -146,21 +146,19 @@ class _categorias_viewState extends State<categorias_view> {
       );
        print("$articulo.idVendedor");
       await notificacionProvider.crearNotificacion(
-       
         articulo.idVendedor,
-        Tiponotificacion.SOLICITUD_EXCLUSIVA,
-      );
+        Tiponotificacion.NUEVO_PEDIDO,);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("⭐ Solicitud exclusiva enviada al vendedor"),
+            content: Text("Solicitud exclusiva enviada al vendedor"),
             backgroundColor: Colors.amber,
           ),
         );
       }
     } catch (e) {
-      print("❌ Error al crear solicitud exclusiva: $e");
+      print("Error al crear solicitud exclusiva: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
