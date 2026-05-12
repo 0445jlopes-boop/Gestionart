@@ -10,5 +10,6 @@ public interface LineaPedidoRepository {
     Optional<LineaPedido> findById(Long id);
     List<LineaPedido> findByIdPedido(Long idPedido);
     List<LineaPedido> findAllByPedidoId(Long idPedido);
+    List<LineaPedido> findByVendedorId(Long idVendedor);
     void deleteById(Long id);
 }

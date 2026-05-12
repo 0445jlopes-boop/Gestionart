@@ -161,6 +161,7 @@ class _pago_viewState extends State<pago_view> {
     final notificacionProvider = context.read<NotificacionProvider>();
 
     // 1. Cambiar estado del pedido
+    await pedidoProvider.cambiarEstado(widget.pedido!.id);
     final pedidoActualizado = await pedidoProvider.cambiarEstado(widget.pedido!.id);
 
     // 2. Obtener las líneas del pedido

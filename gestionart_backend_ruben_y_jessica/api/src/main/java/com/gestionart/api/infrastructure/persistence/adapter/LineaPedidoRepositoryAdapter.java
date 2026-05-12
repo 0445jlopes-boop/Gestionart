@@ -41,6 +41,10 @@ public class LineaPedidoRepositoryAdapter implements LineaPedidoRepository {
         repository.deleteByPedido_Id(idPedido);
     }
 
+    public List<LineaPedido> findByVendedorId(Long idVendedor) {
+        return repository.findByArticulo_Vendedor_Id(idVendedor).stream().map(this::toDomain).collect(Collectors.toList());
+    }
+
     private LineaPedido toDomain(LineaPedidoEntity e) {
         return new LineaPedido(
                 e.getId(),

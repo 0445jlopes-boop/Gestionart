@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/LineaPedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/LineaPedidoRepository.dart';
+import 'package:gestionart_frontend_ruben_y_jessica/providers/ArticuloProvider.dart';
+import 'package:provider/provider.dart';
 
 class Lineapedidoprovider with ChangeNotifier{
   final LineaPedidoRepository _lineaPedidoRepository;
@@ -49,6 +51,16 @@ class Lineapedidoprovider with ChangeNotifier{
       _lineasPedido.removeWhere((linea)=> linea.id == id);
     }catch (e){
       throw("Error al eliminar linea de pedido : $e");
+    }
+  }
+  Future<List<Lineapedido>> fetchLineasPorVendedor( int idVendedor) async {
+    try {
+     
+      final todasLasLineas = await _lineaPedidoRepository.obtenerLineasPorVendedor(idVendedor);
+      return todasLasLineas;
+    } catch (e) {
+      print("Error: $e");
+      return [];
     }
   }
 }

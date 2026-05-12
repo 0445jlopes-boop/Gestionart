@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gestionart.api.domain.models.LineaPedido;
 import com.gestionart.api.domain.repository.LineaPedidoRepository;
 import com.gestionart.api.exception.NotFoundByIdException;
-import com.gestionart.api.presentation.dto.response.LineaPedidoResponse;
 
 @Service
 @Transactional
@@ -37,7 +36,11 @@ public class LineaPedidoService {
 
     public List<LineaPedido> obtenerPorPedido(Long idPedido) {
         return lineaPedidoRepository.findByIdPedido(idPedido);
-     
+    }
+
+    @Transactional(readOnly = true)
+    public List<LineaPedido> obtenerPorVendedor(Long idVendedor) {
+        return lineaPedidoRepository.findByVendedorId(idVendedor);
     }
 
 }

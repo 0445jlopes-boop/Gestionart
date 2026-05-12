@@ -42,6 +42,7 @@ public class PedidoRepositoryAdapter implements PedidoRepository {
                 .collect(Collectors.toList());
     }
 
+
     public List<Pedido> findByEstado(com.gestionart.api.domain.enums.EstadoPedido estado) {
         return repository.findByEstado(estado)
                 .stream()

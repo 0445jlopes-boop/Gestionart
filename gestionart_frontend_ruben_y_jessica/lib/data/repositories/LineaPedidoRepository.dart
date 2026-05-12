@@ -79,4 +79,18 @@ class LineaPedidoRepository {
       throw Exception("Error al eliminar la línea de pedido: $e");
     }
   }
+  Future<List<Lineapedido>> obtenerLineasPorVendedor(int idVendedor) async {
+  try {
+    final response = await _apiService.dio.get("/lineas-pedido/vendedor/$idVendedor");
+    if (response.statusCode == 200) {
+      return (response.data as List)
+          .map((json) => Lineapedido.fromJson(json))
+          .toList();
+    }
+    return [];
+  } catch (e) {
+    print("Error: $e");
+    return [];
+  }
+}
 }

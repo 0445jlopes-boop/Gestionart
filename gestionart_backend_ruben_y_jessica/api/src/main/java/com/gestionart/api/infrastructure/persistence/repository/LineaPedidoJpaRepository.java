@@ -8,6 +8,8 @@ import java.util.List;
 public interface LineaPedidoJpaRepository extends JpaRepository<LineaPedidoEntity, Long> {
 
     List<LineaPedidoEntity> findByPedido_Id(Long idPedido);
+    
+    List<LineaPedidoEntity> findByArticulo_Vendedor_Id(Long idVendedor);
 
     void deleteByPedido_Id(Long idPedido);
 }
