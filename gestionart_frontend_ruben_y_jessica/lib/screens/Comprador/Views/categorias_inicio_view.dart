@@ -18,54 +18,86 @@ class categorias_inicio_view extends StatefulWidget {
 class _categorias_inicio_viewState extends State<categorias_inicio_view> {
   @override
   Widget build(BuildContext context) {
-    return  GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, //Número de columnas y espacio entre elementos
-          mainAxisExtent: 100, //Tamaño fijo de las celdas
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 1, //Para que se vea como un cuadrado
-        ),
-        itemCount: Categoria.values.length,
-        itemBuilder: (context, index) {
-          // Similar a un For each para crear los contenedores
-          final categoria =Categoria.values[index]; //Recogemos la categoria
-          return GestureDetector(
-            //Widget que hace que el widget de su interior detecte interacción por parte del usuario mediante el raton, en este caso se usa onTap()
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => categorias_view(categoria: categoria, comprador: widget.comprador)));
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                // Formato de los contenedores
-                color: AppColores.colorFondo,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColores.colorPrimario,
-                    blurRadius: 4,
-                  ), //Color de la sombra y forma redondeada
-                ],
+    return GridView.builder(
+      padding: const EdgeInsets.all(12),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 0.85,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemCount: Categoria.values.length,
+      itemBuilder: (context, index) {
+        final categoria = Categoria.values[index];
+        final nombreCategoria = categoria.toString().split('.').last;
+        final icono = CategoriaIcono.obtenerIcono(categoria);
+        
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context, 
+              MaterialPageRoute(
+                builder: (context) => categorias_view(
+                  categoria: categoria, 
+                  comprador: widget.comprador
+                ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    CategoriaIcono.obtenerIcono(categoria),
-                    color: AppColores.colorSecundario,
-                    size: 30,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    categoria.toString().split('.').last,
-                    textAlign: TextAlign.center,
-                    style: AppEstiloTexto.textoPrincipal,
-                  ),
-                ],
-              ),
+            );
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: AppColores.colorFondo,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColores.colorPrimario.withOpacity(0.15),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-          );
-        },
-      );
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColores.colorSecundario.withOpacity(0.2),
+                        AppColores.colorPrimario.withOpacity(0.1),
+                      ],
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icono,
+                    color: AppColores.colorSecundario,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: Text(
+                    nombreCategoria,
+                    textAlign: TextAlign.center,
+                    style: AppEstiloTexto.textoPrincipal.copyWith(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
