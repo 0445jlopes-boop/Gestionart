@@ -48,9 +48,9 @@ class NotificacionProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchNotificacionesLeidas(int idVendedor) async {
+  Future<void> fetchNotificacionesLeidas(int idVendedor, int idNotificacion) async {
     try {
-      _notificaciones = await _notificacionRepository.obtenerLeidas(idVendedor);
+      _notificaciones = await _notificacionRepository.obtenerLeidas(idVendedor, idNotificacion);
       notifyListeners();
     } catch (e) {
       print("Error al obtener las notificaciones leídas: $e");

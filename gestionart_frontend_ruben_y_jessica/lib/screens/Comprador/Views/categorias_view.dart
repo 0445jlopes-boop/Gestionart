@@ -144,8 +144,9 @@ class _categorias_viewState extends State<categorias_view> {
         mensaje,
         articulo.idVendedor,
       );
-      
+       print("$articulo.idVendedor");
       await notificacionProvider.crearNotificacion(
+       
         articulo.idVendedor,
         Tiponotificacion.SOLICITUD_EXCLUSIVA,
       );

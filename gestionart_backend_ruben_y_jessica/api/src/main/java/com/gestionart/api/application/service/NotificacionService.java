@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gestionart.api.domain.enums.TipoNotificacion;
 import com.gestionart.api.domain.models.Notificacion;
 import com.gestionart.api.domain.repository.NotificacionRepository;
+import com.gestionart.api.exception.NotFoundByIdException;
 
 @Service
 @Transactional
@@ -63,7 +64,7 @@ public class NotificacionService {
 
     public Notificacion obtenerPorId(Long id) {
         return notificacionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Notificación no encontrada"));
+                .orElseThrow(() -> new NotFoundByIdException(id));
     }
 
     public Notificacion marcarComoLeida(Long id) {

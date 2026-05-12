@@ -78,18 +78,18 @@ class _NotificacionesViewState extends State<NotificacionesView> {
     }
   }
 
-  String _getIconoNotificacion(Tiponotificacion tipo) {
+  Icon _getIconoNotificacion(Tiponotificacion tipo) {
     switch (tipo) {
       case Tiponotificacion.NUEVO_PEDIDO:
-        return "🛒";
+        return Icon(  Icons.shopping_cart, color: Colors.green);
       case Tiponotificacion.STOCK_AGOTADO:
-        return "❌";
+        return Icon(  Icons.error, color: Colors.red);
       case Tiponotificacion.STOCK_BAJO:
-        return "⚠️";
+        return Icon(  Icons.warning, color: Colors.orange);
       case Tiponotificacion.ANUNCIO_EXPIRADO:
-        return "📢";
+        return Icon(  Icons.campaign, color: Colors.purple);
       case Tiponotificacion.SOLICITUD_EXCLUSIVA:
-      return "⭐";
+      return Icon(  Icons.star, color: Colors.yellow);
     }
   }
 
@@ -104,7 +104,7 @@ class _NotificacionesViewState extends State<NotificacionesView> {
       case Tiponotificacion.ANUNCIO_EXPIRADO:
         return "Tu anuncio ha expirado";
         case Tiponotificacion.SOLICITUD_EXCLUSIVA:
-      return "✨ Solicitud exclusiva de un usuario Premium ✨";
+      return "Solicitud exclusiva de un usuario Premium";
     }
   }
 
@@ -332,10 +332,8 @@ class _NotificacionesViewState extends State<NotificacionesView> {
                     borderRadius: BorderRadius.circular(25),
                   ),
                   child: Center(
-                    child: Text(
+                    child:
                       _getIconoNotificacion(notificacion.tipo),
-                      style: const TextStyle(fontSize: 24),
-                    ),
                   ),
                 ),
                 const SizedBox(width: 12),

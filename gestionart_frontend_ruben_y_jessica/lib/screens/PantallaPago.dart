@@ -7,7 +7,6 @@ import 'package:gestionart_frontend_ruben_y_jessica/data/models/Anuncio.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Pedido.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Vendedor.dart';
-import 'package:gestionart_frontend_ruben_y_jessica/providers/AnuincioProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/ArticuloProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/providers/LineaPedidoProvider.dart';
@@ -141,7 +140,6 @@ class _pago_viewState extends State<pago_view> {
         }
       }
     } catch (e) {
-      print("❌ Error general: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error al procesar el pago: $e"), backgroundColor: Colors.red),
@@ -152,74 +150,78 @@ class _pago_viewState extends State<pago_view> {
   }
 
   Future<void> _procesarPagoPedido() async {
-    try {
-      if (widget.pedido == null) {
-        throw Exception("No se encontró el pedido");
+  try {
+    if (widget.pedido == null) {
+      throw Exception("No se encontró el pedido");
+    }
+
+    final pedidoProvider = context.read<Pedidoprovider>();
+    final articuloProvider = context.read<Articuloprovider>();
+    final lineaPedidoProvider = context.read<Lineapedidoprovider>();
+    final notificacionProvider = context.read<NotificacionProvider>();
+
+    // 1. Cambiar estado del pedido
+    final pedidoActualizado = await pedidoProvider.cambiarEstado(widget.pedido!.id);
+
+    // 2. Obtener las líneas del pedido
+    final lineas = await lineaPedidoProvider.fetchLineasPedidoPorPedido(widget.pedido!.id);
+    
+    // 3. Obtener el vendedor del primer artículo de la línea
+    int? idVendedor = null;
+    if (lineas.isNotEmpty) {
+      final articulo = await articuloProvider.obtenerArticulo(lineas.first.idArticulo);
+      if (articulo != null) {
+        idVendedor = articulo.idVendedor;
+        print("🔍 Vendedor obtenido del artículo: $idVendedor");
       }
+    }
 
-      print("🔵 Procesando pago del pedido ID: ${widget.pedido!.id}");
-      print("🔵 Estado actual: ${widget.pedido!.estado}");
-
-      final pedidoProvider = context.read<Pedidoprovider>();
-      final articuloProvider = context.read<Articuloprovider>();
-      final lineaPedidoProvider = context.read<Lineapedidoprovider>();
-      final notificacionProvider = context.read<NotificacionProvider>();
-
-      // 1. Cambiar estado del pedido
-      final pedidoActualizado = await pedidoProvider.cambiarEstado(widget.pedido!.id);
-      print("🟢 Nuevo estado del pedido: ${pedidoActualizado.estado}");
-
-      // 2. Obtener las líneas del pedido
-      final lineas = await lineaPedidoProvider.fetchLineasPedidoPorPedido(widget.pedido!.id);
-      print("📦 Líneas del pedido: ${lineas.length}");
-
-      // 3. Disminuir stock de cada artículo
-      for (var linea in lineas) {
-        final articulo = await articuloProvider.obtenerArticulo(linea.idArticulo);
-        if (articulo != null && mounted) {
-          final nuevoStock = articulo.stock - linea.cantidad;
-          print("📦 Actualizando stock de ${articulo.titulo}: ${articulo.stock} → $nuevoStock");
+    // 4. Disminuir stock
+    for (var linea in lineas) {
+      final articulo = await articuloProvider.obtenerArticulo(linea.idArticulo);
+      if (articulo != null && mounted) {
+        final nuevoStock = articulo.stock - linea.cantidad;
+        if (nuevoStock >= 0) {
           await articuloProvider.actualizarArticulo(
-            articulo.id,
-            articulo.titulo,
-            articulo.descripcion,
-            articulo.precio,
-            articulo.imagen,
-            articulo.categoria,
-            nuevoStock,
+            articulo.id, articulo.titulo, articulo.descripcion,
+            articulo.precio, articulo.imagen, articulo.categoria, nuevoStock,
           );
         }
       }
+    }
 
-      // 4. Crear notificación para el vendedor
+    // 5. Crear notificación para el vendedor (solo si tenemos idVendedor)
+    if (idVendedor != null && idVendedor > 0) {
       await notificacionProvider.crearNotificacion(
-        widget.pedido!.idVendeodr,
+        idVendedor,
         Tiponotificacion.NUEVO_PEDIDO,
       );
-      print("🟢 Notificación enviada al vendedor");
+      print("✅ Notificación enviada al vendedor $idVendedor");
+    } else {
+      print("⚠️ No se pudo obtener el vendedor, notificación no enviada");
+    }
 
-      if (mounted) {
-        _mostrarDialogoExito(
-          "¡Pedido completado!",
-          "Tu pedido #${widget.pedido!.id} ha sido procesado correctamente.\n\n"
-          "Estado: ${_getEstadoTexto(pedidoActualizado.estado.toString().split('.').last)}\n"
-          "Total pagado: ${widget.importe.toStringAsFixed(2)} €",
-          Icons.shopping_bag,
-          () {
-            Navigator.pop(context, true);
-          },
-        );
-      }
-    } catch (e) {
-      print("❌ Error al procesar pedido: $e");
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error al procesar el pedido: $e"), backgroundColor: Colors.red),
-        );
-        setState(() => _isProcessing = false);
-      }
+    if (mounted) {
+      _mostrarDialogoExito(
+        "¡Pedido completado!",
+        "Tu pedido #${widget.pedido!.id} ha sido procesado correctamente.\n\n"
+        "Total pagado: ${widget.importe.toStringAsFixed(2)} €",
+        Icons.shopping_bag,
+        () {
+          Navigator.pop(context, true);
+        },
+      );
+    }
+  } catch (e) {
+    print("❌ Error al procesar pedido: $e");
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
+      );
+      setState(() => _isProcessing = false);
     }
   }
+}
 
   Future<void> _procesarSuscripcion() async {
     try {
