@@ -86,7 +86,7 @@ class Pedidoprovider with ChangeNotifier {
       return await _pedidoRepository.anadirLinea(idPedido, idLinea);
   
     } catch (e) {
-      throw Exception("Error al añadir línea: $e");
+      throw Exception("Error al aadir lnea: $e");
     }
   }
 

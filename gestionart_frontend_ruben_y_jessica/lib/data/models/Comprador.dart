@@ -39,7 +39,7 @@ class Comprador extends Usuario{ //Clase comprador
   }
 
   factory Comprador.fromJson(Map<String, dynamic> json) {
-    // Función auxiliar para fechas
+    // Funcin auxiliar para fechas
     DateTime parseFecha(String? fechaStr) {
       if (fechaStr == null || fechaStr.isEmpty) return DateTime.now();
       try {

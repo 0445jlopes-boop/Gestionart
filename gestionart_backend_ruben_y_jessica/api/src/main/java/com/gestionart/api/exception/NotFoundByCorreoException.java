@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 @ResponseStatus(HttpStatus.NO_CONTENT)
 public class NotFoundByCorreoException extends RuntimeException {
     public NotFoundByCorreoException(String correo) {
-        super("No se encontró el usuario con correo: " + correo);
+        super("No se encontr el usuario con correo: " + correo);
     }
 }

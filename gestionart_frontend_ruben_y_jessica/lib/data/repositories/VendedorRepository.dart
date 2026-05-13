@@ -17,7 +17,6 @@ class Vendedorrepository {
       });
       return response.statusCode == 204;
     } catch (e) {
-      print("Error al actualizar el vendedor: $e");
       return false;
     }
   }
@@ -30,7 +29,6 @@ class Vendedorrepository {
       }
       return [];
     } catch (e) {
-      print("Error al obtener los vendedores: $e");
       return [];
     }
   }
@@ -43,7 +41,6 @@ class Vendedorrepository {
       }
       return null;
     } catch (e) {
-      print("Error al obtener el vendedor por ID: $e");
       return null;
     }
   }
@@ -56,7 +53,6 @@ class Vendedorrepository {
       }
       return null;
     } catch (e) {
-      print("Error al obtener el vendedor por correo: $e");
       return null;
     }
   }
@@ -69,7 +65,6 @@ class Vendedorrepository {
       }
       return null;
     } catch (e) {
-      print("Error al obtener el vendedor por nombre: $e");
       return null;
     }
   }
@@ -79,7 +74,6 @@ class Vendedorrepository {
       final response = await apiService.dio.delete("/vendedores/$id");
       return response.statusCode == 200;
     } catch (e) {
-      print("Error al eliminar el vendedor: $e");
       return false;
     }
   }

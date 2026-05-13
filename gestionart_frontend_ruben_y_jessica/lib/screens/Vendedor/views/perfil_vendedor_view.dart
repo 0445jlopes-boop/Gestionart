@@ -31,7 +31,7 @@ class _perfil_vendedor_viewState extends State<perfil_vendedor_view> {
     _vendedorActualizado = widget.vendedor;
   }
 
-  // ✅ Método para recargar los datos desde el backend
+  //  Mtodo para recargar los datos desde el backend
   Future<void> _recargarDatos(Vendedorprovider provider) async {
     final vendedorActualizado = await provider.obtenerVendedor(_vendedorActualizado.id);
     if (vendedorActualizado != null && mounted) {
@@ -95,7 +95,7 @@ class _perfil_vendedor_viewState extends State<perfil_vendedor_view> {
         _vendedorActualizado = actualizado;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Descripción actualizada"), backgroundColor: Colors.green),
+        const SnackBar(content: Text("Descripcin actualizada"), backgroundColor: Colors.green),
       );
     }
   }
@@ -181,12 +181,12 @@ class _perfil_vendedor_viewState extends State<perfil_vendedor_view> {
 
                 const SizedBox(height: 20),
 
-                // Correo electrónico
+                // Correo electrnico
                 Text(_vendedorActualizado.correoElectronico, style: AppEstiloTexto.textoPrincipal),
 
                 const SizedBox(height: 20),
 
-                // Descripción del perfil
+                // Descripcin del perfil
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
@@ -202,7 +202,7 @@ class _perfil_vendedor_viewState extends State<perfil_vendedor_view> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Descripción del perfil:",
+                            "Descripcin del perfil:",
                             style: AppEstiloTexto.textoPrincipal.copyWith(fontWeight: FontWeight.bold),
                           ),
                           IconButton(
@@ -224,15 +224,15 @@ class _perfil_vendedor_viewState extends State<perfil_vendedor_view> {
 
                 const SizedBox(height: 20),
 
-                // Botón cambiar contraseña
+                // Botn cambiar contrasea
                 TextButton(
                   onPressed: () => dialogoCambiarContrasenaVendedor(context, _vendedorActualizado),
-                  child: const Text("¿Quieres cambiar tu contraseña?"),
+                  child: const Text("Quieres cambiar tu contrasea?"),
                 ),
 
                 const SizedBox(height: 20),
 
-                // Botón cerrar sesión
+                // Botn cerrar sesin
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -246,14 +246,14 @@ class _perfil_vendedor_viewState extends State<perfil_vendedor_view> {
                     },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 12),
-                      child: Text("Cerrar sesión"),
+                      child: Text("Cerrar sesin"),
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 20),
 
-                // Botón eliminar cuenta
+                // Botn eliminar cuenta
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -286,17 +286,17 @@ class _perfil_vendedor_viewState extends State<perfil_vendedor_view> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Editar descripción", style: AppEstiloTexto.textoPrincipal),
+        title: const Text("Editar descripcin", style: AppEstiloTexto.textoPrincipal),
         content: Form(
           key: formKey,
           child: TextFormField(
             controller: descripcionController,
             maxLines: 5,
             decoration: const InputDecoration(
-              labelText: "Descripción",
+              labelText: "Descripcin",
               border: OutlineInputBorder(),
             ),
-            validator: (value) => value == null || value.isEmpty ? "Escribe una descripción" : null,
+            validator: (value) => value == null || value.isEmpty ? "Escribe una descripcin" : null,
           ),
         ),
         actions: [

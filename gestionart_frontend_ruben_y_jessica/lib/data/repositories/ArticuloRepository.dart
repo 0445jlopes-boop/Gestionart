@@ -6,7 +6,7 @@ class ArticuloRepository {
   
   ArticuloRepository(ApiService? apiService) : _apiService = apiService ?? ApiService();  
 
-  // ✅ CORREGIDO - Retornar bool
+  //  CORREGIDO - Retornar bool
   Future<bool> actualizarArticulo(
     int id, 
     String titulo, 
@@ -27,7 +27,6 @@ class ArticuloRepository {
       });
       return response.statusCode == 200;
     } catch (e) {
-      print("Error al actualizar el artículo: $e");
       return false;
     }
   }
@@ -52,7 +51,6 @@ class ArticuloRepository {
       });
       return response.statusCode == 201 || response.statusCode == 200;
     } catch (e) {
-      print("Error al crear el artículo: $e");
       return false;
     }
   }
@@ -65,7 +63,6 @@ class ArticuloRepository {
       }
       return null;
     } catch (e) {
-      print("Error al obtener el artículo: $e");
       return null;
     }
   }
@@ -78,7 +75,6 @@ class ArticuloRepository {
       }
       return [];
     } catch (e) {
-      print("Error al obtener los artículos: $e");
       return [];
     }
   }
@@ -91,7 +87,6 @@ class ArticuloRepository {
       }
       return [];
     } catch (e) {
-      print("Error al obtener los artículos por categoría: $e");
       return [];
     }
   }
@@ -104,18 +99,16 @@ class ArticuloRepository {
       }
       return [];
     } catch (e) {
-      print("Error al obtener los artículos por vendedor: $e");
       return [];
     }
   }
 
-  // ✅ CORREGIDO - Retornar bool
+  //  CORREGIDO - Retornar bool
   Future<bool> eliminarArticulo(int id) async {
     try {
       final response = await _apiService.dio.delete("/articulos/$id");
       return response.statusCode == 200;
     } catch (e) {
-      print("Error al eliminar el artículo: $e");
       return false;
     }
   }

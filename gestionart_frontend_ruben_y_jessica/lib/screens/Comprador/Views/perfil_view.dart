@@ -33,7 +33,7 @@ class _perfil_viewState extends State<perfil_view> {
     _compradorActualizado = widget.comprador;
   }
 
-  // ✅ Método para recargar los datos desde el backend
+  //  Mtodo para recargar los datos desde el backend
   Future<void> _recargarDatos(Compradorprovider provider) async {
     final compradorActualizado = await provider.obtenerComprador(_compradorActualizado.id);
     if (compradorActualizado != null && mounted) {
@@ -53,14 +53,14 @@ class _perfil_viewState extends State<perfil_view> {
           });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("¡Premium activado correctamente!"),
+              content: Text("Premium activado correctamente!"),
               backgroundColor: Colors.green,
             ),
           );
         }
       } else if (_compradorActualizado.tipoCuenta == Tipocuentacomprador.PREMIUM) {
         await compradorProvider.desactivarPremium(_compradorActualizado.id);
-        // ✅ Recargar datos después de desactivar
+        //  Recargar datos despus de desactivar
         await _recargarDatos(compradorProvider);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -253,7 +253,7 @@ class _perfil_viewState extends State<perfil_view> {
                           children: [
                             Icon(Icons.calendar_today, size: 20, color: Colors.amber[700]),
                             const SizedBox(width: 8),
-                            Text("Suscripción Premium", style: AppEstiloTexto.textoPrincipal.copyWith(fontWeight: FontWeight.bold, color: Colors.amber[700])),
+                            Text("Suscripcin Premium", style: AppEstiloTexto.textoPrincipal.copyWith(fontWeight: FontWeight.bold, color: Colors.amber[700])),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -279,7 +279,7 @@ class _perfil_viewState extends State<perfil_view> {
 
                 TextButton(
                   onPressed: () => dialogoCambiarContrasenaComprador(context, widget.comprador),
-                  child: const Text("¿Quieres cambiar tu contraseña?"),
+                  child: const Text("Quieres cambiar tu contrasea?"),
                 ),
 
                 const SizedBox(height: 20),
@@ -287,7 +287,7 @@ class _perfil_viewState extends State<perfil_view> {
                 ElevatedButton(
                   style: _compradorActualizado.tipoCuenta == Tipocuentacomprador.NORMAL ? AppEstiloBotones.botonPrincipal : AppEstiloBotones.botonSecundario,
                   onPressed: () => _cambiarEstadoPremium(compradorProvider),
-                  child: Text(_compradorActualizado.tipoCuenta == Tipocuentacomprador.NORMAL ? "Activar premium (5€/3 meses)" : "Desactivar premium"),
+                  child: Text(_compradorActualizado.tipoCuenta == Tipocuentacomprador.NORMAL ? "Activar premium (5/3 meses)" : "Desactivar premium"),
                 ),
 
                 const SizedBox(height: 20),
@@ -295,7 +295,7 @@ class _perfil_viewState extends State<perfil_view> {
                 ElevatedButton(
                   style: AppEstiloBotones.botonPrincipal,
                   onPressed: () => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const Pantallainiciosesion()), (route) => false),
-                  child: const Text("Cerrar sesión"),
+                  child: const Text("Cerrar sesin"),
                 ),
 
                 const SizedBox(height: 20),
@@ -317,8 +317,8 @@ class _perfil_viewState extends State<perfil_view> {
 
   String _calcularDiasRestantes(DateTime fechaFin) {
     final diferencia = fechaFin.difference(DateTime.now());
-    if (diferencia.inDays < 0) return "Suscripción expirada";
-    if (diferencia.inDays == 0) return "Último día de suscripción";
-    return "${diferencia.inDays} días restantes";
+    if (diferencia.inDays < 0) return "Suscripcin expirada";
+    if (diferencia.inDays == 0) return "ltimo da de suscripcin";
+    return "${diferencia.inDays} das restantes";
   }
 }

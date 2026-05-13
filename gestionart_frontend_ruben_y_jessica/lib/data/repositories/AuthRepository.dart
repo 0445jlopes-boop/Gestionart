@@ -21,7 +21,7 @@ class Authrepository {
         return response.data;
       }
     } catch (e) {
-      throw Exception("Error al iniciar sesión: $e");
+      throw Exception("Error al iniciar sesin: $e");
     }
   }
 
@@ -39,8 +39,7 @@ class Authrepository {
           });
       if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300) {
         return true;
-      } 
-      print("Error en registro: ${response.statusCode} - ${response.data}");
+      }
       return false;
     } catch (e) {
       throw Exception("Error al registrar usuario: $e");

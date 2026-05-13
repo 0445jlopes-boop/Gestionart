@@ -21,7 +21,7 @@ class Pantallainiciosesion extends StatefulWidget {
 }
 
 class _PantallainiciosesionState extends State<Pantallainiciosesion> {
-  //DECLARACIÓN DE VARIABLES PARA EL FORMULARIO DE INICIO DE SESIÓN
+  //DECLARACIN DE VARIABLES PARA EL FORMULARIO DE INICIO DE SESIN
   String _correo = "";
   String _contrasena = "";
   final TextEditingController _correoController = TextEditingController();
@@ -82,7 +82,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
               );
             }
           } else {
-            // No se encontró usuario
+            // No se encontr usuario
             if (mounted) {
               const snackBar = SnackBar(
                 content: Text('Usuario no encontrado'),
@@ -95,7 +95,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
       } else {
         if (mounted) {
           const snackBar = SnackBar(
-            content: Text('Correo o contraseña incorrectos'),
+            content: Text('Correo o contrasea incorrectos'),
             backgroundColor: Colors.red,
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -105,7 +105,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al iniciar sesión: $e'),
+            content: Text('Error al iniciar sesin: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -149,7 +149,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                               child: TextFormField(
                                 controller: _correoController,
                                 decoration: const InputDecoration(
-                                  labelText: "Correo electrónico",
+                                  labelText: "Correo electrnico",
                                   labelStyle: AppEstiloTexto.textoPrincipal,
                                   border: OutlineInputBorder(),
                                   prefixIcon: Icon(Icons.email),
@@ -165,7 +165,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                               child: TextFormField(
                                 controller: _contrasenaController,
                                 decoration: InputDecoration(
-                                  labelText: "Contraseña",
+                                  labelText: "Contrasea",
                                   labelStyle: AppEstiloTexto.textoPrincipal,
                                   border: const OutlineInputBorder(),
                                   prefixIcon: const Icon(Icons.lock),
@@ -193,7 +193,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                               width: 400,
                               child: TextButton(
                                 onPressed: () {
-                                  // TODO: Implementar recuperación de contraseña
+                                  // TODO: Implementar recuperacin de contrasea
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text('Funcionalidad en desarrollo'),
@@ -202,7 +202,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                                   );
                                 },
                                 child: Text(
-                                  "¿Olvidaste tu contraseña?",
+                                  "Olvidaste tu contrasea?",
                                   style: AppEstiloTexto.textoSecundario,
                                 ),
                               ),
@@ -215,7 +215,7 @@ class _PantallainiciosesionState extends State<Pantallainiciosesion> {
                                 onPressed: _validarUsuario,
                                 child: const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 12),
-                                  child: Text("Iniciar Sesión"),
+                                  child: Text("Iniciar Sesin"),
                                 ),
                               ),
                             ),

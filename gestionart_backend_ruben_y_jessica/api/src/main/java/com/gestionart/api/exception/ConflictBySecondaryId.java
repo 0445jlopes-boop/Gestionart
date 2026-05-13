@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 public class ConflictBySecondaryId extends RuntimeException {
     public ConflictBySecondaryId(String input, int caseNumber) {
         super(switch (caseNumber) {
-            case 1 -> "El correo electrónico '" + input + "' ya está registrado";
-            case 2 -> "El nombre de usuario '" + input + "' ya está registrado";
+            case 1 -> "El correo electrnico '" + input + "' ya est registrado";
+            case 2 -> "El nombre de usuario '" + input + "' ya est registrado";
             default -> "Conflicto por identificador secundario: " + input;
         });
 

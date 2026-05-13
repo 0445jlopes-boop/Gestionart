@@ -20,7 +20,7 @@ class articulos_view extends StatefulWidget {
 }
 
 class _articulos_viewState extends State<articulos_view> {
-  List<Articulo> _todosLosArticulos = [];  // ✅ Guardar todos los artículos
+  List<Articulo> _todosLosArticulos = [];  //  Guardar todos los artculos
   List<Articulo> _articulosFiltrados = [];
   String _categoriaSeleccionada = "Todas";
   bool _isLoading = true;
@@ -64,19 +64,18 @@ class _articulos_viewState extends State<articulos_view> {
       final articulos = await articuloProvider.obtenerPorVendedor(widget.vendedor.id);
       
       setState(() {
-        _todosLosArticulos = articulos;  // ✅ Guardar todos
-        _filtrarPorCategoria();          // ✅ Aplicar filtro
+        _todosLosArticulos = articulos;  //  Guardar todos
+        _filtrarPorCategoria();          //  Aplicar filtro
         _isLoading = false;
       });
     } catch (e) {
-      print("Error cargando artículos: $e");
       setState(() {
         _isLoading = false;
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Error al cargar los artículos: $e"),
+            content: Text("Error al cargar los artculos: $e"),
             backgroundColor: Colors.red,
           ),
         );
@@ -94,7 +93,7 @@ class _articulos_viewState extends State<articulos_view> {
     });
   }
 
-  // ✅ Filtrar desde la lista completa sin perderla
+  //  Filtrar desde la lista completa sin perderla
   void _filtrarPorCategoria() {
     setState(() {
       if (_categoriaSeleccionada == "Todas") {
@@ -112,7 +111,7 @@ class _articulos_viewState extends State<articulos_view> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text("Eliminar obra"),
-        content: Text("¿Seguro que quieres eliminar '${articulo.titulo}'?"),
+        content: Text("Seguro que quieres eliminar '${articulo.titulo}'?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
@@ -251,7 +250,7 @@ class _articulos_viewState extends State<articulos_view> {
                                 }
                               },
                               icon: const Icon(Icons.image),
-                              label: const Text("Galería"),
+                              label: const Text("Galera"),
                               style: AppEstiloBotones.botonSecundario,
                             ),
                           ),
@@ -268,7 +267,7 @@ class _articulos_viewState extends State<articulos_view> {
                                 }
                               },
                               icon: const Icon(Icons.camera_alt),
-                              label: const Text("Cámara"),
+                              label: const Text("Cmara"),
                               style: AppEstiloBotones.botonSecundario,
                             ),
                           ),
@@ -279,11 +278,11 @@ class _articulos_viewState extends State<articulos_view> {
                       TextFormField(
                         controller: _tituloController,
                         decoration: const InputDecoration(
-                          labelText: "Título",
+                          labelText: "Ttulo",
                           border: OutlineInputBorder(),
                         ),
                         validator: (value) => value == null || value.isEmpty
-                            ? "Introduce un título"
+                            ? "Introduce un ttulo"
                             : null,
                       ),
                       const SizedBox(height: 12),
@@ -291,12 +290,12 @@ class _articulos_viewState extends State<articulos_view> {
                       TextFormField(
                         controller: _descripcionController,
                         decoration: const InputDecoration(
-                          labelText: "Descripción",
+                          labelText: "Descripcin",
                           border: OutlineInputBorder(),
                         ),
                         maxLines: 3,
                         validator: (value) => value == null || value.isEmpty
-                            ? "Introduce una descripción"
+                            ? "Introduce una descripcin"
                             : null,
                       ),
                       const SizedBox(height: 12),
@@ -308,13 +307,13 @@ class _articulos_viewState extends State<articulos_view> {
                               controller: _precioController,
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
-                                labelText: "Precio (€)",
+                                labelText: "Precio ()",
                                 border: OutlineInputBorder(),
                                 prefixIcon: Icon(Icons.euro),
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) return "Precio requerido";
-                                if (double.tryParse(value) == null) return "Precio inválido";
+                                if (double.tryParse(value) == null) return "Precio invlido";
                                 return null;
                               },
                             ),
@@ -331,7 +330,7 @@ class _articulos_viewState extends State<articulos_view> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) return "Stock requerido";
-                                if (int.tryParse(value) == null) return "Stock inválido";
+                                if (int.tryParse(value) == null) return "Stock invlido";
                                 return null;
                               },
                             ),
@@ -342,7 +341,7 @@ class _articulos_viewState extends State<articulos_view> {
                       
                       DropdownButtonFormField<Categoria>(
                         decoration: const InputDecoration(
-                          labelText: "Categoría",
+                          labelText: "Categora",
                           border: OutlineInputBorder(),
                         ),
                         value: _categoriaSeleccionadaForm,
@@ -358,7 +357,7 @@ class _articulos_viewState extends State<articulos_view> {
                           });
                         },
                         validator: (value) =>
-                            value == null ? "Selecciona una categoría" : null,
+                            value == null ? "Selecciona una categora" : null,
                       ),
                     ],
                   ),
@@ -462,7 +461,7 @@ class _articulos_viewState extends State<articulos_view> {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Obtener categorías únicas de TODOS los artículos
+    //  Obtener categoras nicas de TODOS los artculos
     final List<String> categoriasUnicas = [
       "Todas",
       ..._todosLosArticulos.map((a) => a.categoria).toSet()
@@ -480,7 +479,7 @@ class _articulos_viewState extends State<articulos_view> {
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: [
-                  // ✅ Filtros siempre visibles si hay artículos
+                  //  Filtros siempre visibles si hay artculos
                   if (_todosLosArticulos.isNotEmpty)
                     Container(
                       height: 50,
@@ -529,7 +528,7 @@ class _articulos_viewState extends State<articulos_view> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  "Toca el botón + para crear tu primera obra",
+                                  "Toca el botn + para crear tu primera obra",
                                   style: AppEstiloTexto.textoSecundario,
                                 ),
                               ],
@@ -614,7 +613,7 @@ class _articulos_viewState extends State<articulos_view> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        "${articulo.precio.toStringAsFixed(2)} €",
+                        "${articulo.precio.toStringAsFixed(2)} ",
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

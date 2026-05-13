@@ -64,7 +64,7 @@ class _PedidosViewState extends State<PedidosView> {
         await solicitudProvider.fetchSolicitudesPorComprador(widget.comprador.id);
         solicitudes = solicitudProvider.solicitudes;
         
-        // Obtener títulos de los artículos
+        // Obtener ttulos de los artculos
         for (var solicitud in solicitudes) {
           if (!titulosTemp.containsKey(solicitud.idArticulo)) {
             final articulo = await articuloProvider.obtenerArticulo(solicitud.idArticulo);
@@ -142,7 +142,7 @@ class _PedidosViewState extends State<PedidosView> {
         await _cargarDatos();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("¡Pedido pagado correctamente!"),
+            content: Text("Pedido pagado correctamente!"),
             backgroundColor: Colors.green,
           ),
         );
@@ -159,11 +159,11 @@ class _PedidosViewState extends State<PedidosView> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Eliminar pedido", style: AppEstiloTexto.textoPrincipal),
-        content: Text("¿Seguro que quieres eliminar el pedido #${pedido.id}?\n\nSe eliminarán todas las líneas asociadas.", 
+        content: Text("Seguro que quieres eliminar el pedido #${pedido.id}?\n\nSe eliminarn todas las lneas asociadas.", 
           style: AppEstiloTexto.textoSecundario),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("No")),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Sí", style: TextStyle(color: Colors.red))),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("S", style: TextStyle(color: Colors.red))),
         ],
       ),
     );
@@ -216,19 +216,19 @@ class _PedidosViewState extends State<PedidosView> {
 
   String _getEstadoIcon(String estado) {
     switch (estado) {
-      case "PENDIENTE": return "🕐";
-      case "PROCESANDO": return "⚙️";
-      case "FINALIZADO": return "✅";
-      default: return "📦";
+      case "PENDIENTE": return "";
+      case "PROCESANDO": return "";
+      case "FINALIZADO": return "";
+      default: return "";
     }
   }
 
   String _getEstadoSolicitud(String estado) {
     switch (estado) {
-      case "PENDIENTE": return "⏳ Pendiente";
-      case "ACEPTADA": return "✅ Aceptada";
-      case "RECHAZADA": return "❌ Rechazada";
-      default: return "📦";
+      case "PENDIENTE": return " Pendiente";
+      case "ACEPTADA": return " Aceptada";
+      case "RECHAZADA": return " Rechazada";
+      default: return "";
     }
   }
 
@@ -295,7 +295,7 @@ class _PedidosViewState extends State<PedidosView> {
                                 const SizedBox(height: 16),
                                 Text("No tienes pedidos", style: AppEstiloTexto.textoPrincipal),
                                 const SizedBox(height: 8),
-                                Text("Cuando realices pedidos aparecerán aquí", style: AppEstiloTexto.textoSecundario),
+                                Text("Cuando realices pedidos aparecern aqu", style: AppEstiloTexto.textoSecundario),
                               ],
                             ),
                           )
@@ -388,7 +388,7 @@ class _PedidosViewState extends State<PedidosView> {
             
             const SizedBox(height: 16),
             
-            // Artículo solicitado
+            // Artculo solicitado
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -399,7 +399,7 @@ class _PedidosViewState extends State<PedidosView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Artículo solicitado",
+                    "Artculo solicitado",
                     style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 11),
                   ),
                   const SizedBox(height: 4),
@@ -522,7 +522,7 @@ class _PedidosViewState extends State<PedidosView> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    "⚠️ Pedido vacío (se eliminará automáticamente)",
+                    " Pedido vaco (se eliminar automticamente)",
                     style: AppEstiloTexto.textoSecundario.copyWith(color: Colors.orange, fontSize: 12),
                   ),
                 ),
@@ -637,7 +637,7 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("¡Pedido pagado correctamente!"),
+              content: Text("Pedido pagado correctamente!"),
               backgroundColor: Colors.green,
             ),
           );
@@ -657,11 +657,11 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Eliminar pedido", style: AppEstiloTexto.textoPrincipal),
-        content: Text("¿Seguro que quieres eliminar el pedido #${widget.pedido.id}?\n\nSe eliminarán todas las líneas asociadas.", 
+        content: Text("Seguro que quieres eliminar el pedido #${widget.pedido.id}?\n\nSe eliminarn todas las lneas asociadas.", 
           style: AppEstiloTexto.textoSecundario),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("No")),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Sí", style: TextStyle(color: Colors.red))),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("S", style: TextStyle(color: Colors.red))),
         ],
       ),
     );
@@ -687,11 +687,11 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Eliminar producto", style: AppEstiloTexto.textoPrincipal),
-        content: Text("¿Seguro que quieres eliminar '${_nombreArticulos[linea.idArticulo]}' del pedido?", 
+        content: Text("Seguro que quieres eliminar '${_nombreArticulos[linea.idArticulo]}' del pedido?", 
           style: AppEstiloTexto.textoSecundario),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("No")),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Sí", style: TextStyle(color: Colors.red))),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("S", style: TextStyle(color: Colors.red))),
         ],
       ),
     );
@@ -726,10 +726,10 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
 
   String _getEstadoIcon(String estado) {
     switch (estado) {
-      case "PENDIENTE": return "🕐";
-      case "PROCESANDO": return "⚙️";
-      case "FINALIZADO": return "✅";
-      default: return "📦";
+      case "PENDIENTE": return "";
+      case "PROCESANDO": return "";
+      case "FINALIZADO": return "";
+      default: return "";
     }
   }
 
@@ -821,7 +821,7 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("TOTAL", style: AppEstiloTexto.textoPrincipal.copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
-                        Text("${_totalPedido.toStringAsFixed(2)} €", style: AppEstiloTexto.textoPrincipal.copyWith(fontWeight: FontWeight.bold, fontSize: 22, color: AppColores.colorSecundario)),
+                        Text("${_totalPedido.toStringAsFixed(2)} ", style: AppEstiloTexto.textoPrincipal.copyWith(fontWeight: FontWeight.bold, fontSize: 22, color: AppColores.colorSecundario)),
                       ],
                     ),
                   ),
@@ -889,14 +889,14 @@ class _DetallePedidoViewState extends State<DetallePedidoView> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "${linea.precioUnitario.toStringAsFixed(2)} € x ${linea.cantidad}",
+                      "${linea.precioUnitario.toStringAsFixed(2)}  x ${linea.cantidad}",
                       style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
                     ),
                   ],
                 ),
               ),
               Text(
-                "${subtotal.toStringAsFixed(2)} €",
+                "${subtotal.toStringAsFixed(2)} ",
                 style: AppEstiloTexto.textoPrincipal.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,

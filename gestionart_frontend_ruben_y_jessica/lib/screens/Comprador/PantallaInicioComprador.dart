@@ -24,7 +24,7 @@ class _PantallainiciocompradorState extends State<Pantallainiciocomprador> {
         backgroundColor: AppColores.colorPrimario,
         flexibleSpace: Center(
           child: Text(
-            "¡ BIENVENID@ A GESTIONART !",
+            " BIENVENID@ A GESTIONART !",
             style: AppEstiloTexto.encabezado,
           ),
         ),
@@ -33,7 +33,7 @@ class _PantallainiciocompradorState extends State<Pantallainiciocomprador> {
         alignment: AlignmentGeometry.center,
         child: _views[_currentIndex] 
       ),
-      // Ha requerido investigación
+      // Ha requerido investigacin
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -41,12 +41,12 @@ class _PantallainiciocompradorState extends State<Pantallainiciocomprador> {
             _currentIndex = index; // Actualizar estado y cambiar de view
           });
         },
-        //Menú de navegación inferior para el comprador
+        //Men de navegacin inferior para el comprador
         selectedItemColor: AppColores.colorPrimario,
         unselectedItemColor: AppColores.colorDesactivado,
         showUnselectedLabels:
             true, //Asi muestro los labels de losbotones no seleccionados
-        selectedLabelStyle: AppEstiloTexto.textoPrincipal, // Con esto y el de abajo forzamos que se vea el label (El texto que identifica a los iconos ya sea que esté seleccionado o no)
+        selectedLabelStyle: AppEstiloTexto.textoPrincipal, // Con esto y el de abajo forzamos que se vea el label (El texto que identifica a los iconos ya sea que est seleccionado o no)
         unselectedLabelStyle: AppEstiloTexto.textoSecundario,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),

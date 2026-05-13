@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @ResponseStatus(HttpStatus.NO_CONTENT)
 public class NotfoundByCategoriaException extends RuntimeException {
     public NotfoundByCategoriaException(String categoria) {
-        super("No se encontró ningún elemento con la categoría: " + categoria);
+        super("No se encontr ningn elemento con la categora: " + categoria);
     }
 
 }

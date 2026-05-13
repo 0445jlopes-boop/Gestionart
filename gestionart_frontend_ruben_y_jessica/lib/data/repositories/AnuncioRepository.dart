@@ -78,10 +78,10 @@ class Anunciorepository {
       if (response.statusCode == 200) {
         return Anuncio.fromJson(response.data);
       } else {
-        throw Exception("Error al obtener el anuncio por categoría: ${response.statusCode}");
+        throw Exception("Error al obtener el anuncio por categora: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception("Error al obtener el anuncio por categoría: $e");
+      throw Exception("Error al obtener el anuncio por categora: $e");
     }
   }
 

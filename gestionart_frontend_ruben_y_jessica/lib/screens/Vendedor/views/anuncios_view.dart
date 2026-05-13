@@ -26,7 +26,7 @@ class _anuncios_viewState extends State<anuncios_view> {
   bool _isLoading = true;
   bool _isRefreshing = false;
 
-  // Controladores para el diálogo de crear anuncio
+  // Controladores para el dilogo de crear anuncio
   final _formKey = GlobalKey<FormState>();
   final _tituloController = TextEditingController();
   Categoria? _categoriaSeleccionada;
@@ -62,7 +62,6 @@ class _anuncios_viewState extends State<anuncios_view> {
         _isLoading = false;
       });
     } catch (e) {
-      print("Error cargando anuncios: $e");
       setState(() {
         _isLoading = false;
       });
@@ -96,7 +95,7 @@ class _anuncios_viewState extends State<anuncios_view> {
           style: AppEstiloTexto.textoPrincipal,
         ),
         content: Text(
-          "¿Seguro que quieres eliminar el anuncio '${anuncio.titulo}'?",
+          "Seguro que quieres eliminar el anuncio '${anuncio.titulo}'?",
           style: AppEstiloTexto.textoSecundario,
         ),
         actions: [
@@ -162,9 +161,9 @@ class _anuncios_viewState extends State<anuncios_view> {
     if (diferencia.inDays < 0) {
       return "Expirado";
     } else if (diferencia.inDays == 0) {
-      return "Último día";
+      return "ltimo da";
     } else {
-      return "${diferencia.inDays} días restantes";
+      return "${diferencia.inDays} das restantes";
     }
   }
 
@@ -173,7 +172,7 @@ class _anuncios_viewState extends State<anuncios_view> {
       if (_categoriaSeleccionada == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Selecciona una categoría"),
+            content: Text("Selecciona una categora"),
             backgroundColor: Colors.red,
           ),
         );
@@ -190,10 +189,10 @@ class _anuncios_viewState extends State<anuncios_view> {
         return;
       }
       
-      // Cerrar el diálogo
+      // Cerrar el dilogo
       Navigator.pop(context);
       
-      // Crear objeto anuncio temporal (el precio es fijo 2€)
+      // Crear objeto anuncio temporal (el precio es fijo 2)
       final nuevoAnuncio = Anuncio(
         id: 0,
         titulo: _tituloController.text,
@@ -247,7 +246,7 @@ class _anuncios_viewState extends State<anuncios_view> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text("¡Anuncio creado correctamente!"),
+                content: Text("Anuncio creado correctamente!"),
                 backgroundColor: Colors.green,
               ),
             );
@@ -292,7 +291,7 @@ class _anuncios_viewState extends State<anuncios_view> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Información de costo
+                      // Informacin de costo
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
@@ -312,7 +311,7 @@ class _anuncios_viewState extends State<anuncios_view> {
                                     style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
                                   ),
                                   Text(
-                                    "2€ por 1 mes de publicación",
+                                    "2 por 1 mes de publicacin",
                                     style: AppEstiloTexto.textoPrincipal.copyWith(
                                       fontWeight: FontWeight.bold,
                                       color: AppColores.colorSecundario,
@@ -373,7 +372,7 @@ class _anuncios_viewState extends State<anuncios_view> {
                                 }
                               },
                               icon: const Icon(Icons.image),
-                              label: const Text("Galería"),
+                              label: const Text("Galera"),
                               style: AppEstiloBotones.botonSecundario,
                             ),
                           ),
@@ -389,7 +388,7 @@ class _anuncios_viewState extends State<anuncios_view> {
                                 }
                               },
                               icon: const Icon(Icons.camera_alt),
-                              label: const Text("Cámara"),
+                              label: const Text("Cmara"),
                               style: AppEstiloBotones.botonSecundario,
                             ),
                           ),
@@ -402,23 +401,23 @@ class _anuncios_viewState extends State<anuncios_view> {
                       ),
                       const SizedBox(height: 16),
                       
-                      // Título (sin campo de precio)
+                      // Ttulo (sin campo de precio)
                       TextFormField(
                         controller: _tituloController,
                         decoration: const InputDecoration(
-                          labelText: "Título del anuncio",
+                          labelText: "Ttulo del anuncio",
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.title),
                         ),
                         validator: (value) =>
-                            value == null || value.isEmpty ? "Introduce un título" : null,
+                            value == null || value.isEmpty ? "Introduce un ttulo" : null,
                       ),
                       const SizedBox(height: 12),
                       
-                      // Categoría
+                      // Categora
                       DropdownButtonFormField<Categoria>(
                         decoration: const InputDecoration(
-                          labelText: "Categoría",
+                          labelText: "Categora",
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.category),
                         ),
@@ -435,7 +434,7 @@ class _anuncios_viewState extends State<anuncios_view> {
                           });
                         },
                         validator: (value) =>
-                            value == null ? "Selecciona una categoría" : null,
+                            value == null ? "Selecciona una categora" : null,
                       ),
                     ],
                   ),
@@ -451,7 +450,7 @@ class _anuncios_viewState extends State<anuncios_view> {
               ElevatedButton(
                 style: AppEstiloBotones.botonPrincipal,
                 onPressed: _crearAnuncio,
-                child: const Text("Pagar 2€ y publicar"),
+                child: const Text("Pagar 2 y publicar"),
               ),
             ],
           );
@@ -489,7 +488,7 @@ class _anuncios_viewState extends State<anuncios_view> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Toca el botón + para crear tu primer anuncio",
+                          "Toca el botn + para crear tu primer anuncio",
                           style: AppEstiloTexto.textoSecundario,
                         ),
                         const SizedBox(height: 20),
@@ -500,7 +499,7 @@ class _anuncios_viewState extends State<anuncios_view> {
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           ),
                           child: const Text(
-                            "Crear anuncio (2€/mes)",
+                            "Crear anuncio (2/mes)",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -567,7 +566,7 @@ class _anuncios_viewState extends State<anuncios_view> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // SOLO TÍTULO - SIN PRECIO
+                // SOLO TTULO - SIN PRECIO
                 Text(
                   anuncio.titulo,
                   style: AppEstiloTexto.textoPrincipal.copyWith(
@@ -579,7 +578,7 @@ class _anuncios_viewState extends State<anuncios_view> {
                 ),
                 const SizedBox(height: 8),
                 
-                // Categoría
+                // Categora
                 Chip(
                   label: Text(
                     anuncio.categoria,
@@ -670,7 +669,7 @@ class _anuncios_viewState extends State<anuncios_view> {
                 ),
                 const SizedBox(height: 12),
                 
-                // Botón de eliminar
+                // Botn de eliminar
                 Divider(color: Colors.grey[300]),
                 const SizedBox(height: 8),
                 Row(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Comprador.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/CompradorRepository.dart';
 
-class Compradorprovider extends ChangeNotifier {  // ← Cambiado "with" a "extends"
+class Compradorprovider extends ChangeNotifier {  //  Cambiado "with" a "extends"
   final Compradorrepository _repository;
   List<Comprador> compradores = [];
   
@@ -17,9 +17,8 @@ class Compradorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exte
       if (lista != null) {
         compradores = lista;
       }
-      notifyListeners();  // ✅ AÑADIDO - Notificar que la lista cambió
+      notifyListeners();  //  AADIDO - Notificar que la lista cambi
     } catch (e) {
-      print("Error al obtener los compradores: $e");
     }
   }
 
@@ -47,7 +46,6 @@ class Compradorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exte
       }
       return null;
     } catch (e) {
-      print("Error al actualizar el comprador: $e");
       return null;
     }
   }
@@ -61,21 +59,19 @@ class Compradorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exte
       }
       return false;
     } catch (e) {
-      print("Error al activar el premium: $e");
       return false;
     }
   }
 
-  Future<bool> desactivarPremium(int id) async {  // ← Cambiado a Future<bool>
+  Future<bool> desactivarPremium(int id) async {  //  Cambiado a Future<bool>
     try {
       final exito = await _repository.desactivarPremium(id);
       if (exito) {
-        await fetchCompradores();  // ✅ fetchCompradores ya tiene notifyListeners()
+        await fetchCompradores();  //  fetchCompradores ya tiene notifyListeners()
         return true;
       }
       return false;
     } catch (e) {
-      print("Error al desactivar el premium: $e");
       return false;
     }
   }
@@ -83,10 +79,9 @@ class Compradorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exte
   Future<Comprador?> obtenerComprador(int id) async {
     try {
       final comprador = await _repository.getCompradorPorId(id);
-      // No es necesario notifyListeners() aquí porque no estamos modificando datos
+      // No es necesario notifyListeners() aqu porque no estamos modificando datos
       return comprador;
     } catch (e) {
-      print("Error al obtener el comprador: $e");
       return null;
     }
   }
@@ -95,7 +90,6 @@ class Compradorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exte
     try {
       return await _repository.getCompradores();
     } catch (e) {
-      print("Error al obtener la lista de compradores: $e");
       return null;
     }
   }
@@ -105,7 +99,6 @@ class Compradorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exte
       final lista = await _repository.getCompradores();
       return lista?.firstWhere((c) => c.correoElectronico == correoElectronico);
     } catch (e) {
-      print("Error al obtener comprador por correo: $e");
       return null;
     }
   }
@@ -115,21 +108,19 @@ class Compradorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exte
       final lista = await _repository.getCompradores();
       return lista?.firstWhere((c) => c.nombre == nombre);
     } catch (e) {
-      print("Error al obtener comprador por nombre: $e");
       return null;
     }
   }
 
-  Future<bool> eliminarComprador(int id) async {  // ← Cambiado a Future<bool>
+  Future<bool> eliminarComprador(int id) async {  //  Cambiado a Future<bool>
     try {
       final exito = await _repository.eliminarComprador(id);
       if (exito) {
-        await fetchCompradores();  // ✅ fetchCompradores ya tiene notifyListeners()
+        await fetchCompradores();  //  fetchCompradores ya tiene notifyListeners()
         return true;
       }
       return false;
     } catch (e) {
-      print("Error al eliminar el comprador: $e");
       return false;
     }
   }

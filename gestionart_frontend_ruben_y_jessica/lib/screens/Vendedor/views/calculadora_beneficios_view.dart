@@ -61,7 +61,7 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
     final precioSugerido = costoTotal / (1 - _comisionPorcentaje);
     final precioFormateado = double.parse(precioSugerido.toStringAsFixed(2));
     
-    // ✅ Solo mostrar mensaje, NO modificar el campo de precio de venta
+    //  Solo mostrar mensaje, NO modificar el campo de precio de venta
     _mostrarDialogoPrecioSugerido(precioFormateado);
   }
 
@@ -87,7 +87,7 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
             ),
             const SizedBox(height: 16),
             Text(
-              "${precio.toStringAsFixed(2)} €",
+              "${precio.toStringAsFixed(2)} ",
               style: const TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
@@ -96,12 +96,12 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
             ),
             const SizedBox(height: 12),
             Text(
-              "Precio mínimo recomendado para cubrir",
+              "Precio mnimo recomendado para cubrir",
               style: AppEstiloTexto.textoSecundario,
               textAlign: TextAlign.center,
             ),
             Text(
-              "costos + comisión de la plataforma (10%)",
+              "costos + comisin de la plataforma (10%)",
               style: AppEstiloTexto.textoSecundario,
               textAlign: TextAlign.center,
             ),
@@ -137,7 +137,7 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
   }
 
   String _formatearMoneda(double valor) {
-    return "${valor.toStringAsFixed(2)} €";
+    return "${valor.toStringAsFixed(2)} ";
   }
 
   @override
@@ -184,7 +184,7 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "¿Cómo funciona?",
+                            "Cmo funciona?",
                             style: AppEstiloTexto.textoPrincipal.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -214,7 +214,7 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.access_time),
                   suffixText: "horas",
-                  helperText: "Valor por hora: 20€",
+                  helperText: "Valor por hora: 20",
                   helperStyle: AppEstiloTexto.textoSecundario,
                 ),
                 validator: (value) {
@@ -222,7 +222,7 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
                     return "Introduce las horas invertidas";
                   }
                   if (double.tryParse(value) == null) {
-                    return "Introduce un número válido";
+                    return "Introduce un nmero vlido";
                   }
                   return null;
                 },
@@ -236,18 +236,18 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
                 controller: _materialesController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "Costo de materiales (€)",
+                  labelText: "Costo de materiales ()",
                   labelStyle: AppEstiloTexto.textoPrincipal,
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.brush),
-                  suffixText: "€",
+                  suffixText: "",
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Introduce el costo de materiales";
                   }
                   if (double.tryParse(value) == null) {
-                    return "Introduce un número válido";
+                    return "Introduce un nmero vlido";
                   }
                   return null;
                 },
@@ -261,11 +261,11 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
                 controller: _precioVentaController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "Precio de venta (€)",
+                  labelText: "Precio de venta ()",
                   labelStyle: AppEstiloTexto.textoPrincipal,
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.euro),
-                  suffixText: "€",
+                  suffixText: "",
                   helperText: "La plataforma retiene un 10% de esta cantidad",
                   helperStyle: AppEstiloTexto.textoSecundario,
                 ),
@@ -274,7 +274,7 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
                     return "Introduce el precio de venta";
                   }
                   if (double.tryParse(value) == null) {
-                    return "Introduce un número válido";
+                    return "Introduce un nmero vlido";
                   }
                   return null;
                 },
@@ -283,14 +283,14 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
               
               const SizedBox(height: 16),
               
-              // Botón para calcular precio sugerido
+              // Botn para calcular precio sugerido
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: _calcularPrecioSugerido,
                   icon: const Icon(Icons.trending_up),
                   label: Text(
-                    "Calcular precio sugerido (mínimo recomendado)",
+                    "Calcular precio sugerido (mnimo recomendado)",
                     style: AppEstiloTexto.textoPrincipal,
                   ),
                   style: OutlinedButton.styleFrom(
@@ -302,7 +302,7 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
               
               const SizedBox(height: 20),
               
-              // Botón Calcular beneficio
+              // Botn Calcular beneficio
               SizedBox(
                 width: double.infinity,
                 height: 55,
@@ -330,7 +330,7 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
                 const Divider(),
                 const SizedBox(height: 16),
                 
-                // Título de resultados
+                // Ttulo de resultados
                 Center(
                   child: Text(
                     "Resultados",
@@ -362,9 +362,9 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
                   ),
                   child: Column(
                     children: [
-                      // Comisión (10%)
+                      // Comisin (10%)
                       _buildResultadoItem(
-                        titulo: "Comisión (10%)",
+                        titulo: "Comisin (10%)",
                         valor: _formatearMoneda(_comision),
                         color: Colors.orange,
                         icon: Icons.percent,
@@ -410,8 +410,8 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            "Estás perdiendo dinero con este precio. "
-                            "Usa el botón 'Calcular precio sugerido' para obtener el precio mínimo recomendado.",
+                            "Ests perdiendo dinero con este precio. "
+                            "Usa el botn 'Calcular precio sugerido' para obtener el precio mnimo recomendado.",
                             style: AppEstiloTexto.textoSecundario.copyWith(color: Colors.red),
                           ),
                         ),
@@ -433,7 +433,7 @@ class _CalculadoraBeneficiosViewState extends State<CalculadoraBeneficiosView> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            "Ganas menos de 20€ por hora. Considera ajustar el precio para mejorar tu ganancia.",
+                            "Ganas menos de 20 por hora. Considera ajustar el precio para mejorar tu ganancia.",
                             style: AppEstiloTexto.textoSecundario.copyWith(color: Colors.orange),
                           ),
                         ),

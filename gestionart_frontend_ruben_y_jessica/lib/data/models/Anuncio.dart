@@ -22,7 +22,7 @@ class Anuncio {
   });
 
   factory Anuncio.fromJson(Map<String, dynamic> json) {
-    // Función auxiliar para parsear fechas seguramente
+    // Funcin auxiliar para parsear fechas seguramente
     DateTime parseFecha(String? fecha) {
       if (fecha == null || fecha.isEmpty) return DateTime.now();
       try {

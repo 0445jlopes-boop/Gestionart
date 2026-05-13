@@ -19,7 +19,7 @@ class Pantallaregistrovendedor extends StatefulWidget {
 }
 
 class _PantallaregistrovendedorState extends State<Pantallaregistrovendedor> {
-  //DECLARACIÓN DE VARIABLES A USAR EN EL FORMULARIO
+  //DECLARACIN DE VARIABLES A USAR EN EL FORMULARIO
   final _formKey = GlobalKey<FormState>(); 
   String _nombre = "";
   String _descripcionPerfil = "";
@@ -30,7 +30,7 @@ class _PantallaregistrovendedorState extends State<Pantallaregistrovendedor> {
   String _contrasena2 = "";
   String? photoPath = "";
   
-  // En tu pantalla de registro, asegúrate de tener estos métodos:
+  // En tu pantalla de registro, asegrate de tener estos mtodos:
 
 void _validarVendedor() async {
   final isFormValid = _formKey.currentState!.validate();
@@ -44,7 +44,7 @@ void _validarVendedor() async {
       return;
     }
     else if(await vendedorProvider.obtenerVendedorPorCorreo(_correoElectronico) != null){ 
-      const snackBar = SnackBar(content: Text('El correo electrónico introducido ya existe'));
+      const snackBar = SnackBar(content: Text('El correo electrnico introducido ya existe'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
@@ -74,7 +74,7 @@ void _validarVendedor() async {
         backgroundColor: AppColores.colorPrimario,
         flexibleSpace: Center(
           child: Text(
-            "¡ REGISTRATE COMO VENDEDOR !",
+            " REGISTRATE COMO VENDEDOR !",
             style: AppEstiloTexto.encabezado,
           ),
         ),
@@ -103,12 +103,12 @@ void _validarVendedor() async {
                 ),
                 SizedBox(height: 20),
                 
-                // Correo electrónico
+                // Correo electrnico
                 SizedBox(
                   width: 400,
                   child: TextFormField(
                     decoration: const InputDecoration(
-                      labelText: "Correo electrónico",
+                      labelText: "Correo electrnico",
                       labelStyle: AppEstiloTexto.textoPrincipal,
                       border: OutlineInputBorder(),
                     ),
@@ -118,15 +118,15 @@ void _validarVendedor() async {
                 ),
                 SizedBox(height: 20),
                 
-                // Descripción del perfil
+                // Descripcin del perfil
                 SizedBox(
                   width: 400,
                   child: TextFormField(
                     maxLines: 3,
                     decoration: const InputDecoration(
-                      labelText: "Descripción del perfil",
+                      labelText: "Descripcin del perfil",
                       labelStyle: AppEstiloTexto.textoPrincipal,
-                      hintText: "Cuéntanos sobre ti y tu arte...",
+                      hintText: "Cuntanos sobre ti y tu arte...",
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) => Validators.validateEmpty(value),
@@ -135,13 +135,13 @@ void _validarVendedor() async {
                 ),
                 SizedBox(height: 20),
                 
-                // Contraseña
+                // Contrasea
                 SizedBox(
                   width: 400,
                   child: TextFormField(
                     obscureText: _obscurePassword1,
                     decoration: InputDecoration(
-                      labelText: "Contraseña",
+                      labelText: "Contrasea",
                       labelStyle: AppEstiloTexto.textoPrincipal,
                       border: const OutlineInputBorder(),
                       suffixIcon: IconButton(
@@ -164,13 +164,13 @@ void _validarVendedor() async {
                 ),
                 SizedBox(height: 20),
                 
-                // Repetir contraseña
+                // Repetir contrasea
                 SizedBox(
                   width: 400,
                   child: TextFormField(
                     obscureText: _obscurePassword2,
                     decoration: InputDecoration(
-                      labelText: "Repita la contraseña",
+                      labelText: "Repita la contrasea",
                       labelStyle: AppEstiloTexto.textoPrincipal,
                       border: const OutlineInputBorder(),
                       suffixIcon: IconButton(
@@ -223,7 +223,7 @@ void _validarVendedor() async {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Añadir imagen",
+                        "Aadir imagen",
                         style: AppEstiloTexto.textoSecundario,
                       ),
                       SizedBox(width: 20),
@@ -259,7 +259,7 @@ void _validarVendedor() async {
                 ),
                 SizedBox(height: 20),
                 
-                // Botones de acción
+                // Botones de accin
                 SizedBox(
                   width: 400,
                   child: Row(

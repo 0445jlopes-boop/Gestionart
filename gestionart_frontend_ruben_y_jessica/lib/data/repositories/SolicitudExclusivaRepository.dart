@@ -10,7 +10,6 @@ class Solicitudexclusivarepository {
 
 Future<void> crearSolicitudExclusiva(int idComprador, int idArticulo, String mensaje, int idVendedor) async {
   try {
-    print("🔵 Creando solicitud exclusiva: comprador=$idComprador, articulo=$idArticulo, vendedor=$idVendedor");
     
     final response = await _apiService.dio.post("/solicitudes-exclusivas", data: {
       "idComprador": idComprador,
@@ -19,15 +18,13 @@ Future<void> crearSolicitudExclusiva(int idComprador, int idArticulo, String men
       "idVendedor": idVendedor
     });
     
-    // ✅ 200 y 201 son códigos de éxito
+    //  200 y 201 son cdigos de xito
     if (response.statusCode == 200 || response.statusCode == 201) {
-      print("✅ Solicitud exclusiva creada correctamente");
       return;
     } else {
       throw Exception("Error: ${response.statusCode}");
     }
   } catch (e) {
-    print("❌ Error: $e");
     throw Exception("Error al crear la solicitud exclusiva: $e");
   }
 }
@@ -130,19 +127,16 @@ Future<void> crearSolicitudExclusiva(int idComprador, int idArticulo, String men
 
   Future<void> actualizarEstado(int id, Estadosolicitud nuevoEstado) async {
   try {
-    // ✅ Convertir el enum a String para la URL
+    //  Convertir el enum a String para la URL
     final estadoString = nuevoEstado.toString().split('.').last;
-    print("🟡 Actualizando solicitud $id a estado: $estadoString");
     
     final response = await _apiService.dio.put("/solicitudes-exclusivas/$id/estado/$estadoString");
     
     if (response.statusCode == 200) {
-      print("🟢 Estado actualizado correctamente");
     } else {
       throw Exception("Error: ${response.statusCode}");
     }
   } catch (e) {
-    print("❌ Error: $e");
     throw Exception("Error al actualizar el estado de la solicitud exclusiva: $e");
   }
 }

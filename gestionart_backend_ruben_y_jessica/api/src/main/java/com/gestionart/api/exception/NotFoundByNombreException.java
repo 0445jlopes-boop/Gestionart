@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @ResponseStatus(HttpStatus.NO_CONTENT)
 public class NotFoundByNombreException extends RuntimeException {
     public NotFoundByNombreException(String nombre) {
-        super("No se encontró el usuario con nombre: " + nombre);
+        super("No se encontr el usuario con nombre: " + nombre);
     }
 
 }

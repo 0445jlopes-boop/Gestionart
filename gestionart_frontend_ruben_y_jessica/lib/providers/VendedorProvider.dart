@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Vendedor.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/VendedorRepository.dart';
 
-class Vendedorprovider extends ChangeNotifier {  // ← Cambiado "with" a "extends"
+class Vendedorprovider extends ChangeNotifier {  //  Cambiado "with" a "extends"
   final Vendedorrepository _repository;
   List<Vendedor> vendedores = [];
   
@@ -18,9 +18,8 @@ class Vendedorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exten
       if (lista != null) {
         vendedores = lista;
       }
-      notifyListeners();  // ← AÑADIDO
+      notifyListeners();  //  AADIDO
     } catch (e) {
-      print("Error al obtener los vendedores: $e");
     }
   }
 
@@ -45,12 +44,11 @@ class Vendedorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exten
       
       if (exito) {
         await fetchVendedores();
-        notifyListeners();  // ← AÑADIDO
+        notifyListeners();  //  AADIDO
         return await _repository.getVendedorPorId(id);
       }
       return null;
     } catch (e) {
-      print("Error al actualizar el vendedor: $e");
       throw e;
     }
   }
@@ -60,7 +58,6 @@ class Vendedorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exten
     try {
       return await _repository.getVendedorPorId(id);
     } catch (e) {
-      print("Error al obtener el vendedor: $e");
       return null;
     }
   }
@@ -70,7 +67,6 @@ class Vendedorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exten
     try {
       return await _repository.getVendedorPorCorreoElectronico(correoElectronico);
     } catch (e) {
-      print("Error al obtener el vendedor por correo: $e");
       return null;
     }
   }
@@ -80,7 +76,6 @@ class Vendedorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exten
     try {
       return await _repository.getVendedorPorNombre(nombre);
     } catch (e) {
-      print("Error al obtener el vendedor por nombre: $e");
       return null;
     }
   }
@@ -98,7 +93,6 @@ class Vendedorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exten
     try {
       return await _repository.getVendedores();
     } catch (e) {
-      print("Error al obtener la lista de vendedores: $e");
       throw e;
     }
   }
@@ -110,7 +104,6 @@ class Vendedorprovider extends ChangeNotifier {  // ← Cambiado "with" a "exten
       vendedores.removeWhere((v) => v.id == id);
       notifyListeners();
     } catch (e) {
-      print("Error al eliminar el vendedor: $e");
       throw e;
     }
   }

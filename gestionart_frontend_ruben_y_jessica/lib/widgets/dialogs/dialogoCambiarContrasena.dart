@@ -9,7 +9,7 @@ import 'package:gestionart_frontend_ruben_y_jessica/providers/CompradorProvider.
 import 'package:gestionart_frontend_ruben_y_jessica/providers/VendedorProvider.dart';
 import 'package:provider/provider.dart';
 
-// Diálogo para Comprador
+// Dilogo para Comprador
 void dialogoCambiarContrasenaComprador(BuildContext context, Comprador comprador) {
   final _formKey = GlobalKey<FormState>();
   bool _obscurePasswordNueva = true;
@@ -28,7 +28,7 @@ void dialogoCambiarContrasenaComprador(BuildContext context, Comprador comprador
               children: [
                 const Expanded(
                   child: Text(
-                    "Cambiar contraseña",
+                    "Cambiar contrasea",
                     style: AppEstiloTexto.textoPrincipal,
                   ),
                 ),
@@ -46,7 +46,7 @@ void dialogoCambiarContrasenaComprador(BuildContext context, Comprador comprador
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Información adicional
+                  // Informacin adicional
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -59,7 +59,7 @@ void dialogoCambiarContrasenaComprador(BuildContext context, Comprador comprador
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            "Ingresa tu nueva contraseña",
+                            "Ingresa tu nueva contrasea",
                             style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 12),
                           ),
                         ),
@@ -68,13 +68,13 @@ void dialogoCambiarContrasenaComprador(BuildContext context, Comprador comprador
                   ),
                   const SizedBox(height: 20),
                   
-                  // Nueva contraseña
+                  // Nueva contrasea
                   SizedBox(
                     width: 400,
                     child: TextFormField(
                       obscureText: _obscurePasswordNueva,
                       decoration: InputDecoration(
-                        labelText: "Nueva contraseña",
+                        labelText: "Nueva contrasea",
                         labelStyle: AppEstiloTexto.textoPrincipal,
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
@@ -97,13 +97,13 @@ void dialogoCambiarContrasenaComprador(BuildContext context, Comprador comprador
                   ),
                   const SizedBox(height: 20),
                   
-                  // Repetir nueva contraseña
+                  // Repetir nueva contrasea
                   SizedBox(
                     width: 400,
                     child: TextFormField(
                       obscureText: _obscurePasswordRepite,
                       decoration: InputDecoration(
-                        labelText: "Repita la nueva contraseña",
+                        labelText: "Repita la nueva contrasea",
                         labelStyle: AppEstiloTexto.textoPrincipal,
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
@@ -143,21 +143,21 @@ void dialogoCambiarContrasenaComprador(BuildContext context, Comprador comprador
                         listen: false,
                       );
                       
-                      // Actualizar la contraseña
+                      // Actualizar la contrasea
                       await compradorProvider.actualizarComprador(
                         comprador.id,
                         comprador.correoElectronico,
                         comprador.nombre,
                         comprador.direccion,
                         comprador.imagen,
-                        _contrasenaNueva, // Nueva contraseña
+                        _contrasenaNueva, // Nueva contrasea
                       );
                       
                       if (context.mounted) {
-                        Navigator.pop(context); // Cerrar diálogo
+                        Navigator.pop(context); // Cerrar dilogo
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text("Contraseña cambiada correctamente"),
+                            content: Text("Contrasea cambiada correctamente"),
                             backgroundColor: Colors.green,
                           ),
                         );
@@ -166,7 +166,7 @@ void dialogoCambiarContrasenaComprador(BuildContext context, Comprador comprador
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("Error al cambiar la contraseña: $e"),
+                            content: Text("Error al cambiar la contrasea: $e"),
                             backgroundColor: Colors.red,
                           ),
                         );

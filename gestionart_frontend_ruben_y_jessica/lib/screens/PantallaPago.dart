@@ -54,7 +54,7 @@ class _pago_viewState extends State<pago_view> {
       case Tipopago.PEDIDO:
         return "pedido";
       case Tipopago.SUSCRIPCION:
-        return "suscripción premium";
+        return "suscripcin premium";
       case Tipopago.PUBLICIDAD:
         return "publicidad";
     }
@@ -128,7 +128,7 @@ class _pago_viewState extends State<pago_view> {
             await _procesarPublicidad();
             break;
         }
-        // Resetear estado después de procesar exitosamente
+        // Resetear estado despus de procesar exitosamente
         if (mounted) {
           setState(() => _isProcessing = false);
         }
@@ -136,7 +136,7 @@ class _pago_viewState extends State<pago_view> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text("Error en el pago. Inténtalo de nuevo."),
+              content: Text("Error en el pago. Intntalo de nuevo."),
               backgroundColor: Colors.red,
             ),
           );
@@ -145,7 +145,6 @@ class _pago_viewState extends State<pago_view> {
       }
     } catch (e) {
       if (mounted) {
-        print("❌ Error al procesar el pago: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error al procesar el pago: $e"), backgroundColor: Colors.red),
         );
@@ -157,7 +156,7 @@ class _pago_viewState extends State<pago_view> {
   Future<void> _procesarPagoPedido() async {
   try {
     if (widget.pedido == null) {
-      throw Exception("No se encontró el pedido");
+      throw Exception("No se encontr el pedido");
     }
 
     final pedidoProvider = context.read<Pedidoprovider>();
@@ -169,16 +168,15 @@ class _pago_viewState extends State<pago_view> {
     await pedidoProvider.cambiarEstado(widget.pedido!.id);
     final pedidoActualizado = await pedidoProvider.cambiarEstado(widget.pedido!.id);
 
-    // 2. Obtener las líneas del pedido
+    // 2. Obtener las lneas del pedido
     final lineas = await lineaPedidoProvider.fetchLineasPedidoPorPedido(widget.pedido!.id);
     
-    // 3. Obtener el vendedor del primer artículo de la línea
+    // 3. Obtener el vendedor del primer artculo de la lnea
     int? idVendedor = null;
     if (lineas.isNotEmpty) {
       final articulo = await articuloProvider.obtenerArticulo(lineas.first.idArticulo);
       if (articulo != null) {
         idVendedor = articulo.idVendedor;
-        print("🔍 Vendedor obtenido del artículo: $idVendedor");
       }
     }
 
@@ -196,22 +194,20 @@ class _pago_viewState extends State<pago_view> {
       }
     }
 
-    // 5. Crear notificación para el vendedor (solo si tenemos idVendedor)
+    // 5. Crear notificacin para el vendedor (solo si tenemos idVendedor)
     if (idVendedor != null && idVendedor > 0) {
       await notificacionProvider.crearNotificacion(
         idVendedor,
         Tiponotificacion.NUEVO_PEDIDO,
       );
-      print("✅ Notificación enviada al vendedor $idVendedor");
     } else {
-      print("⚠️ No se pudo obtener el vendedor, notificación no enviada");
     }
 
     if (mounted) {
       _mostrarDialogoExito(
-        "¡Pedido completado!",
+        "Pedido completado!",
         "Tu pedido #${widget.pedido!.id} ha sido procesado correctamente.\n\n"
-        "Total pagado: ${widget.importe.toStringAsFixed(2)} €",
+        "Total pagado: ${widget.importe.toStringAsFixed(2)} ",
         Icons.shopping_bag,
         () {
           Navigator.pop(context, true);
@@ -219,7 +215,6 @@ class _pago_viewState extends State<pago_view> {
       );
     }
   } catch (e) {
-    print("❌ Error al procesar pedido: $e");
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
@@ -240,7 +235,7 @@ class _pago_viewState extends State<pago_view> {
 
         if (mounted) {
           _mostrarDialogoExito(
-            "¡Suscripción Premium Activada!",
+            "Suscripcin Premium Activada!",
             "Disfruta de todos los beneficios premium durante 3 meses.\n\n"
             "Fecha de inicio: ${_formatearFecha(_compradorActualizado!.fechaInicioPremium!)}\n"
             "Fecha de fin: ${_formatearFecha(_compradorActualizado!.fechafinPremium!)}",
@@ -253,7 +248,7 @@ class _pago_viewState extends State<pago_view> {
       } else {
         if (mounted) {
           _mostrarDialogoExito(
-            "¡Pago completado!",
+            "Pago completado!",
             "El pago fue exitoso, pero hubo un problema activando el premium. Contacta con soporte.",
             Icons.warning,
             () {
@@ -263,11 +258,10 @@ class _pago_viewState extends State<pago_view> {
         }
       }
     } catch (e) {
-      print("❌ Error en _procesarSuscripcion: $e");
       if (mounted) {
         _mostrarDialogoExito(
-          "Error en la suscripción",
-          "Error al activar premium: $e\n\nEl pago se realizó pero hubo un problema con la suscripción. Contacta con soporte.",
+          "Error en la suscripcin",
+          "Error al activar premium: $e\n\nEl pago se realiz pero hubo un problema con la suscripcin. Contacta con soporte.",
           Icons.error,
           () {
             Navigator.pop(context, widget.comprador);
@@ -281,8 +275,8 @@ class _pago_viewState extends State<pago_view> {
     try {
       if (mounted) {
         _mostrarDialogoExito(
-          "¡Pago completado!",
-          "El pago de ${widget.importe.toStringAsFixed(2)}€ se ha procesado correctamente.\n\nAhora puedes publicar tu anuncio.",
+          "Pago completado!",
+          "El pago de ${widget.importe.toStringAsFixed(2)} se ha procesado correctamente.\n\nAhora puedes publicar tu anuncio.",
           Icons.campaign,
           () {
             Navigator.pop(context, true);
@@ -290,7 +284,6 @@ class _pago_viewState extends State<pago_view> {
         );
       }
     } catch (e) {
-      print("❌ Error en pago de publicidad: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
@@ -371,7 +364,7 @@ class _pago_viewState extends State<pago_view> {
                 const SizedBox(height: 20),
                 
                 Text(
-                  "PAGO MEDIANTE TARJETA DE CRÉDITO",
+                  "PAGO MEDIANTE TARJETA DE CRDITO",
                   style: AppEstiloTexto.textoPrincipal,
                 ),
 
@@ -393,7 +386,7 @@ class _pago_viewState extends State<pago_view> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Va a pagar ${widget.importe.toStringAsFixed(2)} € por ${_getTipoPagoText()}",
+                        "Va a pagar ${widget.importe.toStringAsFixed(2)}  por ${_getTipoPagoText()}",
                         style: AppEstiloTexto.textoPrincipal.copyWith(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -432,7 +425,7 @@ class _pago_viewState extends State<pago_view> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        "${widget.importe.toStringAsFixed(2)} €",
+                        "${widget.importe.toStringAsFixed(2)} ",
                         style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -453,7 +446,7 @@ class _pago_viewState extends State<pago_view> {
                         controller: numeroController,
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
-                          labelText: "Número de tarjeta",
+                          labelText: "Nmero de tarjeta",
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.credit_card),
                         ),
@@ -555,14 +548,14 @@ class _pago_viewState extends State<pago_view> {
   // VALIDACIONES
   String? validarNumeroTarjeta(String? value) {
     if (value == null || value.isEmpty) {
-      return "Introduce el número de tarjeta";
+      return "Introduce el nmero de tarjeta";
     }
     String cleaned = value.replaceAll(' ', '');
     if (cleaned.length < 13 || cleaned.length > 19) {
-      return "Número inválido (13-19 dígitos)";
+      return "Nmero invlido (13-19 dgitos)";
     }
     if (!_luhnCheck(cleaned)) {
-      return "Tarjeta no válida";
+      return "Tarjeta no vlida";
     }
     return null;
   }
@@ -585,7 +578,7 @@ class _pago_viewState extends State<pago_view> {
   String? validarFecha(String? value) {
     if (value == null || value.isEmpty) return "Introduce la fecha";
     final regex = RegExp(r'^(0[1-9]|1[0-2])\/\d{2}$');
-    if (!regex.hasMatch(value)) return "Formato inválido (MM/AA)";
+    if (!regex.hasMatch(value)) return "Formato invlido (MM/AA)";
     final parts = value.split('/');
     int mes = int.parse(parts[0]);
     int anio = int.parse(parts[1]) + 2000;
@@ -599,7 +592,7 @@ class _pago_viewState extends State<pago_view> {
 
   String? validarCVV(String? value) {
     if (value == null || value.isEmpty) return "Introduce el CVV";
-    if (value.length < 3 || value.length > 4) return "CVV inválido (3-4 dígitos)";
+    if (value.length < 3 || value.length > 4) return "CVV invlido (3-4 dgitos)";
     return null;
   }
 }

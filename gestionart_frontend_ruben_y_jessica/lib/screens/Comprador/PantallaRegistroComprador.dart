@@ -19,7 +19,7 @@ class PantallaregistroComprador extends StatefulWidget {
 }
 
 class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
-  //DECLARACIÓN DE VARIABLES A USAR EN EL FORMULARIO
+  //DECLARACIN DE VARIABLES A USAR EN EL FORMULARIO
   final _formKey = GlobalKey<FormState>(); 
   String _nombre = "";
   String _direccion = "";
@@ -35,12 +35,12 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
     final authProvider = context.read<Authprovider>();
     final compradorProvider = context.read<Compradorprovider>();
     if(isFormValid){
-      if(await compradorProvider.obtenerCompradorPorNombre(_nombre) != null){  // Comprueba que el nombre que desea el comprador no está en uso en caso afirmativo lo notifica al usuario
+      if(await compradorProvider.obtenerCompradorPorNombre(_nombre) != null){  // Comprueba que el nombre que desea el comprador no est en uso en caso afirmativo lo notifica al usuario
         const snackBar = SnackBar(content: Text('El nombre introducido ya existe'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
-      }else if(await compradorProvider.obtenerCompradorPorCorreo(_correoElectronico)!= null){ // Comprueba que el correo tampoco esté en uso en caso afirmativo lo notifica al usuario
-        const snackBar = SnackBar(content: Text('El correo electrónico introducido ya existe'));
+      }else if(await compradorProvider.obtenerCompradorPorCorreo(_correoElectronico)!= null){ // Comprueba que el correo tampoco est en uso en caso afirmativo lo notifica al usuario
+        const snackBar = SnackBar(content: Text('El correo electrnico introducido ya existe'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }
@@ -70,7 +70,7 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
         backgroundColor: AppColores.colorPrimario,
         flexibleSpace: Center(
           child: Text(
-            "¡ REGISTRATE EN GESTIONART !",
+            " REGISTRATE EN GESTIONART !",
             style: AppEstiloTexto.encabezado,
           ),
         ),
@@ -100,7 +100,7 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
                   width: 400,
                   child: TextFormField(
                     decoration: const InputDecoration(
-                      labelText: "Dirección",
+                      labelText: "Direccin",
                       labelStyle: AppEstiloTexto.textoPrincipal,
                       border: OutlineInputBorder(),
                     ),
@@ -127,10 +127,10 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
                   child: TextFormField(
                     obscureText: _obscurePassword1,
                     decoration: InputDecoration(
-                      labelText: "Contraseña",
+                      labelText: "Contrasea",
                       labelStyle: AppEstiloTexto.textoPrincipal,
                       border: const OutlineInputBorder(),
-                      suffixIcon: IconButton( //Iono del ojo que permite mostrar y ocultar contraseña al presoanrlo
+                      suffixIcon: IconButton( //Iono del ojo que permite mostrar y ocultar contrasea al presoanrlo
                         onPressed: () {
                           setState(() {
                             _obscurePassword1 = !_obscurePassword1;
@@ -154,7 +154,7 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
                   child: TextFormField(
                     obscureText: _obscurePassword2,
                     decoration: InputDecoration(
-                      labelText: "Repita la contraseña",
+                      labelText: "Repita la contrasea",
                       labelStyle: AppEstiloTexto.textoPrincipal,
                       border: const OutlineInputBorder(),
                       suffixIcon: IconButton(
@@ -202,7 +202,7 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
                   child: Row(
                     children: [
                       Text(
-                        "Añadir imagen",
+                        "Aadir imagen",
                         style: AppEstiloTexto.textoSecundario,
                       ),
                       SizedBox(width: 20),
@@ -246,7 +246,7 @@ class _PantallaregistroCompradorState extends State<PantallaregistroComprador> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton( //Si selecciona el boton valida el usuario a través del procedimiento superior
+                      ElevatedButton( //Si selecciona el boton valida el usuario a travs del procedimiento superior
                         style: AppEstiloBotones.botonPrincipal,
                         onPressed: () {
                           _validarComprador();

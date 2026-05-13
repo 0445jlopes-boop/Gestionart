@@ -19,7 +19,6 @@ class AnuncioProvider with ChangeNotifier {
       _anuncios = await _anuncioRepository.getAnuncios();
       notifyListeners();
     } catch (e) {
-      print("Error al obtener los anuncios: $e");
     }
   }
 
@@ -27,7 +26,6 @@ class AnuncioProvider with ChangeNotifier {
     try {
       return await _anuncioRepository.getAnuncios();
     } catch (e) {
-      print("Error al obtener los anuncios: $e");
       throw e;
     }
   }
@@ -41,7 +39,6 @@ class AnuncioProvider with ChangeNotifier {
       }
       return success;
     } catch (e) {
-      print("Error al crear el anuncio: $e");
       return false;
     }
   }
@@ -50,7 +47,6 @@ class AnuncioProvider with ChangeNotifier {
     try {
       return await _anuncioRepository.getAnuncioPorVendedor(idVendedor);
     } catch (e) {
-      print("Error al obtener el anuncio por vendedor: $e");
       throw e;
     }
   }
@@ -59,7 +55,6 @@ class AnuncioProvider with ChangeNotifier {
     try {
       return await _anuncioRepository.getAnuncioPorId(id);
     } catch (e) {
-      print("Error al obtener el anuncio por ID: $e");
       throw e;
     }
   }
@@ -68,7 +63,6 @@ class AnuncioProvider with ChangeNotifier {
     try {
       return await _anuncioRepository.getAnuncioPorCategoria(categoria);
     } catch (e) {
-      print("Error al obtener el anuncio por categoría: $e");
       throw e;
     }
   }
@@ -78,7 +72,6 @@ class AnuncioProvider with ChangeNotifier {
       await _anuncioRepository.eliminarAnuncio(id);
       await fetchAnuncios();
     } catch (e) {
-      print("Error al eliminar el anuncio: $e");
     }
   }
 

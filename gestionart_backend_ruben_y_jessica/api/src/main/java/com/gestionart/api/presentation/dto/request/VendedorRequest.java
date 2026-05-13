@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 
 public record VendedorRequest(
     
-    @Email(message = "El correo electrónico no es válido")
-    @NotBlank(message = "El correo electrónico es obligatorio")
+    @Email(message = "El correo electrnico no es vlido")
+    @NotBlank(message = "El correo electrnico es obligatorio")
     String correoElectronico,
 
     @NotBlank(message = "El nombre es obligatorio")
@@ -14,9 +14,9 @@ public record VendedorRequest(
 
     String imagen,
     
-    @NotBlank(message = "La contraseña es obligatoria")
+    @NotBlank(message = "La contrasea es obligatoria")
     String contrasena,
 
-    @NotBlank(message = "La descripción del perfil es obligatoria")
+    @NotBlank(message = "La descripcin del perfil es obligatoria")
     String descripcionPerfil
 ) {}

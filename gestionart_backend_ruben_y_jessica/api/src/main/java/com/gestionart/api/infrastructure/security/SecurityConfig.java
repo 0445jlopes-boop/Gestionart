@@ -23,29 +23,29 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
 
-            // 🔥 SIN SESIONES (CLAVE PARA JWT)
+            //  SIN SESIONES (CLAVE PARA JWT)
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
             .authorizeHttpRequests(auth -> auth
 
-                // // 🔓 LOGIN
+                // //  LOGIN
                 .requestMatchers("/auth/**").permitAll()
 
-                // // 🔓 REGISTRO
+                // //  REGISTRO
                 //  .requestMatchers(HttpMethod.GET, "/compradores").permitAll()
                 //  .requestMatchers(HttpMethod.POST, "/vendedores").permitAll()
 
-                // 🔒 TODO LO DEMÁS
+                //  TODO LO DEMS
                 // .anyRequest().authenticated()
                 .anyRequest().permitAll() //ESTO PARA HACER PRUEBAS AHORA :(
             )
 
-            // 🔥 FILTRO JWT
+            //  FILTRO JWT
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
 ;
-            // 🔥 DESACTIVAR LOGIN POR DEFECTO
+            //  DESACTIVAR LOGIN POR DEFECTO
             // .httpBasic(httpBasic -> httpBasic.disable())
             // .formLogin(form -> form.disable());
 
@@ -58,7 +58,7 @@ public class SecurityConfig {
     }
     @Bean
     public org.springframework.security.core.userdetails.UserDetailsService userDetailsService() {
-        return username -> null; // desactiva autenticación por defecto
+        return username -> null; // desactiva autenticacin por defecto
     }
 }
 

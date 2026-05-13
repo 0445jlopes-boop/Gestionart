@@ -6,8 +6,8 @@ import jakarta.validation.constraints.*;
 
 public record CompradorRequest(
     
-    @Email(message = "El correo electrónico no es válido")
-    @NotBlank(message = "El correo electrónico es obligatorio") 
+    @Email(message = "El correo electrnico no es vlido")
+    @NotBlank(message = "El correo electrnico es obligatorio") 
     String correoElectronico,
 
     @NotBlank(message = "El nombre es obligatorio")    
@@ -15,10 +15,10 @@ public record CompradorRequest(
 
     String imagen,
 
-    @NotBlank(message = "La contraseña es obligatoria")
+    @NotBlank(message = "La contrasea es obligatoria")
     String contrasena,
     
-    @NotBlank(message = "La dirección es obligatoria")
+    @NotBlank(message = "La direccin es obligatoria")
     String direccion,
 
     TipoCuentaComprador tipoCuenta

@@ -81,7 +81,7 @@ class Compradorrepository {
         return null;
       }
     } catch (e) {
-      throw Exception("Error al obtener el comprador por correo electrónico: $e");
+      throw Exception("Error al obtener el comprador por correo electrnico: $e");
     }
   }
 

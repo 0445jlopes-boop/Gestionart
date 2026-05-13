@@ -45,8 +45,6 @@ public Pedido cambiarEstado(Long id) {
     Pedido pedido = pedidoRepository.findById(id)
             .orElseThrow(() -> new NotFoundByIdException(id));
     
-    System.out.println("🔵 Estado actual en BD: " + pedido.getEstado());
-    
     // Usar equals para comparar enums
     if (pedido.getEstado() == EstadoPedido.PENDIENTE) {
         pedido.setEstado(EstadoPedido.CONFIRMADO);

@@ -16,7 +16,7 @@ void dialogoEliminarVendedor(BuildContext context, Vendedor vendedor, Vendedorpr
           style: AppEstiloTexto.textoPrincipal,
         ),
         content: const Text(
-          "¿Seguro desea eliminar su cuenta de vendedor?",
+          "Seguro desea eliminar su cuenta de vendedor?",
           style: AppEstiloTexto.textoSecundario,
         ),
         actions: [
@@ -33,7 +33,7 @@ void dialogoEliminarVendedor(BuildContext context, Vendedor vendedor, Vendedorpr
               // Eliminar el vendedor
               provider.eliminarVendedor(vendedor.id);
               
-              // Navegar a la pantalla de inicio de sesión
+              // Navegar a la pantalla de inicio de sesin
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -42,7 +42,7 @@ void dialogoEliminarVendedor(BuildContext context, Vendedor vendedor, Vendedorpr
                 (route) => false,
               );
             },
-            child: const Text("Sí"),
+            child: const Text("S"),
           ),
         ],
       );

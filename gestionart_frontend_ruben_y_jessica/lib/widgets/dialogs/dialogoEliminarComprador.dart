@@ -16,7 +16,7 @@ void dialogoEliminarCuenta(BuildContext context, Comprador comprador, Compradorp
           style: AppEstiloTexto.textoPrincipal,
         ),
         content: const Text(
-          "¿Seguro desea eliminar su cuenta?",
+          "Seguro desea eliminar su cuenta?",
           style: AppEstiloTexto.textoSecundario,
         ),
         actions: [
@@ -39,7 +39,7 @@ void dialogoEliminarCuenta(BuildContext context, Comprador comprador, Compradorp
               );
               provider.eliminarComprador(comprador.id);
             },
-            child: const Text("Sí"),
+            child: const Text("S"),
           ),
         ],
       );

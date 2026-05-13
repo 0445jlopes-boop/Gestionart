@@ -18,11 +18,11 @@ public class JwtService {
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
-    // 🔐 GENERAR TOKEN (GUARDA EMAIL)
+    //  GENERAR TOKEN (GUARDA EMAIL)
     public String generarToken(String email, String rol) {
 
         return Jwts.builder()
-                .setSubject(email) // 👈 ahora guardamos EMAIL
+                .setSubject(email) //  ahora guardamos EMAIL
                 .claim("rol", rol)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
@@ -30,7 +30,7 @@ public class JwtService {
                 .compact();
     }
 
-    // 📦 EXTRAER CLAIMS
+    //  EXTRAER CLAIMS
     public Claims extraerClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -39,18 +39,18 @@ public class JwtService {
                 .getBody();
     }
 
-    // 🔧 MÉTODO GENÉRICO
+    //  MTODO GENRICO
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extraerClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    // 👤 EXTRAER EMAIL
+    //  EXTRAER EMAIL
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // 🛡 VALIDAR TOKEN
+    //  VALIDAR TOKEN
     public boolean esTokenValido(String token) {
         try {
             Claims claims = extraerClaims(token);

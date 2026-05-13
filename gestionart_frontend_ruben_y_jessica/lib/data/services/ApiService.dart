@@ -27,20 +27,17 @@ class ApiService {
         return handler.next(response);
       },
       onError: (DioException e, handler) {
-        print("Error en la API: ${e.response?.statusCode}");
-        print("URL: ${e.requestOptions.uri}");
-        print("Mensaje: ${e.message}");
         return handler.next(e);
       },
     ));
   }
 
-  // Método para guardar el token después del login
+  // Mtodo para guardar el token despus del login
   static void setAuthToken(String token) {
     _authToken = token;
   }
 
-  // Método para limpiar el token al logout
+  // Mtodo para limpiar el token al logout
   static void clearAuthToken() {
     _authToken = null;
   }

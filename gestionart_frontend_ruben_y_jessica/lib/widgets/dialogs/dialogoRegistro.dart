@@ -7,12 +7,12 @@ import 'package:gestionart_frontend_ruben_y_jessica/screens/Vendedor/PantallaReg
 void dialogoRegistro (BuildContext context){
   showDialog(
     context: context, 
-    barrierDismissible: false, //impide que el usuario cierre el dialogo tocando fuera de este, así tiene más sentido usar un boton para cerrar el dialogo.
+    barrierDismissible: false, //impide que el usuario cierre el dialogo tocando fuera de este, as tiene ms sentido usar un boton para cerrar el dialogo.
     builder: (context) {
       return AlertDialog(
         title: Row(
           children: [
-            const Expanded(child: Text("¿Cómo quieres registrarte?" , style: AppEstiloTexto.textoPrincipal,)),
+            const Expanded(child: Text("Cmo quieres registrarte?" , style: AppEstiloTexto.textoPrincipal,)),
             IconButton(
               icon: const Icon(Icons.close), //Icono para cerrar el dialogo
               onPressed: () {
@@ -23,10 +23,10 @@ void dialogoRegistro (BuildContext context){
           ],
         ),
         content: const Text(
-          "Seleccione una de las siguientes opciones, una vez se haya registrado un correo no podrá vovler a registrarlo como otro tipo de usuario",
+          "Seleccione una de las siguientes opciones, una vez se haya registrado un correo no podr vovler a registrarlo como otro tipo de usuario",
           style: AppEstiloTexto.textoSecundario,  
         ),
-        actions: [ // Se muestran dos botones para elegir que rol desea en la aplicación.
+        actions: [ // Se muestran dos botones para elegir que rol desea en la aplicacin.
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

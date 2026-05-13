@@ -17,7 +17,7 @@ class Lineapedidoprovider with ChangeNotifier{
     try {
       return await _lineaPedidoRepository.crearLineaPedido(idLineaPedido, idArticulo, cantidad, precioUnitario);
     } catch (e) {
-      throw("Error al crear la línea de pedido: $e");
+      throw("Error al crear la lnea de pedido: $e");
     }
   }
 
@@ -33,7 +33,7 @@ class Lineapedidoprovider with ChangeNotifier{
     try {
       return _lineasPedido = await _lineaPedidoRepository.obtenerLineasPedidoPorPedido(idPedido);
     } catch (e) {
-      throw("Error al obtener las líneas de pedido por pedido: $e");
+      throw("Error al obtener las lneas de pedido por pedido: $e");
     }
   }
 
@@ -41,7 +41,6 @@ class Lineapedidoprovider with ChangeNotifier{
     try{
       return await _lineaPedidoRepository.obtenerLineaPedidoPorId(id);
     }catch (e){
-      print("Error al obtenrr la linea de pedido");
     }
   }
 
@@ -59,7 +58,6 @@ class Lineapedidoprovider with ChangeNotifier{
       final todasLasLineas = await _lineaPedidoRepository.obtenerLineasPorVendedor(idVendedor);
       return todasLasLineas;
     } catch (e) {
-      print("Error: $e");
       return [];
     }
   }

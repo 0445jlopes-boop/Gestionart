@@ -20,7 +20,7 @@ class LineaPedidoRepository {
       }
       return null;
     } catch (e) {
-      throw Exception("Error al crear la línea de pedido: $e");
+      throw Exception("Error al crear la lnea de pedido: $e");
     }
   }
 
@@ -31,10 +31,10 @@ class LineaPedidoRepository {
         "precioUnitario": precioUnitario
       });
       if (response.statusCode != 200) {
-        throw Exception("Error al actualizar la línea de pedido: ${response.statusCode}");
+        throw Exception("Error al actualizar la lnea de pedido: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception("Error al actualizar la línea de pedido: $e");
+      throw Exception("Error al actualizar la lnea de pedido: $e");
     }
   }
 
@@ -48,10 +48,10 @@ class LineaPedidoRepository {
         }
         return lineasPedido;
       } else {
-        throw Exception("Error al obtener las líneas de pedido por pedido: ${response.statusCode}");
+        throw Exception("Error al obtener las lneas de pedido por pedido: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception("Error al obtener las líneas de pedido por pedido: $e");
+      throw Exception("Error al obtener las lneas de pedido por pedido: $e");
     }
   }
 
@@ -61,22 +61,21 @@ class LineaPedidoRepository {
       if (response.statusCode == 200) {
         return Lineapedido.fromJson(response.data);
       } else {
-        throw Exception("Error al obtener la línea de pedido por ID: ${response.statusCode}");
+        throw Exception("Error al obtener la lnea de pedido por ID: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception("Error al obtener la línea de pedido por ID: $e");
+      throw Exception("Error al obtener la lnea de pedido por ID: $e");
     }
   }
 
   Future<void> eliminarLineaPedido(int idLineaPedido) async {
-    print("ESTOY LLAMANDO A ELIMINAR PEDIDO");
     try {
       final response = await _apiService.dio.delete("/lineas-pedido/$idLineaPedido");
       if (response.statusCode != 200) {
-        throw Exception("Error al eliminar la línea de pedido: ${response.statusCode}");
+        throw Exception("Error al eliminar la lnea de pedido: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception("Error al eliminar la línea de pedido: $e");
+      throw Exception("Error al eliminar la lnea de pedido: $e");
     }
   }
   Future<List<Lineapedido>> obtenerLineasPorVendedor(int idVendedor) async {
@@ -89,7 +88,6 @@ class LineaPedidoRepository {
     }
     return [];
   } catch (e) {
-    print("Error: $e");
     return [];
   }
 }

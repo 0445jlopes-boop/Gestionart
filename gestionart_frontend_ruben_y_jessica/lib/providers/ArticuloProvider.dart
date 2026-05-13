@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/models/Aticulo.dart';
 import 'package:gestionart_frontend_ruben_y_jessica/data/repositories/ArticuloRepository.dart';
 
-class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extends"
+class Articuloprovider extends ChangeNotifier {  //  Cambiar "with" a "extends"
   final ArticuloRepository _repository;
   
   Articuloprovider({ArticuloRepository? repository}) 
@@ -19,7 +19,6 @@ class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extend
       }
       notifyListeners();
     } catch (e) {
-      print("Error al obtener los artículos: $e");
     }
   }
 
@@ -50,7 +49,6 @@ class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extend
       }
       return false;
     } catch (e) {
-      print("Error al crear el artículo: $e");
       return false;
     }
   }
@@ -82,7 +80,6 @@ class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extend
       }
       return false;
     } catch (e) {
-      print("Error al actualizar el artículo: $e");
       return false;
     }
   }
@@ -91,7 +88,6 @@ class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extend
     try {
       return await _repository.obtenerArticulo(id);
     } catch (e) {
-      print("Error al obtener el artículo: $e");
       return null;
     }
   }
@@ -100,7 +96,6 @@ class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extend
     try {
       return await _repository.articulosPorCategoria(categoria);
     } catch (e) {
-      print("Error al obtener los artículos por categoría: $e");
       return [];
     }
   }
@@ -109,7 +104,6 @@ class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extend
     try {
       return await _repository.articulosPorVendedor(idVendedor);
     } catch (e) {
-      print("Error al obtener los artículos por vendedor: $e");
       return [];
     }
   }
@@ -124,7 +118,6 @@ class Articuloprovider extends ChangeNotifier {  // ← Cambiar "with" a "extend
       }
       return false;
     } catch (e) {
-      print("Error al eliminar el artículo: $e");
       return false;
     }
   }

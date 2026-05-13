@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 @ResponseStatus(HttpStatus.NO_CONTENT)
 public class NotFoundByIdException extends RuntimeException {
     public NotFoundByIdException(Long id) {
-        super("No se encontró el recurso con id: " + id);
+        super("No se encontr el recurso con id: " + id);
     }
 }

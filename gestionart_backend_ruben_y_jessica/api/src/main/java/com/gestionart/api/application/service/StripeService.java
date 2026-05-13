@@ -10,7 +10,7 @@ public class StripeService {
 
         PaymentIntentCreateParams params =
             PaymentIntentCreateParams.builder()
-                .setAmount(1000L) // 10.00 EUR (en céntimos)
+                .setAmount(1000L) // 10.00 EUR (en cntimos)
                 .setCurrency("eur")
                 .setAutomaticPaymentMethods(
                     PaymentIntentCreateParams.AutomaticPaymentMethods

@@ -10,30 +10,21 @@ class Notificacionrepository {
 
 Future<void> crearNotificacion(int idVendedor, Tiponotificacion tipo) async {
   try {
-    print("🔵 Creando notificación: vendedor=$idVendedor, tipo=${tipo.toString().split('.').last}");
-    
     final response = await _apiService.dio.post("/notificaciones", data: {
       "idVendedor": idVendedor,
       "tipo": tipo.toString().split('.').last
     });
     
-    print("🟢 Status code: ${response.statusCode}");
-    
     // Aceptar 200, 201
     if (response.statusCode == 200 || response.statusCode == 201) {
-      print("✅ Notificación creada correctamente");
       return;
     } else {
-      throw Exception("Error al crear la notificación: ${response.statusCode}");
+      throw Exception("Error al crear la notificacin: ${response.statusCode}");
     }
   } on DioException catch (e) {
-    print("❌ DioError: ${e.message}");
-    print("   Status: ${e.response?.statusCode}");
-    print("   Data: ${e.response?.data}");
-    throw Exception("Error al crear la notificación: ${e.message}");
+    throw Exception("Error al crear la notificacin: ${e.message}");
   } catch (e) {
-    print("❌ Error: $e");
-    throw Exception("Error al crear la notificación: $e");
+    throw Exception("Error al crear la notificacin: $e");
   }
 } 
 
@@ -55,7 +46,7 @@ Future<void> crearNotificacion(int idVendedor, Tiponotificacion tipo) async {
     }
   }
 
-  // Obtener notificaciones no leídas
+  // Obtener notificaciones no ledas
   Future<List<Notificacion>> obtenerNoLeidas(int idVendedor) async {
     try {
       final response = await _apiService.dio.get("/notificaciones/vendedor/$idVendedor/no-leidas");
@@ -66,14 +57,14 @@ Future<void> crearNotificacion(int idVendedor, Tiponotificacion tipo) async {
         }
         return notificaciones;
       } else {
-        throw Exception("Error al obtener las notificaciones no leídas: ${response.statusCode}");
+        throw Exception("Error al obtener las notificaciones no ledas: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception("Error al obtener las notificaciones no leídas: $e");
+      throw Exception("Error al obtener las notificaciones no ledas: $e");
     }
   }
 
-  // Obtener notificaciones leídas
+  // Obtener notificaciones ledas
   Future<List<Notificacion>> obtenerLeidas(int idVendedor, int idNotificacion) async {
     try {
       final response = await _apiService.dio.get("/notificaciones/vendedor/$idNotificacion/leida/$idVendedor");
@@ -84,10 +75,10 @@ Future<void> crearNotificacion(int idVendedor, Tiponotificacion tipo) async {
         }
         return notificaciones;
       } else {
-        throw Exception("Error al obtener las notificaciones leídas: ${response.statusCode}");
+        throw Exception("Error al obtener las notificaciones ledas: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception("Error al obtener las notificaciones leídas: $e");
+      throw Exception("Error al obtener las notificaciones ledas: $e");
     }
   }
 
@@ -110,43 +101,41 @@ Future<void> crearNotificacion(int idVendedor, Tiponotificacion tipo) async {
     }
   }
 
-  // Marcar una notificación como leída
+  // Marcar una notificacin como leda
   Future<void> marcarComoLeida(int idNotificacion, int idVendedor) async {
     try {
       final response = await _apiService.dio.post("/notificaciones/$idNotificacion/leida/$idVendedor");
       if (response.statusCode != 200) {
-        throw Exception("Error al marcar la notificación como leída: ${response.statusCode}");
+        throw Exception("Error al marcar la notificacin como leda: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception("Error al marcar la notificación como leída: $e");
+      throw Exception("Error al marcar la notificacin como leda: $e");
     }
   }
 
-  // Marcar todas las notificaciones como leídas
+  // Marcar todas las notificaciones como ledas
   Future<void> marcarTodasComoLeidas(int idVendedor) async {
     try {
       final response = await _apiService.dio.post("/notificaciones/vendedor/$idVendedor/leidas");
       if (response.statusCode != 200) {
-        throw Exception("Error al marcar todas las notificaciones como leídas: ${response.statusCode}");
+        throw Exception("Error al marcar todas las notificaciones como ledas: ${response.statusCode}");
       } else {
-        print("Todas las notificaciones marcadas como leídas correctamente.");
       }
     } catch (e) {
-      throw Exception("Error al marcar todas las notificaciones como leídas: $e");
+      throw Exception("Error al marcar todas las notificaciones como ledas: $e");
     }
   }
 
-  // Eliminar una notificación
+  // Eliminar una notificacin
   Future<void> eliminarNotificacion(int idNotificacion) async {
     try {
       final response = await _apiService.dio.delete("/notificaciones/$idNotificacion");
       if (response.statusCode != 200) {
-        throw Exception("Error al eliminar la notificación: ${response.statusCode}");
+        throw Exception("Error al eliminar la notificacin: ${response.statusCode}");
       } else {
-        print("Notificación eliminada correctamente.");
       } 
     } catch (e) {
-      throw Exception("Error al eliminar la notificación: $e"); 
+      throw Exception("Error al eliminar la notificacin: $e"); 
     }
   }
 }

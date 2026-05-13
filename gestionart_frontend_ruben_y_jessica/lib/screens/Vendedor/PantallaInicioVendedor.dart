@@ -30,7 +30,7 @@ class _PantallaInicioVendedorState extends State<PantallaInicioVendedor> {
       articulos_view(vendedor: widget.vendedor),
       anuncios_view(vendedor: widget.vendedor),
       NotificacionesView(vendedor: widget.vendedor),
-      DashboardVentasView(vendedor: widget.vendedor),  // ← AÑADIR DASHBOARD
+      DashboardVentasView(vendedor: widget.vendedor),  //  AADIR DASHBOARD
     ];
   }
 
@@ -41,7 +41,7 @@ class _PantallaInicioVendedorState extends State<PantallaInicioVendedor> {
         backgroundColor: AppColores.colorPrimario,
         flexibleSpace: Center(
           child: Text(
-            "¡BIENVENID@ A GESTIONART!",
+            "BIENVENID@ A GESTIONART!",
             style: AppEstiloTexto.encabezado,
           ),
         ),
@@ -94,7 +94,7 @@ class _PantallaInicioVendedorState extends State<PantallaInicioVendedor> {
             label: 'Notificaciones',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),  // ← ICONO DEL DASHBOARD
+            icon: Icon(Icons.bar_chart),  //  ICONO DEL DASHBOARD
             label: 'Ventas',
           ),
         ],

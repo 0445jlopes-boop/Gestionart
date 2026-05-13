@@ -34,16 +34,12 @@ class PedidoRepository {
   try {
     final response = await _apiService.dio.put("/pedidos/cambiarEstado/$idPedido");
     
-    print("🔵 Status code: ${response.statusCode}");
-    print("🔵 Response data: ${response.data}");
-    
     if (response.statusCode == 200) {
-      return Pedido.fromJson(response.data);  // ← Retornar el pedido actualizado
+      return Pedido.fromJson(response.data);  //  Retornar el pedido actualizado
     } else {
       throw Exception("Error al cambiar estado: ${response.statusCode}");
     }
   } catch (e) {
-    print("❌ Error: $e");
     throw Exception("Error al cambiar estado del pedido: $e");
   }
 }
@@ -52,11 +48,11 @@ class PedidoRepository {
     try {
       final response = await _apiService.dio.put("/pedidos/$idPedido/anadirLinea/$idLinea");
       if (response.statusCode != 200) {
-        throw Exception("Error al añadir línea: ${response.statusCode}");
+        throw Exception("Error al aadir lnea: ${response.statusCode}");
       }
       return true;
     } catch (e) {
-      throw Exception("Error al añadir línea: $e");
+      throw Exception("Error al aadir lnea: $e");
     }
   }
 

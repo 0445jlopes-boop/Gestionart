@@ -19,7 +19,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
       _solicitudes = await _solicitudRepository.obtenerPorVendedor(idVendedor);
       notifyListeners();
     } catch (e) {
-      print("Error al obtener las solicitudes por vendedor: $e");
     }
   }
 
@@ -27,7 +26,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     try {
       return await _solicitudRepository.obtenerPorVendedor(idVendedor);
     } catch (e) {
-      print("Error al obtener la lista de solicitudes por vendedor: $e");
       throw e;
     }
   }
@@ -37,7 +35,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
       _solicitudes = await _solicitudRepository.obtenerPorComprador(idComprador);
       notifyListeners();
     } catch (e) {
-      print("Error al obtener las solicitudes por comprador: $e");
     }
   }
 
@@ -45,7 +42,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     try {
       return await _solicitudRepository.obtenerPorComprador(idComprador);
     } catch (e) {
-      print("Error al obtener la lista de solicitudes por comprador: $e");
       throw e;
     }
   }
@@ -55,7 +51,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
       _solicitudes = await _solicitudRepository.obtenerPorVendedorYEstado(idVendedor, estado);
       notifyListeners();
     } catch (e) {
-      print("Error al obtener las solicitudes por vendedor y estado: $e");
     }
   }
 
@@ -64,7 +59,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
       _solicitudes = await _solicitudRepository.obtenerPorCompradorYEstado(idComprador, estado);
       notifyListeners();
     } catch (e) {
-      print("Error al obtener las solicitudes por comprador y estado: $e");
     }
   }
 
@@ -73,7 +67,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
       _solicitudes = await _solicitudRepository.obtenerTodas();
       notifyListeners();
     } catch (e) {
-      print("Error al obtener todas las solicitudes: $e");
     }
   }
 
@@ -81,7 +74,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
     try {
       return await _solicitudRepository.obtenerTodas();
     } catch (e) {
-      print("Error al obtener la lista de todas las solicitudes: $e");
       throw e;
     }
   }
@@ -91,7 +83,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
       await _solicitudRepository.crearSolicitudExclusiva(idComprador, idArticulo, mensaje, idVendedor);
       await fetchSolicitudesPorComprador(idComprador);
     } catch (e) {
-      print("Error al crear la solicitud exclusiva: $e");
     }
   }
 
@@ -105,7 +96,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
         await fetchSolicitudesPorComprador(idComprador);
       }
     } catch (e) {
-      print("Error al actualizar el estado de la solicitud: $e");
     }
   }
 
@@ -117,7 +107,6 @@ class SolicitudExclusivaProvider with ChangeNotifier {
         orElse: () => throw Exception("Solicitud no encontrada"),
       );
     } catch (e) {
-      print("Error al obtener la solicitud por ID: $e");
       return null;
     }
   }

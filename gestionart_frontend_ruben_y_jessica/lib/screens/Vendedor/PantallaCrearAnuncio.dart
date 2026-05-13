@@ -60,7 +60,7 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
       if (_categoriaSeleccionada == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Selecciona una categoría"),
+            content: Text("Selecciona una categora"),
             backgroundColor: Colors.red,
           ),
         );
@@ -107,19 +107,19 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
       final fechaFin = DateTime.now().add(const Duration(days: 30));
       
       // Crear el anuncio (subir imagen y crear)
-      // Nota: Necesitarás subir la imagen primero o pasar la ruta local
+      // Nota: Necesitars subir la imagen primero o pasar la ruta local
       await anuncioProvider.crearAnuncio(
         widget.vendedor.id,
         tituloController.text,
         _categoriaSeleccionada!.toString().split('.').last,
         2,
-        _imagenPath!, // Aquí deberías subir la imagen o usar una URL
+        _imagenPath!, // Aqu deberas subir la imagen o usar una URL
       );
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("¡Anuncio creado correctamente!"),
+            content: Text("Anuncio creado correctamente!"),
             backgroundColor: Colors.green,
           ),
         );
@@ -167,10 +167,10 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [                    
                       
-                      // Categoría
+                      // Categora
                       DropdownButtonFormField<Categoria>(
                         decoration: const InputDecoration(
-                          labelText: "Categoría",
+                          labelText: "Categora",
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.category),
                         ),
@@ -187,7 +187,7 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
                           });
                         },
                         validator: (value) =>
-                            value == null ? "Selecciona una categoría" : null,
+                            value == null ? "Selecciona una categora" : null,
                       ),
                       
                       const SizedBox(height: 16),
@@ -207,7 +207,7 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
                                 child: ElevatedButton.icon(
                                   onPressed: _seleccionarImagen,
                                   icon: const Icon(Icons.image),
-                                  label: const Text("Galería"),
+                                  label: const Text("Galera"),
                                   style: AppEstiloBotones.botonSecundario,
                                 ),
                               ),
@@ -216,7 +216,7 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
                                 child: ElevatedButton.icon(
                                   onPressed: _tomarFoto,
                                   icon: const Icon(Icons.camera_alt),
-                                  label: const Text("Cámara"),
+                                  label: const Text("Cmara"),
                                   style: AppEstiloBotones.botonSecundario,
                                 ),
                               ),
@@ -254,7 +254,7 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
                       
                       const SizedBox(height: 30),
                       
-                      // Botón de pago
+                      // Botn de pago
                       SizedBox(
                         width: double.infinity,
                         height: 55,
@@ -267,7 +267,7 @@ class _crear_anuncio_viewState extends State<crear_anuncio_view> {
                           ),
                           onPressed: _procederAlPago,
                           child: const Text(
-                            "PAGAR 2€ Y PUBLICAR",
+                            "PAGAR 2 Y PUBLICAR",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

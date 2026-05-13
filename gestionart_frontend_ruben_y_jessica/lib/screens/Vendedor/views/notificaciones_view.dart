@@ -17,7 +17,7 @@ class NotificacionesView extends StatefulWidget {
 
 class _NotificacionesViewState extends State<NotificacionesView> {
   bool _isLoading = true;
-  String _filtroActual = "Todas"; // "Todas", "No leídas", "Leídas"
+  String _filtroActual = "Todas"; // "Todas", "No ledas", "Ledas"
 
   @override
   void initState() {
@@ -42,7 +42,6 @@ class _NotificacionesViewState extends State<NotificacionesView> {
         _isLoading = false;
       });
     } catch (e) {
-      print("Error cargando notificaciones: $e");
       setState(() {
         _isLoading = false;
       });
@@ -61,7 +60,7 @@ class _NotificacionesViewState extends State<NotificacionesView> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Todas las notificaciones marcadas como leídas"),
+            content: Text("Todas las notificaciones marcadas como ledas"),
             backgroundColor: Colors.green,
           ),
         );
@@ -122,7 +121,7 @@ class _NotificacionesViewState extends State<NotificacionesView> {
     final diferencia = ahora.difference(fecha);
     
     if (diferencia.inDays > 0) {
-      return "hace ${diferencia.inDays} día${diferencia.inDays == 1 ? '' : 's'}";
+      return "hace ${diferencia.inDays} da${diferencia.inDays == 1 ? '' : 's'}";
     } else if (diferencia.inHours > 0) {
       return "hace ${diferencia.inHours} hora${diferencia.inHours == 1 ? '' : 's'}";
     } else if (diferencia.inMinutes > 0) {
@@ -134,9 +133,9 @@ class _NotificacionesViewState extends State<NotificacionesView> {
 
   List<Notificacion> _filtrarNotificaciones(List<Notificacion> notificaciones) {
     switch (_filtroActual) {
-      case "No leídas":
+      case "No ledas":
         return notificaciones.where((n) => !n.leido).toList();
-      case "Leídas":
+      case "Ledas":
         return notificaciones.where((n) => n.leido).toList();
       default:
         return notificaciones;
@@ -161,7 +160,7 @@ class _NotificacionesViewState extends State<NotificacionesView> {
             IconButton(
               icon: const Icon(Icons.done_all, color: Colors.white),
               onPressed: _marcarTodasComoLeidas,
-              tooltip: "Marcar todas como leídas",
+              tooltip: "Marcar todas como ledas",
             ),
         ],
       ),
@@ -176,9 +175,9 @@ class _NotificacionesViewState extends State<NotificacionesView> {
                     children: [
                       _buildFiltroChip("Todas", _filtroActual == "Todas"),
                       const SizedBox(width: 8),
-                      _buildFiltroChip("No leídas", _filtroActual == "No leídas"),
+                      _buildFiltroChip("No ledas", _filtroActual == "No ledas"),
                       const SizedBox(width: 8),
-                      _buildFiltroChip("Leídas", _filtroActual == "Leídas"),
+                      _buildFiltroChip("Ledas", _filtroActual == "Ledas"),
                     ],
                   ),
                 ),
@@ -202,7 +201,7 @@ class _NotificacionesViewState extends State<NotificacionesView> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                "Cuando recibas notificaciones aparecerán aquí",
+                                "Cuando recibas notificaciones aparecern aqu",
                                 style: AppEstiloTexto.textoSecundario,
                               ),
                             ],
@@ -271,7 +270,7 @@ class _NotificacionesViewState extends State<NotificacionesView> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text("Notificación eliminada"),
+                content: Text("Notificacin eliminada"),
                 backgroundColor: Colors.green,
               ),
             );
@@ -308,7 +307,6 @@ class _NotificacionesViewState extends State<NotificacionesView> {
                   widget.vendedor.id,
                 );
               } catch (e) {
-                print("Error al marcar como leída: $e");
               }
             }
           },
@@ -352,7 +350,7 @@ class _NotificacionesViewState extends State<NotificacionesView> {
                   ),
                 ),
                 
-                // Indicador de no leído
+                // Indicador de no ledo
                 if (!notificacion.leido)
                   Container(
                     width: 10,
@@ -363,7 +361,7 @@ class _NotificacionesViewState extends State<NotificacionesView> {
                     ),
                   ),
                 
-                // Botón de eliminar
+                // Botn de eliminar
                 IconButton(
                   icon: const Icon(Icons.close, size: 20),
                   onPressed: () async {

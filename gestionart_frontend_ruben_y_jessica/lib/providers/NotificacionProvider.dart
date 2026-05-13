@@ -17,7 +17,6 @@ class NotificacionProvider extends ChangeNotifier {
       _notificaciones = await _notificacionRepository.obtenerNotificacionesPorVendedor(idVendedor);
       notifyListeners();
     } catch (e) {
-      print("Error al obtener las notificaciones por vendedor: $e");
     }
   }
 
@@ -25,7 +24,6 @@ class NotificacionProvider extends ChangeNotifier {
     try {
       return await _notificacionRepository.obtenerNotificacionesPorVendedor(idVendedor);
     } catch (e) {
-      print("Error al obtener la lista de notificaciones por vendedor: $e");
       throw e;
     }
   }
@@ -35,7 +33,6 @@ class NotificacionProvider extends ChangeNotifier {
       await _notificacionRepository.crearNotificacion(idVendedor, tipo);
       await fetchNotificacionesPorVendedor(idVendedor);
     } catch (e) {
-      print("Error al crear la notificación: $e");
     }
   }
 
@@ -44,7 +41,6 @@ class NotificacionProvider extends ChangeNotifier {
       _notificaciones = await _notificacionRepository.obtenerNoLeidas(idVendedor);
       notifyListeners();
     } catch (e) {
-      print("Error al obtener las notificaciones no leídas: $e");
     }
   }
 
@@ -53,7 +49,6 @@ class NotificacionProvider extends ChangeNotifier {
       _notificaciones = await _notificacionRepository.obtenerLeidas(idVendedor, idNotificacion);
       notifyListeners();
     } catch (e) {
-      print("Error al obtener las notificaciones leídas: $e");
     }
   }
 
@@ -62,7 +57,6 @@ class NotificacionProvider extends ChangeNotifier {
       _notificaciones = await _notificacionRepository.obtenerPorTipo(idVendedor, tipo);
       notifyListeners();
     } catch (e) {
-      print("Error al obtener las notificaciones por tipo: $e");
     }
   }
 
@@ -71,7 +65,6 @@ class NotificacionProvider extends ChangeNotifier {
       await _notificacionRepository.marcarComoLeida(idNotificacion, idVendedor);
       await fetchNotificacionesPorVendedor(idVendedor);
     } catch (e) {
-      print("Error al marcar la notificación como leída: $e");
     }
   }
 
@@ -80,7 +73,6 @@ class NotificacionProvider extends ChangeNotifier {
       await _notificacionRepository.marcarTodasComoLeidas(idVendedor);
       await fetchNotificacionesPorVendedor(idVendedor);
     } catch (e) {
-      print("Error al marcar todas las notificaciones como leídas: $e");
     }
   }
 
@@ -89,7 +81,6 @@ class NotificacionProvider extends ChangeNotifier {
       await _notificacionRepository.eliminarNotificacion(idNotificacion);
       await fetchNotificacionesPorVendedor(idVendedor);
     } catch (e) {
-      print("Error al eliminar la notificación: $e");
     }
   }
 

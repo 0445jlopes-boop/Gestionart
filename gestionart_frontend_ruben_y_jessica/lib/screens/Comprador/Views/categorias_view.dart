@@ -79,7 +79,6 @@ class _categorias_viewState extends State<categorias_view> {
         _isLoading = false;
       });
     } catch (e) {
-      print("Error cargando datos: $e");
       setState(() {
         _isLoading = false;
       });
@@ -99,14 +98,14 @@ class _categorias_viewState extends State<categorias_view> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              "Este producto está agotado. Como usuario Premium, puedes solicitar una edición exclusiva.",
+              "Este producto est agotado. Como usuario Premium, puedes solicitar una edicin exclusiva.",
               style: AppEstiloTexto.textoSecundario,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: controller,
               decoration: const InputDecoration(
-                labelText: "Mensaje para el artista (Recomendamos que ponga cómo prefiere que se ponga en contacto )",
+                labelText: "Mensaje para el artista (Recomendamos que ponga cmo prefiere que se ponga en contacto )",
                 border: OutlineInputBorder(),
               ),
               maxLines: 3,
@@ -144,7 +143,6 @@ class _categorias_viewState extends State<categorias_view> {
         mensaje,
         articulo.idVendedor,
       );
-       print("$articulo.idVendedor");
       await notificacionProvider.crearNotificacion(
         articulo.idVendedor,
         Tiponotificacion.NUEVO_PEDIDO,);
@@ -158,7 +156,6 @@ class _categorias_viewState extends State<categorias_view> {
         );
       }
     } catch (e) {
-      print("Error al crear solicitud exclusiva: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -174,12 +171,12 @@ class _categorias_viewState extends State<categorias_view> {
     try {
       if (_compradorActual == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Error: No se encontró el comprador")),
+          const SnackBar(content: Text("Error: No se encontr el comprador")),
         );
         return;
       }
 
-      // ✅ Si es PREMIUM y stock = 0, crear solicitud exclusiva
+      //  Si es PREMIUM y stock = 0, crear solicitud exclusiva
       if (_compradorActual?.tipoCuenta == Tipocuentacomprador.PREMIUM && articulo.stock == 0) {
         await _crearSolicitudExclusiva(articulo);
         return;
@@ -217,7 +214,6 @@ class _categorias_viewState extends State<categorias_view> {
 
       if (pedidoExistente != null) {
         idPedido = pedidoExistente.id;
-        print("📦 Usando pedido existente ID: $idPedido");
       } else {
         // Crear nuevo pedido en estado PENDIENTE
         final nuevoPedido = await pedidoProvider.crearPedido({
@@ -226,10 +222,9 @@ class _categorias_viewState extends State<categorias_view> {
           'estado': 'PENDIENTE'
         });
         idPedido = nuevoPedido.id;
-        print("📦 Creando nuevo pedido ID: $idPedido");
       }
 
-      // Crear línea de pedido
+      // Crear lnea de pedido
       final lineaCreada = await lineaPedidoProvider.crearLineaPedido(
         idPedido,
         articulo.id,
@@ -243,17 +238,16 @@ class _categorias_viewState extends State<categorias_view> {
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("✅ ${articulo.titulo} añadido al pedido"),
+            content: Text(" ${articulo.titulo} aadido al pedido"),
             backgroundColor: Colors.green,
           ),
         );
       }
     } catch (e) {
-      print("❌ Error al agregar al pedido: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("❌ Error: $e"),
+            content: Text(" Error: $e"),
             backgroundColor: Colors.red,
           ),
         );
@@ -291,8 +285,8 @@ class _categorias_viewState extends State<categorias_view> {
                       const SizedBox(height: 16),
                       Text(
                         _compradorActual?.tipoCuenta == Tipocuentacomprador.NORMAL
-                            ? "No hay obras disponibles en esta categoría"
-                            : "No hay obras en esta categoría",
+                            ? "No hay obras disponibles en esta categora"
+                            : "No hay obras en esta categora",
                         style: AppEstiloTexto.textoPrincipal.copyWith(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
@@ -301,7 +295,7 @@ class _categorias_viewState extends State<categorias_view> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Pronto llegaran nuevas creaciones artísticas",
+                        "Pronto llegaran nuevas creaciones artsticas",
                         style: AppEstiloTexto.textoSecundario,
                         textAlign: TextAlign.center,
                       ),
@@ -310,7 +304,7 @@ class _categorias_viewState extends State<categorias_view> {
                 )
               : Column(
                   children: [
-                    // Carrusel de Artículos
+                    // Carrusel de Artculos
                     Expanded(
                       flex: 3,
                       child: Stack(
@@ -328,7 +322,7 @@ class _categorias_viewState extends State<categorias_view> {
                               return _construirCardArticulo(articulo);
                             },
                           ),
-                          // Indicador de posición
+                          // Indicador de posicin
                           Positioned(
                             bottom: 20,
                             left: 0,
@@ -355,7 +349,7 @@ class _categorias_viewState extends State<categorias_view> {
                     ),
                     const SizedBox(height: 12),
                     
-                    // Botón añadir al pedido
+                    // Botn aadir al pedido
                     if (_articulosFiltrados.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -363,7 +357,7 @@ class _categorias_viewState extends State<categorias_view> {
                           onPressed: () => _anadirALineaPedido(_articulosFiltrados[_currentIndex]),
                           icon: const Icon(Icons.shopping_cart, color: Colors.white),
                           label: Text(
-                            "Añadir al pedido",
+                            "Aadir al pedido",
                             style: AppEstiloTexto.textoPrincipal.copyWith(color: Colors.white),
                           ),
                           style: ElevatedButton.styleFrom(
@@ -501,7 +495,7 @@ class _categorias_viewState extends State<categorias_view> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Categoría
+                  // Categora
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
@@ -518,7 +512,7 @@ class _categorias_viewState extends State<categorias_view> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Título
+                  // Ttulo
                   Text(
                     articulo.titulo,
                     style: const TextStyle(
@@ -537,7 +531,7 @@ class _categorias_viewState extends State<categorias_view> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
-                  // Descripción
+                  // Descripcin
                   Text(
                     articulo.descripcion,
                     style: const TextStyle(
@@ -559,7 +553,7 @@ class _categorias_viewState extends State<categorias_view> {
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Text(
-                          "${articulo.precio.toStringAsFixed(2)} €",
+                          "${articulo.precio.toStringAsFixed(2)} ",
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -671,7 +665,7 @@ class _categorias_viewState extends State<categorias_view> {
                       borderRadius: BorderRadius.circular(25),
                     ),
                     child: Text(
-                      "${anuncio.precio.toStringAsFixed(2)} €",
+                      "${anuncio.precio.toStringAsFixed(2)} ",
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

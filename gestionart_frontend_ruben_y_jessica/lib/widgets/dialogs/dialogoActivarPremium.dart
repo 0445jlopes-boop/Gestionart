@@ -24,7 +24,7 @@ Future<Comprador?> dialogoActivarPremium(BuildContext context, Comprador comprad
             child: ElevatedButton(
               style: AppEstiloBotones.botonSecundario,
               onPressed: () async {
-                Navigator.pop(context); // Cerrar diálogo
+                Navigator.pop(context); // Cerrar dilogo
                 
                 // Navegar a la pantalla de pago y esperar resultado
                 final compradorActualizado = await Navigator.push<Comprador>(
@@ -54,7 +54,7 @@ Future<Comprador?> dialogoActivarPremium(BuildContext context, Comprador comprad
             child: ElevatedButton(
               style: AppEstiloBotones.botonPrincipal,
               onPressed: () {
-                Navigator.pop(context); // Solo cerrar el diálogo
+                Navigator.pop(context); // Solo cerrar el dilogo
               },
               child: const Text(
                 "Cancelar",

@@ -49,7 +49,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
           .where((s) => s.estado == Estadosolicitud.PENDIENTE)
           .toList();
       
-      // Obtener datos de compradores y artículos para las solicitudes
+      // Obtener datos de compradores y artculos para las solicitudes
       final Map<int, String> nombresTemp = {};
       final Map<int, String> correosTemp = {};
       final Map<int, String> titulosTemp = {};
@@ -67,7 +67,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
           }
         }
         
-        // Obtener título del artículo
+        // Obtener ttulo del artculo
         if (!titulosTemp.containsKey(solicitud.idArticulo)) {
           final articulo = await articuloProvider.obtenerArticulo(solicitud.idArticulo);
           if (articulo != null) {
@@ -81,7 +81,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
       _correosComprador = correosTemp;
       _titulosArticulo = titulosTemp;
       
-      // Cargar líneas de pedido (solo para mostrar, sin acciones)
+      // Cargar lneas de pedido (solo para mostrar, sin acciones)
       final lineas = await lineaPedidoProvider.fetchLineasPorVendedor(widget.vendedor.id);
       
       setState(() {
@@ -89,7 +89,6 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
         _isLoading = false;
       });
     } catch (e) {
-      print("Error cargando datos: $e");
       setState(() => _isLoading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -105,7 +104,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
       builder: (context) => AlertDialog(
         title: const Text("Aceptar solicitud", style: AppEstiloTexto.textoPrincipal),
         content: Text(
-          "¿Aceptar la solicitud exclusiva para '${_titulosArticulo[solicitud.idArticulo]}'?",
+          "Aceptar la solicitud exclusiva para '${_titulosArticulo[solicitud.idArticulo]}'?",
           style: AppEstiloTexto.textoSecundario,
         ),
         actions: [
@@ -125,7 +124,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
     try {
       final solicitudProvider = context.read<SolicitudExclusivaProvider>();
       
-      // ✅ Aceptar solicitud (la solicitud cambia a ACEPTADA)
+      //  Aceptar solicitud (la solicitud cambia a ACEPTADA)
       await solicitudProvider.actualizarEstadoSolicitud(
         solicitud.id,
         Estadosolicitud.ACEPTADA,
@@ -133,12 +132,12 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
       );
       
       if (mounted) {
-        // ✅ Recargar datos después de aceptar
+        //  Recargar datos despus de aceptar
         await _cargarDatos();
         
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("✅ Solicitud aceptada correctamente"),
+            content: Text(" Solicitud aceptada correctamente"),
             backgroundColor: Colors.green,
           ),
         );
@@ -159,7 +158,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
       builder: (context) => AlertDialog(
         title: const Text("Rechazar solicitud", style: AppEstiloTexto.textoPrincipal),
         content: Text(
-          "¿Rechazar la solicitud exclusiva para '${_titulosArticulo[solicitud.idArticulo]}'?",
+          "Rechazar la solicitud exclusiva para '${_titulosArticulo[solicitud.idArticulo]}'?",
           style: AppEstiloTexto.textoSecundario,
         ),
         actions: [
@@ -185,12 +184,12 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
       );
       
       if (mounted) {
-        // ✅ Recargar datos después de rechazar
+        //  Recargar datos despus de rechazar
         await _cargarDatos();
         
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("❌ Solicitud rechazada"),
+            content: Text(" Solicitud rechazada"),
             backgroundColor: Colors.orange,
           ),
         );
@@ -229,7 +228,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
                   if (index < _solicitudes.length) {
                     return _buildSolicitudCard(_solicitudes[index]);
                   }
-                  // Luego mostrar líneas de pedido (solo vista)
+                  // Luego mostrar lneas de pedido (solo vista)
                   final lineaIndex = index - _solicitudes.length;
                   if (lineaIndex < _lineas.length) {
                     return _buildLineaCard(_lineas[lineaIndex]);
@@ -307,7 +306,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
             
             const SizedBox(height: 20),
             
-            // Título del artículo
+            // Ttulo del artculo
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -318,7 +317,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Artículo solicitado",
+                    "Artculo solicitado",
                     style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 11),
                   ),
                   const SizedBox(height: 4),
@@ -379,7 +378,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Correo electrónico",
+                          "Correo electrnico",
                           style: AppEstiloTexto.textoSecundario.copyWith(fontSize: 11),
                         ),
                         Text(
@@ -425,7 +424,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
             
             const SizedBox(height: 16),
             
-            // Botones de acción
+            // Botones de accin
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -502,7 +501,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Línea de pedido #${linea.id}",
+                        "Lnea de pedido #${linea.id}",
                         style: AppEstiloTexto.textoPrincipal.copyWith(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -525,7 +524,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    "${subtotal.toStringAsFixed(2)} €",
+                    "${subtotal.toStringAsFixed(2)} ",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -544,7 +543,7 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
                 Expanded(
                   child: _buildInfoRow(
                     icon: Icons.inventory_2,
-                    label: "Artículo ID",
+                    label: "Artculo ID",
                     value: "${linea.idArticulo}",
                   ),
                 ),
@@ -564,14 +563,14 @@ class _DashboardVentasViewState extends State<DashboardVentasView> {
                   child: _buildInfoRow(
                     icon: Icons.euro,
                     label: "Precio unitario",
-                    value: "${linea.precioUnitario.toStringAsFixed(2)} €",
+                    value: "${linea.precioUnitario.toStringAsFixed(2)} ",
                   ),
                 ),
                 Expanded(
                   child: _buildInfoRow(
                     icon: Icons.calculate,
                     label: "Subtotal",
-                    value: "${subtotal.toStringAsFixed(2)} €",
+                    value: "${subtotal.toStringAsFixed(2)} ",
                     isBold: true,
                   ),
                 ),

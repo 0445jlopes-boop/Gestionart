@@ -74,7 +74,7 @@ public class AutenticacionService {
             if (passwordEncoder.matches(contrasena, comprador.getContrasena())) {
                 return jwtService.generarToken(comprador.getCorreoElectronico(), "COMPRADOR");
             }
-            // Si existe pero contraseña incorrecta
+            // Si existe pero contrasea incorrecta
             throw new InvalidCredentials();
         }
 
@@ -85,7 +85,7 @@ public class AutenticacionService {
             if (passwordEncoder.matches(contrasena, vendedor.getContrasena())) {
                 return jwtService.generarToken(vendedor.getCorreoElectronico(), "VENDEDOR");
             }
-            // Si existe pero contraseña incorrecta
+            // Si existe pero contrasea incorrecta
             throw new InvalidCredentials();
         }
 
